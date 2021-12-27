@@ -155,7 +155,7 @@ void MyActor::Tick(float DeltaSeconds)
         auto Transform = RootComponent->GetTransform();
         std::cout << Transform.ToString() << std::endl;
 
-        printf("RootComponet Children Size = %d\n", RootComponent->GetAttachChildren().size());
+        printf("RootComponet Children Size = %lu\n", RootComponent->GetAttachChildren().size());
     }
     else
     {

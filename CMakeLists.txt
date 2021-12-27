@@ -7,13 +7,15 @@ else()
     set (my_std_pre "-std=")
 endif()
 
-set (basic_cxx20 "c++latest")
+set (basic_cxx20 "c++20")
 set (str_cxx20 "${my_std_pre}${basic_cxx20}")
 
 include (CheckCXXCompilerFlag)
 check_cxx_compiler_flag( "${str_cxx20}" _cpp_20_flag_supported )
 if ( _cpp_20_flag_supported )
     set( CMAKE_CXX_STANDARD 20 )
+else()
+    set( CMAKE_CXX_STANDARD 17 )    
 endif()
 
 if (MSVC)

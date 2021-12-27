@@ -1,5 +1,4 @@
 #include "Math/Transform.h"
-#include <format>
 
 std::string Transform::ToString()
 {
