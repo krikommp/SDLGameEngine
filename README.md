@@ -13,4 +13,41 @@
             set(CMAKE_C_FLAGS /source-charset:utf-8)
         endif()
     ```
-6. 
+6. .gitgnore 文件更新
+   ```git
+   git rm -r --cached .
+   git add .
+   git commit -m 'update .gitignore'
+   git push -u origin master
+   ```
+7. `std::enable_shared_from_this` 如果父子类都需要这个特性，那么只需要在父类中继承这个类就可以了。在子类中可以通过 `std::static_ptr_cast<>` 方法来转换到子类的 `shared_ptr`
+   ```C++
+   class A : public std::enable_shared_from_this<A>
+    {
+    };
+
+    class B : public A
+    {
+    public:
+        void Test(const std::shared_ptr<B> &Parent)
+        {
+            if (Parent == std::static_pointer_cast<B>(shared_from_this()))
+            {
+                printf("Parent == This\n");
+                return;
+            }
+            printf("Parent != This\n");
+        }
+    };
+
+    int main(int argc, char **args)
+    {
+        auto b = std::make_shared<B>();
+        auto testB = std::make_shared<B>();
+        b->Test(b);     // Output : Parent == This
+        b->Test(testB); // Output : Parent != This
+
+        return 0;
+    }
+   ```
+8. 

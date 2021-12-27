@@ -125,8 +125,31 @@
 
 #include <GameFramework/Actor.h>
 
+class A : public std::enable_shared_from_this<A>
+{
+};
+
+class B : public A
+{
+public:
+    void Test(const std::shared_ptr<B> &Parent)
+    {
+        if (Parent == std::static_pointer_cast<B>(shared_from_this()))
+        {
+            printf("Parent == This\n");
+            return;
+        }
+        printf("Parent != This\n");
+    }
+};
+
 int main(int argc, char **args)
 {
     Actor MyActor;
+
+    auto b = std::make_shared<B>();
+    auto testB = std::make_shared<B>();
+    b->Test(b);
+
     return 0;
 }

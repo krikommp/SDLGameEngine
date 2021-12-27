@@ -1,7 +1,9 @@
 #ifndef _ACTOR_COMPONENT_H_
 #define _ACTOR_COMPONENT_H_
+#include <memory>
 
-class ActorComponent
+class Actor;
+class ActorComponent : public std::enable_shared_from_this<ActorComponent>
 {
 public:
     ActorComponent();
@@ -15,6 +17,10 @@ public:
      * @param DeltaTime 上一帧到这一帧花费的时间
      */
     virtual void TickComponent(float DeltaTime);
+
+private:
+    /** 缓存正在持有的 Actor */
+    std::shared_ptr<Actor> OwnerPrivate;
 };
 
 #endif // _ACTOR_COMPONENT_H_

@@ -1,6 +1,6 @@
 project(Engine)
 
-include_directories(Classes)
+include_directories(Classes Public)
 
 FILE (GLOB ALL_SOURCES 
 "Private/*.cpp" 
@@ -14,5 +14,6 @@ FILE (GLOB ALL_INCLUDES "Private/*.hpp" "Private/*.h"
 "Private/Components/*.h" "Private/Components/*.hpp") 
 
 add_library(${PROJECT_NAME} ${ALL_SOURCES} ${ALL_INCLUDES})
+target_link_libraries(${PROJECT_NAME} Core)
 
-target_include_directories(${PROJECT_NAME} INTERFACE Classes)
+target_include_directories(${PROJECT_NAME} INTERFACE Classes Public)
