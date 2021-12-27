@@ -17,5 +17,7 @@ if ( _cpp_20_flag_supported )
 endif()
 
 add_subdirectory(3rdparty)
-add_subdirectory(UnitTest)
 add_subdirectory(Engine)
+
+# Test Module
+add_subdirectory(UnitTest)

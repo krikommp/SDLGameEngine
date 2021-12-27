@@ -115,10 +115,19 @@
 //     return 0;
 // }
 
-#include <gtest/gtest.h>
+// #include <gtest/gtest.h>
 
-TEST(HelloTest, BasicAssertions)
+// TEST(HelloTest, BasicAssertions)
+// {
+//     EXPECT_STRNE("hello", "world");
+//     EXPECT_EQ(7 * 6, 42);
+// }
+
+#include <GameFramework/Actor.h>
+
+int main(int argc, char **args)
 {
-    EXPECT_STRNE("hello", "world");
-    EXPECT_EQ(7 * 6, 42);
+    Actor MyActor;
+    MyActor.Say();
+    return 0;
 }
