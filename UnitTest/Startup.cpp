@@ -123,33 +123,49 @@
 //     EXPECT_EQ(7 * 6, 42);
 // }
 
+#include <iostream>
+
 #include <GameFramework/Actor.h>
-
-class A : public std::enable_shared_from_this<A>
-{
-};
-
-class B : public A
+#include <Components/SceneComponent.h>
+class MyActor : public Actor
 {
 public:
-    void Test(const std::shared_ptr<B> &Parent)
-    {
-        if (Parent == std::static_pointer_cast<B>(shared_from_this()))
-        {
-            printf("Parent == This\n");
-            return;
-        }
-        printf("Parent != This\n");
-    }
+    MyActor();
+    ~MyActor();
+
+public:
+    virtual void Tick(float DeltaSeconds) override;
 };
+
+MyActor::MyActor()
+{
+    RootComponent = std::make_shared<SceneCompoent>();
+    auto TestSceneComponent = std::make_shared<SceneCompoent>();
+    TestSceneComponent->AttachToComponent(RootComponent);
+}
+
+MyActor::~MyActor()
+{
+}
+
+void MyActor::Tick(float DeltaSeconds)
+{
+    if (RootComponent != nullptr)
+    {
+        auto Transform = RootComponent->GetTransform();
+        std::cout << Transform.ToString() << std::endl;
+
+        printf("RootComponet Children Size = %d\n", RootComponent->GetAttachChildren().size());
+    }
+    else
+    {
+        printf("RootComponent is nullptr!\n");
+    }
+}
 
 int main(int argc, char **args)
 {
-    Actor MyActor;
-
-    auto b = std::make_shared<B>();
-    auto testB = std::make_shared<B>();
-    b->Test(b);
-
+    MyActor actor;
+    actor.Tick(0.5f);
     return 0;
 }

@@ -38,8 +38,10 @@ bool SceneCompoent::AttachToComponent(const std::shared_ptr<SceneCompoent> &Pare
         }
         else
         {
-            Parent->AttachChildren.push_back(std::static_pointer_cast<SceneCompoent>(shared_from_this()));
+            auto ThisPtr = std::static_pointer_cast<SceneCompoent>(shared_from_this());
+            Parent->AttachChildren.push_back(ThisPtr);
         }
+        return true;
     }
     return false;
 }
@@ -61,6 +63,11 @@ void SceneCompoent::SetupAttachment(const std::shared_ptr<SceneCompoent> &InPare
 const std::vector<std::shared_ptr<SceneCompoent>> &SceneCompoent::GetAttachChildren() const
 {
     return AttachChildren;
+}
+
+const Transform &SceneCompoent::GetTransform() const
+{
+    return ComponentToWorld;
 }
 
 void SceneCompoent::SetAttachParent(const std::shared_ptr<SceneCompoent> &NewAttachParent)

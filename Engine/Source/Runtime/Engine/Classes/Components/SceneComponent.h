@@ -33,6 +33,7 @@ public:
 
 public:
     const std::vector<std::shared_ptr<SceneCompoent>> &GetAttachChildren() const;
+    const Transform &GetTransform() const;
 
 private:
     /**
