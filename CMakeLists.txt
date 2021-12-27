@@ -16,6 +16,11 @@ if ( _cpp_20_flag_supported )
     set( CMAKE_CXX_STANDARD 20 )
 endif()
 
+if (MSVC)
+    # 设置 msvc 输入代码编码格式为 utf-8
+    set(CMAKE_C_FLAGS /source-charset:utf-8)
+endif()
+
 add_subdirectory(3rdparty)
 add_subdirectory(Engine)
 

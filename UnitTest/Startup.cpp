@@ -128,6 +128,5 @@
 int main(int argc, char **args)
 {
     Actor MyActor;
-    MyActor.Say();
     return 0;
 }

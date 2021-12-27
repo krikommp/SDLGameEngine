@@ -1,11 +1,14 @@
-#include <GameFramework/Actor.h>
 #include <iostream>
+#include "GameFramework/Actor.h"
 
-Actor::Actor() {}
-
-Actor::~Actor() {}
-
-void Actor::Say()
+Actor::Actor()
 {
-    printf("Actor Say: Hello\n");
+}
+
+Actor::~Actor()
+{
+}
+
+void Actor::Tick(float DeltaSeconds)
+{
 }
