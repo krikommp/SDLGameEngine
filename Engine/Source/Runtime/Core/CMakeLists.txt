@@ -17,5 +17,6 @@ FILE (GLOB ALL_INCLUDES
 ) 
 
 add_library(${PROJECT_NAME} ${ALL_SOURCES} ${ALL_INCLUDES})
+target_link_libraries(${PROJECT_NAME} fmt)
 
 target_include_directories(${PROJECT_NAME} INTERFACE Public)
