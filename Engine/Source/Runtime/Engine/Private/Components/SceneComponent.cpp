@@ -27,7 +27,14 @@ bool SceneCompoent::AttachToComponent(const std::shared_ptr<SceneCompoent> &Pare
         // 判断是否已经加入在父组件中
         int LastAttachIndex = -1;
         auto ParentAttachChildren = Parent->GetAttachChildren();
-        std::find(ParentAttachChildren.begin(), ParentAttachChildren.end(), std::static_pointer_cast<SceneCompoent>(shared_from_this()));
+        for (std::vector<std::shared_ptr<SceneCompoent>>::size_type i = 0; i < ParentAttachChildren.size(); ++i)
+        {
+            if (ParentAttachChildren[i] == std::static_pointer_cast<SceneCompoent>(shared_from_this()))
+            {
+                LastAttachIndex = i;
+                break;
+            }
+        }
 
         // 保存子组件(这个组件)指向父组件
         SetAttachParent(Parent);
