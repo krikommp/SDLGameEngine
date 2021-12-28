@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.14)
-project(TestInClion)
 
 if ( CMAKE_SYSTEM_NAME MATCHES "Windows" )
     set (my_std_pre "/std:")
