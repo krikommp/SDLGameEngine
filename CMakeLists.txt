@@ -7,7 +7,7 @@ else()
     set (my_std_pre "-std=")
 endif()
 
-set (basic_cxx20 "c++20")
+set (basic_cxx20 "c++latest")
 set (str_cxx20 "${my_std_pre}${basic_cxx20}")
 
 include (CheckCXXCompilerFlag)
@@ -17,8 +17,7 @@ if ( _cpp_20_flag_supported )
 else()
     set( CMAKE_CXX_STANDARD 17 )    
 endif()
-
-if (MSVC)
+if ( CMAKE_SYSTEM_NAME MATCHES "Windows" )
     # 设置 msvc 输入代码编码格式为 utf-8
     set(CMAKE_C_FLAGS /source-charset:utf-8)
 endif()
