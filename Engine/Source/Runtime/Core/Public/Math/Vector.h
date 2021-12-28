@@ -4,6 +4,9 @@
 struct Vector
 {
 public:
+    Vector() : X(0), Y(0), Z(0) {}
+
+public:
     float X;
 
     float Y;

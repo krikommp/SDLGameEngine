@@ -1,5 +1,6 @@
 #include "Engine/Level.h"
 
-void Level::SortActorList()
+std::shared_ptr<WorldSettings> Level::GetWorldSettings() const
 {
+    return WorldSettings;
 }
