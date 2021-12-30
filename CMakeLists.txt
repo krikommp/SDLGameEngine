@@ -26,4 +26,4 @@ add_subdirectory(3rdparty)
 add_subdirectory(Engine)
 
 # Test Module
-add_subdirectory(UnitTest)
+add_subdirectory(Example)

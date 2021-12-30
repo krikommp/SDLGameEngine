@@ -1,4 +1,4 @@
-project(UnitTest)
+project(Example)
 
 # enable_testing()
 
