@@ -101,7 +101,36 @@ void TestMakeIndex(IndexSeq<N...>) {
     Printf2(N...);
 }
 
+#include <tuple>
+
+template <typename Tuple, typename Func, size_t... N>
+void FunCallTuple(const Tuple& tuple, Func&& Function, std::index_sequence<N...>) {
+    // 用到了逗号运算符，会返回逗号后面的数值
+    static_cast<void>(std::initializer_list<int>{ (Function(std::get<N>(tuple)), 0)... });
+}
+
+template <typename... Args, typename Function>
+void TravelTuple(const std::tuple<Args...>& InTuple, Function&& Lambda) {
+    FunCallTuple(InTuple, std::forward<Function>(Lambda), std::make_index_sequence<sizeof...(Args)>());
+}
+
 constexpr static std::size_t ConstNums[] = { 0, 1, 4 ,9, 16 };
+
+template <typename T, std::size_t... N>
+constexpr decltype(auto) PrepareImpl(T Arg, std::index_sequence<N...>) {
+    return std::integer_sequence<char, T::get()[N]...>();
+}
+
+template <typename T>
+constexpr decltype(auto) Prepare(T Arg) {
+    return PrepareImpl(Arg, std::make_index_sequence<sizeof(T::get()) - 1>());
+}
+
+#define STRING(S) \
+    (Prepare([] { \
+    struct tmp { static constexpr decltype(auto) get() { return S; } }; \
+    return tmp{}; \
+    }()))
 
 int main(int argc, char **args)
 {
@@ -133,18 +162,22 @@ int main(int argc, char **args)
 //
 //    std::cout << TypeID_of<float>.GetValue() << std::endl;
 
-
-//    if (ConstNums<101>(100) == 100 * 100) {
-//        printf("Equal\n");
-//    }else {
-//        printf("No Equal\n");
-//    }
     Printf2("Hello World", 2, 2.04, 0x001);
     // PrintfIndexSequence(std::make_index_sequence<10>());
     TestClass<int, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0> a;
     a.Test();
 
     TestMakeIndex(MakeIndexSeq<100>());
+
+    auto T = std::make_tuple(1, 0.3545, "Happy Day");
+    TravelTuple(T, [](auto&& Item){
+        std::cout << Item << ", ";
+    });
+    std::cout << std::endl;
+
+    auto Str = STRING("1234");
+    using Tyu = decltype(Str);
+    static_assert(std::is_same<Tyu, std::integer_sequence<char, '1', '2', '3', '4'>>::value, "WTF");
 
     return 0;
 }

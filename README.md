@@ -83,7 +83,7 @@
        a.Test();    // Output = 10, 9, ..., 0
    }
    ```
-   那么如何实现一个 `std::make_index_sequence` 呢  
+   那么如何实现一个 `std::make_index_sequence` 呢？  
    继承的方式
    ```c++
    // 这里的目的只是为了提出 N... 
@@ -102,6 +102,35 @@
    
    template <int... M>
    struct MakeIndexSequence<0, M...> : public IndexSequence<M...>{};
+   ```
+
+   一个简单的例子 使用 `std::make_index_sequence` 实现 `std::apply`
+   ```c++
+   template <typename Tuple, typename Func, size_t... N>
+   void FunCallTuple(const Tuple& tuple, Func&& Function, std::index_sequence<N...>) {
+       // 用到了逗号运算符，会返回逗号后面的数值
+       static_cast<void>(std::initializer_list<int>{ (Function(std::get<N>(tuple)), 0)... });
+   }
+
+   template <typename... Args, typename Function>
+   void TravelTuple(const std::tuple<Args...>& InTuple, Function&& Lambda) {
+       // 这里的 Args 也只是为了提取 tuple 的参数， 用于 index_sequence 生成遍历序列
+       // 从这里可以看出 使用 ...Args 来获取参数的技巧很常见
+       FunCallTuple(InTuple, std::forward<Function>(Lambda), std::make_index_sequence<sizeof...(Args)>());
+   }
+   ```
+   
+   如果对于模板参数传入的是一个 `lambda` 表达式，这个表达式需要有一个返回值，那么这个表达式将会被执行
+   ```c++
+   template <typename T>
+   void TestFunc(T t) {}
+   
+   int main() {
+   TestFunc([]{
+        std::cout << "Run Lambda" << std::endl;
+        return 1;
+    }());   // Run Here 
+   }
    ```
 5. 
 
