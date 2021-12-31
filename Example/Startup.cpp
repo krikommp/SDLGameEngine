@@ -42,7 +42,6 @@ void MyActor::Tick(float DeltaSeconds)
     }
 }
 
-#include <UDRefl/UDRefl.hpp>
 #include <cmath>
 
 template <typename... Ts>
@@ -136,31 +135,6 @@ int main(int argc, char **args)
 {
     // MyActor actor;
     // actor.Tick(0.5f);
-
-//    Mngr.RegisterType<FVector>();
-//    Mngr.AddField<&FVector::X>("X");
-//    Mngr.AddField<&FVector::Y>("Y");
-//    Mngr.AddMethod<&FVector::Normalize>("Normalize");
-//
-//    SharedObject V = Mngr.MakeShared(Type_of<FVector>);
-//    std::cout << V.GetType().GetName() << std::endl;
-//
-//    V.Var("x") = 3;
-//    V.Var("y") = 4;
-//
-//    std::cout << "x: " << V.Var("x") << std::endl;
-//    std::cout << "norm: " << V.Invoke("norm") << std::endl;
-//
-//    for (auto&& [name, info] : FieldRange_of<FVector>)
-//        std::cout << name.GetView() << std::endl;
-//
-//    for (auto&& [name, info] : MethodRange_of<FVector>)
-//        std::cout << name.GetView() << std::endl;
-//
-//    for (auto&& [name, var] : V.GetVars())
-//        std::cout << name.GetView() << ": " << var << std::endl;
-//
-//    std::cout << TypeID_of<float>.GetValue() << std::endl;
 
     Printf2("Hello World", 2, 2.04, 0x001);
     // PrintfIndexSequence(std::make_index_sequence<10>());
