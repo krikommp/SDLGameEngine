@@ -94,8 +94,18 @@ void Printf(T0 Value)
 template <typename T, typename... Ts>
 void Printf(T Value, Ts... Args)
 {
-    std::cout << Value << std::endl;
+    std::cout << Value << ", ";
     Printf(Args...);
+}
+
+template <typename T, typename... Ts>
+void Printf2(T Value, Ts... Args) {
+    std::cout << Value << ", ";
+    if constexpr( sizeof...(Args) > 0 ) {
+        Printf2(Args...);
+    }else {
+        std::cout << std::endl;
+    }
 }
 
 int main(int argc, char **args)
@@ -141,7 +151,7 @@ int main(int argc, char **args)
     });
     std::cout << std::endl;
 
-    Printf("Hello World", 2, 2.04, 0x001);
+    Printf2("Hello World", 2, 2.04, 0x001);
 
     return 0;
 }

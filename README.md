@@ -19,6 +19,39 @@
        std::cout << sizeof...(Args) << std::endl;
    }
    ```
+   递归模板参数  
+   ```C++
+   // 类似与递归函数的结束条件
+   // 为什么不能在一个函数中完成
+   // 因为我们需要判断是否有结束条件产生, 这个判断是 sizeof...(Args) 是否大于0
+   // 而在下述函数中, 对于 C++11 我们没有办法通过 if 来判断这个条件(因为是编译期)
+   // 所以只能通过增加一个没有变长参数包的函数作为结束条件
+   // 否则这个递归将会一直调用
+   template <typename T0>
+   void printf(T0 Value) {
+       std::cout << Value << std::endl;
+   }
+   
+   template <typename T, typename... Ts>
+   void printf(T Value, Ts... Args) {
+       std::cout << Value << " , ";
+       // 这里需要把参数包传递过去
+       printf(Args...);
+   }
+   ``` 
+   C++17 提供了变参模板展开的支持，可以在一个模板函数中完成展开
+   ```C++
+   template <typename T, typename... Ts>
+   void Printf(T Value, Ts... Args) {
+       std::cout << Value << ", ";
+       if constexpr ( sizeof...(Value) > 0) {
+           Printf(Args...);
+       }else {
+           std::cout << std::endl;
+       }    
+   }
+   ```
+   
 
 
 - CMakeLists 笔记
