@@ -45,40 +45,6 @@ void MyActor::Tick(float DeltaSeconds)
 #include <UDRefl/UDRefl.hpp>
 #include <cmath>
 
-using namespace Ubpa;
-using namespace Ubpa::UDRefl;
-
-struct FVector{
-    float X;
-    float Y;
-    float Normalize() const { return std::sqrt(X * X + Y * Y); }
-};
-
-#include <array>
-
-template <std::size_t ...N>
-static constexpr auto SquareNums(std::size_t Index, std::index_sequence<N...>) {
-    constexpr auto Nums = std::array{ N * N ... };
-    return Nums[Index];
-}
-
-template <std::size_t N>
-constexpr static auto ConstNums(std::size_t Index) {
-    return SquareNums(Index, std::make_index_sequence<N>{});
-}
-
-#include <tuple>
-
-template <typename Tuple, typename Func, std::size_t ... N>
-void FunCallTuple(const Tuple& T, Func&& Function, std::index_sequence<N...>){
-    static_cast<void>(std::initializer_list<int>{ ( Function(std::get<N>(T)), 0 ) ... } );
-}
-
-template <typename ... Args, typename Func>
-void TravelTuple (const std::tuple<Args...>& T, Func&& Function) {
-    FunCallTuple(T, std::forward<Func>(Function), std::make_index_sequence<sizeof...(Args)>());
-}
-
 template <typename... Ts>
 void Magic(Ts... Args)
 {
@@ -107,6 +73,21 @@ void Printf2(T Value, Ts... Args) {
         std::cout << std::endl;
     }
 }
+
+template <std::size_t ...N>
+void PrintfIndexSequence(std::index_sequence<N...>) {
+    Printf2(N...);
+}
+
+template <typename T, T... Ins> class TestClass {
+public:
+    void Test() {
+        std::cout << "In TestCLass Func Test = ";
+        Printf2(Ins...);
+    }
+};
+
+constexpr static std::size_t ConstNums[] = { 0, 1, 4 ,9, 16 };
 
 int main(int argc, char **args)
 {
@@ -144,14 +125,10 @@ int main(int argc, char **args)
 //    }else {
 //        printf("No Equal\n");
 //    }
-
-    auto t = std::make_tuple(1, 4.56, "happen lee");
-    TravelTuple(t, [](auto&& item) {
-        std::cout << item << ",";
-    });
-    std::cout << std::endl;
-
     Printf2("Hello World", 2, 2.04, 0x001);
+    // PrintfIndexSequence(std::make_index_sequence<10>());
+    TestClass<int, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0> a;
+    a.Test();
 
     return 0;
 }

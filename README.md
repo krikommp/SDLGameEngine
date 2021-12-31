@@ -51,8 +51,39 @@
        }    
    }
    ```
+4. `std::make_index_sequence`  
+   简单来说，就是可以在编译期构造出 N 个 `size_t` 元素，例如
+   ```C++
+   // 这里 std::index_sequence 只是用来接受 std::make_index_sequence 参数
+   // 实际的 N... 已经构造出来了
+   template <size_t N>
+   void PrintfIndexSequence(std::index_sequence<N...>) {
+       Printf(N...);
+   }
    
-
+   int main() {
+       // Output: 0, 1, 2, ... , 10
+       PrintfIndexSequence(std::make_index_sequence<10>());
+   }
+   ```
+   这里会用到模板的非类型形参，对于非类型形参，编译器会当作一个编译期常量来处理  
+   这个常量只适用于模板内部  
+   形参类型只能是 *整数 指针 引用*，除此之外都无法适用。
+   非类型形参也可以支持可变
+   ```c++
+   template <typename T, T... Ins> class TestClass {
+   public:
+        void Test() {
+             std::cout << "In TestCLass Func Test = ";
+             Printf2(Ins...);
+        }
+   };
+   int main() {
+       TestClass<int, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0> a;
+       a.Test();    // Output = 10, 9, ..., 0
+   }
+   ```
+5. 
 
 - CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
