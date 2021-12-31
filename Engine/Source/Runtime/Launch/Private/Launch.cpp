@@ -18,5 +18,5 @@ int EnginePreInit() {
 
 
 int GuardedMain() {
-
+    return 0;
 }

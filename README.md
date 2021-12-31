@@ -1,6 +1,26 @@
 # 简单的基于 SDL 游戏引擎
 - 引入 SDL 库
 
+- C++ 模板
+1. 变长参数模板  
+    通过形如 `template <typename... Ts> class Magic{};` 的形式来声明一个变长参数模板。这个模板可以支持 0 ~ N 个变长参数。
+    如果希望支持至少一个参数，可以使用 `template <typename T, typename... Ts> class Magic{};` 的写法。
+2. 同样的，可以在函数中使用上述的变长参数模板。  
+   例如，对于 `printf` 函数可以写出一个类型安全版  
+   ```C++
+   template <typename... Ts>
+   void prinft(std::string& Str, Ts.. Args);
+   ```
+3. 如何解包  
+   可以使用 `sizeof...(Args)` 来计算可变参数的长度  
+   ```C++
+   template <typename... Ts>
+   void Magic(Ts... Args) {
+       std::cout << sizeof...(Args) << std::endl;
+   }
+   ```
+
+
 - CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
 2. `add_library(${PROJECT_NAME} ${ALL_SOURCES} ${ALL_INCLUDES})` 用于生成动态库

@@ -19,7 +19,7 @@ public:
 MyActor::MyActor()
 {
     RootComponent = std::make_shared<SceneCompoent>();
-    auto TestSceneComponent = std::make_shared<SceneCompoent>();
+    const auto TestSceneComponent = std::make_shared<SceneCompoent>();
     TestSceneComponent->AttachToComponent(RootComponent);
 }
 
@@ -79,6 +79,25 @@ void TravelTuple (const std::tuple<Args...>& T, Func&& Function) {
     FunCallTuple(T, std::forward<Func>(Function), std::make_index_sequence<sizeof...(Args)>());
 }
 
+template <typename... Ts>
+void Magic(Ts... Args)
+{
+    std::cout << sizeof...(Args) << std::endl;
+}
+
+template <typename T0>
+void Printf(T0 Value)
+{
+    std::cout << Value << std::endl;
+}
+
+template <typename T, typename... Ts>
+void Printf(T Value, Ts... Args)
+{
+    std::cout << Value << std::endl;
+    Printf(Args...);
+}
+
 int main(int argc, char **args)
 {
     // MyActor actor;
@@ -120,6 +139,9 @@ int main(int argc, char **args)
     TravelTuple(t, [](auto&& item) {
         std::cout << item << ",";
     });
+    std::cout << std::endl;
+
+    Printf("Hello World", 2, 2.04, 0x001);
 
     return 0;
 }
