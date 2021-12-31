@@ -83,6 +83,26 @@
        a.Test();    // Output = 10, 9, ..., 0
    }
    ```
+   那么如何实现一个 `std::make_index_sequence` 呢  
+   继承的方式
+   ```c++
+   // 这里的目的只是为了提出 N... 
+   // 这个结构体并没有其他意义
+   template <typename... N>
+   struct IndexSequence{};
+   
+   // 这里用继承来实现序列生成
+   // 假设输入 N = 3
+   // 第一次： N = 3, M = 空 => 3 - 1, 3 - 1, 空
+   // 第二次： N = 2, M = 2(注意此时 M 保存了一个 2 序列, 因为他把上一次的 N - 1, M... 作为传入的参数包) => 2 - 1， 2 - 1， 2
+   // 第三次： N = 1, M = 1, 2 (原因同上，将第一次传入的 3 - 1， 和第二次传入的 2 - 1加入。为什么是 1, 2 呢？ 是因为他将 (N - 1, M...) 作为参数包，顺序就是小的在前) => 1 - 1， 1 - 1， (1, 2)
+   // 第四次： N = 0, M = 0, 1, 2 继承到第三个结构，就可以通过 IndexSequence 取出 M...
+   template <int N, int... M>
+   struct MakeIndexSequence : public MakeIndexSequence<N - 1, N - 1, M...>{};
+   
+   template <int... M>
+   struct MakeIndexSequence<0, M...> : public IndexSequence<M...>{};
+   ```
 5. 
 
 - CMakeLists 笔记

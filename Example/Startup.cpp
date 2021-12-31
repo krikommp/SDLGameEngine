@@ -87,6 +87,20 @@ public:
     }
 };
 
+template <int... N>
+struct IndexSeq{};
+
+template <int N, int... M>
+struct MakeIndexSeq : public MakeIndexSeq<N - 1, N - 1, M...> {};
+
+template <int... M>
+struct MakeIndexSeq<0, M...> : public IndexSeq<M...> {};
+
+template <int... N>
+void TestMakeIndex(IndexSeq<N...>) {
+    Printf2(N...);
+}
+
 constexpr static std::size_t ConstNums[] = { 0, 1, 4 ,9, 16 };
 
 int main(int argc, char **args)
@@ -129,6 +143,8 @@ int main(int argc, char **args)
     // PrintfIndexSequence(std::make_index_sequence<10>());
     TestClass<int, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0> a;
     a.Test();
+
+    TestMakeIndex(MakeIndexSeq<100>());
 
     return 0;
 }
