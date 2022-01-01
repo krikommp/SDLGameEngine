@@ -83,6 +83,30 @@
        a.Test();    // Output = 10, 9, ..., 0
    }
    ```
+   在使用非类型参数模版的时候，对于指针和引用需要指向外部链接对象，否则将会不被编译通过
+   ```c++
+   // in Startup.h
+   extern double PI;
+   
+   // in Startup.cpp
+   template <double& Value>
+   double Process(const double& InValue) {
+       return InValue + Value;
+   }
+   
+   template <double& Value> 
+   double Process(const double& InValue) {
+       return InValue + (*Value);
+   }
+    
+   double PI = 3.141592653;
+   
+   int main() {
+       std::cout << Process<PI>(1.0) << std::endl;
+       std::cout << Process<&PI>(1.0) << std::endl;
+   }
+   ```
+
    那么如何实现一个 `std::make_index_sequence` 呢？  
    继承的方式
    ```c++
@@ -132,7 +156,7 @@
     }());   // Run Here 
    }
    ```
-5. 
+6. 
 
 - CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径

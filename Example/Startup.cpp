@@ -131,6 +131,32 @@ constexpr decltype(auto) Prepare(T Arg) {
     return tmp{}; \
     }()))
 
+
+template <typename T>
+int Compare(const T Left, const T Right) {
+    std::cout << "这是一个泛化的函数" << std::endl;
+    return (Left - Right);
+}
+
+template < >
+int Compare(const char* Left, const char* Right) {
+    std::cout << "这是一个特化的函数" << std::endl;
+    return strcmp(Left, Right);
+}
+
+#include "Startup.h"
+double PI = 3.141592653;
+
+template <double& Value>
+double Process(const double& InValue) {
+    return InValue + (Value);
+}
+
+template <double* Value>
+double Process(const double& InValue) {
+    return InValue + (*Value);
+}
+
 int main(int argc, char **args)
 {
     // MyActor actor;
@@ -152,6 +178,12 @@ int main(int argc, char **args)
     auto Str = STRING("1234");
     using Tyu = decltype(Str);
     static_assert(std::is_same<Tyu, std::integer_sequence<char, '1', '2', '3', '4'>>::value, "WTF");
+
+    Compare(12, 13);
+    Compare("My", "My");
+
+     std::cout << Process<PI>(123.0) << std::endl;
+     std::cout << Process<&PI>(1.0) << std::endl;
 
     return 0;
 }
