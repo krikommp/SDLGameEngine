@@ -156,7 +156,64 @@
     }());   // Run Here 
    }
    ```
-6. 
+   
+   如何判断类中是否存在某个成员变量
+   1. 通过作用域分辨符可以直接访问到类成员(当父类和子类拥有同名成员变量时，如何区分)
+   ```c++
+   class Parent{
+   public:
+        int X;
+   };
+   
+   class Child : public Parent{
+   public:
+       Child(int InA, int InB) { Child::X = InA; Parent::X = InB; }
+   
+       void Debug() {
+           std::cout << "Child X = " << Child::X << std::endl;
+           std::cout << "Parent X = " << Parent::X << std::endl;
+        }
+   public:
+       int X;
+   };
+
+   
+   int main() {
+        Child CCC(1, 2);
+        CCC.Debug();
+        // Output : Child X = 1, Parent X = 2
+   }
+   ```
+   2. 判断是否拥有某个成员变量的关键是理解 SFINAE(Subsititution Failure Is Not An Error 替换失败并非错误)。
+   就是如果存在两个重载泛型函数 C++ 会选择能够被编译通过的函数来实例化 调用  
+   下面写一个简单的例子
+   ```c++
+   class TValue {
+   public:
+    int X;
+   };
+   
+   class BValue {
+   public:
+    int X;
+   };
+   
+   class CValue : public BValue, public TValue{};
+   
+   template <class U, U> struct Check{};
+   
+   // 当多继承的两个类拥有同名同类型的成员变量时
+   // &U::X 会产生编译错误的问题，因为有了二义性
+   
+   template <class U> void CheckFunc(Check<int BValue::*, &U::X>*) {
+   std::cout << "no X value" << std::endl;
+   }
+
+   template <class U> void CheckFunc(...) { 
+   std::cout << "has X value" << std::endl; 
+   }
+   ```
+5. 
 
 - CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径

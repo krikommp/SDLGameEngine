@@ -144,17 +144,96 @@ int Compare(const char* Left, const char* Right) {
     return strcmp(Left, Right);
 }
 
-#include "Startup.h"
-double PI = 3.141592653;
+template <typename T>
+class DetectX{
+    struct Fallback { int X; };
+    struct Derived : T, Fallback { };
 
-template <double& Value>
-double Process(const double& InValue) {
-    return InValue + (Value);
+    template<class U, U> struct Check;
+
+    typedef char ArrayOfOne[1];
+    typedef char ArrayOfTwo[2];
+
+    template<class U> static ArrayOfOne & Func(Check<int Fallback::*, &U::X>* );
+
+    template<class U> static ArrayOfTwo & Func(...);
+
+public:
+    typedef DetectX type;
+    enum { value = sizeof(Func<Derived>(0)) == 2 };
+};
+
+struct ValueClass_1{
+public:
+    std::string Name = "Name";
+    std::string ShaderParameterName = "ShaderParameterName";
+    uint32_t Index = 0;
+    uint32_t Association = 0;
+};
+
+struct ValueClass_2{
+public:
+    std::string Name = "Name";
+    std::string ShaderParameterName = "ShaderParameterName";
+    uint32_t Index = 0;
+    uint32_t Association = 0;
+    std::string GroupName = "GroupName";
+    float X;
+};
+
+struct ValueClass_3{
+public:
+    std::string Name = "Name";
+    std::string ShaderParameterName = "ShaderParameterName";
+    uint32_t Index = 0;
+    uint32_t Association = 0;
+    std::string GroupName = "GroupName";
+    std::string Desc = "Desc";
+};
+
+class Parent{
+public:
+    int X;
+};
+
+class Child : public Parent{
+public:
+    Child(int InA, int InB) { Child::X = InA; Parent::X = InB; }
+
+    void Debug() {
+        std::cout << "Child X = " << Child::X << std::endl;
+        std::cout << "Parent X = " << Parent::X << std::endl;
+     }
+public:
+    int X;
+};
+
+class TValue {
+public:
+    // std::string X;
+    float X;
+};
+
+class BValue {
+public:
+    int X;
+};
+
+class CValue : public BValue, public TValue{
+
+};
+
+template <class U, U>
+struct Check{};
+
+template <class U>
+void CheckFunc(Check<int BValue::*, &U::X>*) {
+    std::cout << "no X value" << std::endl;
 }
 
-template <double* Value>
-double Process(const double& InValue) {
-    return InValue + (*Value);
+template <class U>
+void CheckFunc(...) {
+    std::cout << "has X value" << std::endl;
 }
 
 int main(int argc, char **args)
@@ -182,8 +261,12 @@ int main(int argc, char **args)
     Compare(12, 13);
     Compare("My", "My");
 
-     std::cout << Process<PI>(123.0) << std::endl;
-     std::cout << Process<&PI>(1.0) << std::endl;
+    Child CCC(1, 2);
+    CCC.Debug();
+
+    std::cout << DetectX<ValueClass_2>::value << std::endl;
+
+    CheckFunc<CValue>(0);
 
     return 0;
 }
