@@ -144,97 +144,23 @@ int Compare(const char* Left, const char* Right) {
     return strcmp(Left, Right);
 }
 
-template <typename T>
-class DetectX{
-    struct Fallback { int X; };
-    struct Derived : T, Fallback { };
+class TestAA{
+public:
+        void f1() { std::cout << "f1 function" << std::endl; }
+    };
 
-    template<class U, U> struct Check;
+class TestBB{};
 
-    typedef char ArrayOfOne[1];
-    typedef char ArrayOfTwo[2];
-
-    template<class U> static ArrayOfOne & Func(Check<int Fallback::*, &U::X>* );
-
-    template<class U> static ArrayOfTwo & Func(...);
+template <typename T> struct HasMemberF1{
+private:
+    template<typename U>
+    static auto Check(int) -> decltype( std::declval<U>().f1(), std::true_type() );
+    template<typename U>
+    static std::false_type Check(...);
 
 public:
-    typedef DetectX type;
-    enum { value = sizeof(Func<Derived>(0)) == 2 };
+        enum { Value = std::is_same<decltype(Check<T>(0)), std::true_type>::value };
 };
-
-struct ValueClass_1{
-public:
-    std::string Name = "Name";
-    std::string ShaderParameterName = "ShaderParameterName";
-    uint32_t Index = 0;
-    uint32_t Association = 0;
-};
-
-struct ValueClass_2{
-public:
-    std::string Name = "Name";
-    std::string ShaderParameterName = "ShaderParameterName";
-    uint32_t Index = 0;
-    uint32_t Association = 0;
-    std::string GroupName = "GroupName";
-    float X;
-};
-
-struct ValueClass_3{
-public:
-    std::string Name = "Name";
-    std::string ShaderParameterName = "ShaderParameterName";
-    uint32_t Index = 0;
-    uint32_t Association = 0;
-    std::string GroupName = "GroupName";
-    std::string Desc = "Desc";
-};
-
-class Parent{
-public:
-    int X;
-};
-
-class Child : public Parent{
-public:
-    Child(int InA, int InB) { Child::X = InA; Parent::X = InB; }
-
-    void Debug() {
-        std::cout << "Child X = " << Child::X << std::endl;
-        std::cout << "Parent X = " << Parent::X << std::endl;
-     }
-public:
-    int X;
-};
-
-class TValue {
-public:
-    // std::string X;
-    float X;
-};
-
-class BValue {
-public:
-    int X;
-};
-
-class CValue : public BValue, public TValue{
-
-};
-
-template <class U, U>
-struct Check{};
-
-template <class U>
-void CheckFunc(Check<int BValue::*, &U::X>*) {
-    std::cout << "no X value" << std::endl;
-}
-
-template <class U>
-void CheckFunc(...) {
-    std::cout << "has X value" << std::endl;
-}
 
 int main(int argc, char **args)
 {
@@ -261,12 +187,11 @@ int main(int argc, char **args)
     Compare(12, 13);
     Compare("My", "My");
 
-    Child CCC(1, 2);
-    CCC.Debug();
-
-    std::cout << DetectX<ValueClass_2>::value << std::endl;
-
-    CheckFunc<CValue>(0);
+    if ( HasMemberF1<TestAA>::Value ) {
+        std::cout << "Has F1 function" << std::endl;
+    }else {
+        std::cout << "No F1 Function" << std::endl;
+    }
 
     return 0;
 }

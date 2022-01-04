@@ -213,6 +213,22 @@
    std::cout << "has X value" << std::endl; 
    }
    ```
+   3. 使用 `std::declval()` 函数，用于返回一个对象的引用，不论这个对象是否可以被实例化
+   ```c++
+   // 这里也用到了 替换失败并非错误
+   // 当需要对比的类型中不含有这个成员
+   // 那么第一个 Check C++ 不会编译而是选择第二个重载函数
+   template <typename T> struct HasMemberF1{
+   private:
+   template<typename U>
+   static auto Check(int) -> decltype( std::declval<U>().f1(), std::true_type() );
+   template<typename U>
+   static std::false_type Check(...);
+   
+   public:
+   enum { Value = std::is_same<decltype(Check<T>(0)), std::true_type>::value };
+   };
+   ```
 5. 
 
 - CMakeLists 笔记
