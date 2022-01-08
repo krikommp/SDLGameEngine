@@ -161,6 +161,7 @@ private:
 public:
         enum { Value = std::is_same<decltype(Check<T>(0)), std::true_type>::value };
 };
+#include "Startup.h"
 
 int main(int argc, char **args)
 {
@@ -187,11 +188,15 @@ int main(int argc, char **args)
     Compare(12, 13);
     Compare("My", "My");
 
-    if ( HasMemberF1<TestAA>::Value ) {
+    if ( HasMemberF1<TestBB>::Value ) {
         std::cout << "Has F1 function" << std::endl;
     }else {
         std::cout << "No F1 Function" << std::endl;
     }
+
+    TypeList<unsigned int, long, int, float, TestBB> typeList;
+    std::cout << Length<  TypeList<unsigned int, long, int, float, TestBB> >::Value << std::endl;
+    IndexAt<TypeList<unsigned int, long, int, float, TestBB>, 2> at;
 
     return 0;
 }
