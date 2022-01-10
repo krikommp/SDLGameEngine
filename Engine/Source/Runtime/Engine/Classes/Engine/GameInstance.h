@@ -15,6 +15,9 @@ class UGameInstance
 public:
     void InitializeStandalone();
 
+    void StartGameInstance();
+
+    void Init();
 protected:
     std::shared_ptr<struct WorldContext> WorldContext;
 };

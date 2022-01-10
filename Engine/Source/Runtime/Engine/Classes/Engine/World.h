@@ -16,8 +16,10 @@ public:
     std::vector<std::shared_ptr<Level>> Levels;
 
 public:
-    static std::shared_ptr<World> CreateWorld(const WorldType::Type InWorldType);
+    static std::shared_ptr<World> CreateWorld(const WorldType::Type& InWorldType);
 
+public:
+    void SetGameInstance(class UGameInstance* NewGI);
 public:
     WorldType::Type WorldType;
 
@@ -27,6 +29,8 @@ private:
 
     /** Game 模式下指向 PersistentLevel， Editor 模式下可能指向不同的关卡 */
     std::shared_ptr<Level> CurrentLevel;
+
+    class UGameInstance* OwningGameInstance;
 };
 
 #endif //  _WORLD_H_

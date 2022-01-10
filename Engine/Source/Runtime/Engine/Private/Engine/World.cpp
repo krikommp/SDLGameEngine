@@ -12,12 +12,16 @@ std::shared_ptr<WorldSettings> World::GetWorldSetting()
     return nullptr;
 }
 
-std::shared_ptr<World> World::CreateWorld(const WorldType::Type InWorldType) {
+std::shared_ptr<World> World::CreateWorld(const WorldType::Type& InWorldType) {
     auto NewWorld = std::shared_ptr<World>();
-    NewWorld->WorldType = InWorldType;
+    // NewWorld->WorldType = InWorldType;
     if (GEngine != nullptr) {
         GEngine->WorldAdded(NewWorld);
     }
 
     return NewWorld;
+}
+
+void World::SetGameInstance(UGameInstance* NewGI) {
+    OwningGameInstance = NewGI;
 }

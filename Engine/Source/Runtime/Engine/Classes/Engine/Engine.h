@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "World.h"
 #include "EngineTypes.h"
@@ -16,7 +17,7 @@
 struct WorldContext
 {
 public:
-    void SetWorld(const std::shared_ptr<World> &InWorld);
+    void SetCurrentWorld(const std::shared_ptr<World> &InWorld);
 
     inline std::shared_ptr<World> GetWorld() const { return CurrentWorld; }
 
@@ -24,10 +25,12 @@ public:
     std::shared_ptr<World> CurrentWorld;
 
     /** 指向拥有的 GameInstance */
-    std::shared_ptr<class GameInstance> OwningGameInstance;
+    class UGameInstance* OwningGameInstance;
 
     /** 当前世界类型 */
     WorldType::Type ThisWorldType;
+
+    std::string ContextHandle;
 };
 
 /**
@@ -56,6 +59,7 @@ public:
 public:
     virtual void WorldAdded(const std::shared_ptr<class World>& InWorld);
 
+    std::shared_ptr<WorldContext> CreateNewWorldContext(const WorldType::Type& WorldType);
 protected:
     /** 保存了所有世界对象 */
     std::vector<std::shared_ptr<WorldContext>> WorldList;

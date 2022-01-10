@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 
 #include <iostream>
+#include <memory>
 
 void GameEngine::Init(IEngineLoop *InEngineLoop) {
     std::cout << "GameEngine Init" << std::endl;
@@ -15,7 +16,9 @@ void GameEngine::Init(IEngineLoop *InEngineLoop) {
 }
 
 void GameEngine::Start() {
+    std::cout << "Start Game." << std::endl;
 
+    GameInstance->StartGameInstance();
 }
 
 void GameEngine::Tick(float DeltaSeconds) {
