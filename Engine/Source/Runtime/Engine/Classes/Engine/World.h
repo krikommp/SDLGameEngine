@@ -5,6 +5,7 @@
 
 #include "Level.h"
 #include "GameFramework/WorldSettings.h"
+#include "Engine/EngineTypes.h"
 
 class World
 {
@@ -13,6 +14,12 @@ public:
 
 public:
     std::vector<std::shared_ptr<Level>> Levels;
+
+public:
+    static std::shared_ptr<World> CreateWorld(const WorldType::Type InWorldType);
+
+public:
+    WorldType::Type WorldType;
 
 private:
     /** 主关卡，表示一开始就加载进来的关卡 */

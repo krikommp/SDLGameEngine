@@ -10,8 +10,11 @@
  * 所以一些跟关卡无关的数据可以放在这里
  * 
  */
-class GameInstance
+class UGameInstance
 {
+public:
+    void InitializeStandalone();
+
 protected:
     std::shared_ptr<struct WorldContext> WorldContext;
 };

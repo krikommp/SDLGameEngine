@@ -53,6 +53,9 @@ public:
     /** 被 Shutdown 调用，执行退出前的逻辑 */
     virtual void PreExit() = 0;
 
+public:
+    virtual void WorldAdded(const std::shared_ptr<class World>& InWorld);
+
 protected:
     /** 保存了所有世界对象 */
     std::vector<std::shared_ptr<WorldContext>> WorldList;

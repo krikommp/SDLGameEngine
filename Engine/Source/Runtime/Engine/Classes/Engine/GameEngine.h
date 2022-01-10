@@ -17,7 +17,7 @@ public:
     void PreExit() override;
 
 public:
-    std::shared_ptr<GameInstance> GameInstance;
+    std::shared_ptr<UGameInstance> GameInstance;
 };
 
 #endif //  _GAMEENGINE_H_
