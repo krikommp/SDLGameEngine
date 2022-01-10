@@ -20,6 +20,10 @@ public:
     int PreInitPostStartupScreen();
 
 public:
+    /**
+     * 游戏循环的开始
+     * @return
+     */
     virtual int Init() override;
 
     void InitTime();

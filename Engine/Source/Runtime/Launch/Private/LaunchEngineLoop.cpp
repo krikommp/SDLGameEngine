@@ -3,6 +3,9 @@
 //
 
 #include "LaunchEngineLoop.h"
+#include "Engine/GameEngine.h"
+
+extern std::shared_ptr<Engine> GEngine;
 
 EngineLoop::EngineLoop() {
 
@@ -33,6 +36,7 @@ int EngineLoop::PreInitPostStartupScreen() {
 
 
 int EngineLoop::Init() {
+    GEngine = std::make_shared<GameEngine>();
     return 0;
 }
 
