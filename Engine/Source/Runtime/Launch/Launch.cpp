@@ -9,6 +9,7 @@
 EngineLoop GEngineLoop;
 
 bool IsEngineExitRequested = false;
+int LoopTestNum = 10;
 
 /**
  * 预先初始化流程
@@ -47,14 +48,25 @@ void EngineExit() {
 int GuardedMain() {
     int ErrorLevel = EnginePreInit();
 
+    // 栈对象 确保清除操作一定会执行
+    struct EngineLoopCleanupGuard{
+        ~EngineLoopCleanupGuard() {
+            EngineExit();
+        }
+    } CleanupGuard;
+
     {
         ErrorLevel = EngineInit();
     }
 
+    int LoopTime = 0;
     while(!IsEngineExitRequested) {
         EngineTick();
+        LoopTime++;
+        if (LoopTime >= LoopTestNum) {
+            IsEngineExitRequested = true;
+        }
     }
 
-    EngineExit();
     return 0;
 }

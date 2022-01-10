@@ -5,7 +5,7 @@
 #ifndef SDLGAMEENGINE_LAUNCHENGINELOOP_H
 #define SDLGAMEENGINE_LAUNCHENGINELOOP_H
 
-#include "Engine/FakeEngine.h"
+#include "FakeEngine.h"
 
 class EngineLoop : IEngineLoop {
 public:

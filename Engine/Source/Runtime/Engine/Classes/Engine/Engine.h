@@ -35,12 +35,14 @@ public:
  * 一些引擎默认需要的类会在这里
  * 
  */
+class IEngineLoop;
+
 class Engine
 {
 
 public:
     /** 初始化 */
-    virtual void Init() = 0;
+    virtual void Init(IEngineLoop* InEngineLoop) = 0;
 
     /** 与初始化不同的逻辑，可以进行游戏开始前的初始化操作 */
     virtual void Start() = 0;

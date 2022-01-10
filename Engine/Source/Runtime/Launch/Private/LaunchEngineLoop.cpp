@@ -1,6 +1,7 @@
 //
 // Created by chenyifei on 2021/12/29.
 //
+#include <iostream>
 
 #include "LaunchEngineLoop.h"
 #include "Engine/GameEngine.h"
@@ -36,7 +37,19 @@ int EngineLoop::PreInitPostStartupScreen() {
 
 
 int EngineLoop::Init() {
+    std::cout << "EngineLoop::Init" << std::endl;
+
     GEngine = std::make_shared<GameEngine>();
+
+    {
+        std::cout << "GEngine->Init" << std::endl;
+        GEngine->Init(this);
+    }
+
+    {
+        std::cout << "GEngine->Start" << std::endl;
+        GEngine->Start();
+    }
     return 0;
 }
 
@@ -45,7 +58,9 @@ void EngineLoop::InitTime() {
 }
 
 void EngineLoop::Exit() {
-
+    if (GEngine != nullptr) {
+        GEngine->PreExit();
+    }
 }
 
 void EngineLoop::Tick() {

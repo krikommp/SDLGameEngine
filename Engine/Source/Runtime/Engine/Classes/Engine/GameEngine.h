@@ -8,21 +8,13 @@
 class GameEngine : public Engine
 {
 public:
-    void Init() override {
+    void Init(IEngineLoop* InEngineLoop) override;
 
-    }
+    void Start() override;
 
-    void Start() override {
+    void Tick(float DeltaSeconds) override;
 
-    }
-
-    void Tick(float DeltaSeconds) override {
-
-    }
-
-    void PreExit() override {
-
-    }
+    void PreExit() override;
 
 public:
     std::shared_ptr<GameInstance> GameInstance;
