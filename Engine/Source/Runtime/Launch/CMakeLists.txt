@@ -3,6 +3,7 @@ project(Launch)
 include_directories(Public)
 
 FILE (GLOB ALL_SOURCES
+        "*.cpp" "*.c"
         "Private/*.cpp"
         "Private/*.c"
         "Private/Math/*.cpp"
@@ -10,6 +11,7 @@ FILE (GLOB ALL_SOURCES
         )
 
 FILE (GLOB ALL_INCLUDES
+        "*.hpp" "*.h"
         "Private/*.hpp" "Private/*.h"
         "Public/*.h" "Public/*.hpp"
         "Private/Math/*.h" "Private/Math/*.hpp"
