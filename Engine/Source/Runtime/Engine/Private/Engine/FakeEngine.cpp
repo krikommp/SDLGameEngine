@@ -12,7 +12,7 @@ void WorldContext::SetCurrentWorld(const std::shared_ptr<World> &InWorld)
     CurrentWorld = InWorld;
 }
 
-void Engine::WorldAdded(const std::shared_ptr<struct World> &InWorld) {
+void Engine::WorldAdded(const std::shared_ptr<class World> &InWorld) {
     std::cout << "New World Added" << std::endl;
 }
 

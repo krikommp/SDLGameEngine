@@ -163,6 +163,16 @@ public:
 };
 #include "Startup.h"
 
+class TestSharedClass : public std::enable_shared_from_this<TestSharedClass>{
+public:
+    std::shared_ptr<TestSharedClass> GetPtr() {
+        return shared_from_this();
+    }
+
+public:
+    int a;
+};
+
 int main(int argc, char **args)
 {
     // MyActor actor;
@@ -194,9 +204,10 @@ int main(int argc, char **args)
         std::cout << "No F1 Function" << std::endl;
     }
 
-    TypeList<unsigned int, long, int, float, TestBB> typeList;
-    std::cout << Length<  TypeList<unsigned int, long, int, float, TestBB> >::Value << std::endl;
-    IndexAt<TypeList<unsigned int, long, int, float, TestBB>, 2> at;
+    auto TestValue = std::make_shared<TestSharedClass>();
+    TestValue->a = 12;
+    auto TestRef = TestValue->GetPtr();
+    std::cout << TestRef->a << std::endl;
 
     return 0;
 }

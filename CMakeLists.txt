@@ -22,10 +22,7 @@ if ( CMAKE_SYSTEM_NAME MATCHES "Windows" )
     set(CMAKE_C_FLAGS /source-charset:utf-8)
 endif()
 
-# Ignore warnings about missing pdb
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4819")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /ignore:4819")
-set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4819")
+add_definitions(/wd"4819" /wd"4996" /wd"4800")
 
 add_subdirectory(3rdparty)
 add_subdirectory(Engine)
