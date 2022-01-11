@@ -194,9 +194,9 @@ int main(int argc, char **args)
         std::cout << "No F1 Function" << std::endl;
     }
 
-    auto TestValue = std::make_shared<TestSharedClass>();
-    auto TestValue02 = std::make_shared<TestSharedClass02>();
-    TestValue->SetInstance(TestValue02);
+//    auto TestValue = std::make_shared<TestSharedClass>();
+//    auto TestValue02 = std::make_shared<TestSharedClass02>();
+//    TestValue->SetInstance(TestValue02);
 
     return 0;
 }
