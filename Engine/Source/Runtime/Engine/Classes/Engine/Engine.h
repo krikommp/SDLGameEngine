@@ -28,7 +28,7 @@ public:
     std::shared_ptr<class UGameInstance> OwningGameInstance;
 
     /** 当前世界类型 */
-    WorldType::Type ThisWorldType;
+    EWorldType::Type ThisWorldType;
 
     std::string ContextHandle;
 };
@@ -59,7 +59,7 @@ public:
 public:
     virtual void WorldAdded(const std::shared_ptr<class World>& InWorld);
 
-    std::shared_ptr<WorldContext> CreateNewWorldContext(const WorldType::Type& WorldType);
+    std::shared_ptr<WorldContext> CreateNewWorldContext(const EWorldType::Type& WorldType);
 protected:
     /** 保存了所有世界对象 */
     std::vector<std::shared_ptr<WorldContext>> WorldList;

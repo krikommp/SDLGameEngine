@@ -1,7 +1,7 @@
 #ifndef _ENGINETYPES_H_
 #define _ENGINETYPES_H_
 
-namespace WorldType
+namespace EWorldType
 {
     enum Type
     {
@@ -22,6 +22,16 @@ namespace WorldType
 
         /** 游戏预览 */
         GamePreview
+    };
+}
+
+namespace EBrowseReturnVal{
+    enum Type{
+        Success,
+
+        Failure,
+
+        Pending
     };
 }
 

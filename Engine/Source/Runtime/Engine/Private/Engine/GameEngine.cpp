@@ -25,7 +25,7 @@ void GameEngine::Start() {
 }
 
 void GameEngine::Tick(float DeltaSeconds) {
-    
+
 }
 
 void GameEngine::PreExit() {

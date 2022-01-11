@@ -12,7 +12,7 @@ std::shared_ptr<WorldSettings> World::GetWorldSetting()
     return nullptr;
 }
 
-std::shared_ptr<World> World::CreateWorld(const WorldType::Type& InWorldType) {
+std::shared_ptr<World> World::CreateWorld(const EWorldType::Type& InWorldType) {
     auto NewWorld = std::make_shared<World>();
     // NewWorld->WorldType = InWorldType;
     if (GEngine != nullptr) {

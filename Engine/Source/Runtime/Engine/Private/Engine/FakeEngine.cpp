@@ -16,7 +16,7 @@ void Engine::WorldAdded(const std::shared_ptr<class World> &InWorld) {
     std::cout << "New World Added" << std::endl;
 }
 
-std::shared_ptr<WorldContext> Engine::CreateNewWorldContext(const WorldType::Type &WorldType) {
+std::shared_ptr<WorldContext> Engine::CreateNewWorldContext(const EWorldType::Type &WorldType) {
     std::shared_ptr<WorldContext> NewWorldContext = std::make_shared<WorldContext>();
     WorldList.push_back(NewWorldContext);
     NewWorldContext->ThisWorldType = WorldType;

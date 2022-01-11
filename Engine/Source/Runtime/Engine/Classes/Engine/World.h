@@ -16,12 +16,12 @@ public:
     std::vector<std::shared_ptr<Level>> Levels;
 
 public:
-    static std::shared_ptr<World> CreateWorld(const WorldType::Type& InWorldType);
+    static std::shared_ptr<World> CreateWorld(const EWorldType::Type& InWorldType);
 
 public:
     void SetGameInstance(const std::shared_ptr<class UGameInstance>& NewGI);
 public:
-    WorldType::Type WorldType;
+    EWorldType::Type WorldType;
 
 private:
     /** 主关卡，表示一开始就加载进来的关卡 */
