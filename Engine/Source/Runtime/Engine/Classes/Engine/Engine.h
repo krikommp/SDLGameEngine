@@ -14,15 +14,15 @@
  * 对于独立运行的游戏（无编辑器），只存在一个 WorldContext
  * 
  */
-struct WorldContext
+struct FWorldContext
 {
 public:
-    void SetCurrentWorld(const std::shared_ptr<World> &InWorld);
+    void SetCurrentWorld(const std::shared_ptr<UWorld> &InWorld);
 
-    inline std::shared_ptr<World> GetWorld() const { return CurrentWorld; }
+    inline std::shared_ptr<UWorld> GetWorld() const { return CurrentWorld; }
 
 public:
-    std::shared_ptr<World> CurrentWorld;
+    std::shared_ptr<UWorld> CurrentWorld;
 
     /** 指向拥有的 GameInstance */
     std::shared_ptr<class UGameInstance> OwningGameInstance;
@@ -56,13 +56,17 @@ public:
     /** 被 Shutdown 调用，执行退出前的逻辑 */
     virtual void PreExit() = 0;
 
-public:
-    virtual void WorldAdded(const std::shared_ptr<class World>& InWorld);
+    virtual  EBrowseReturnVal::Type Browse(FWorldContext& WorldContext);
 
-    std::shared_ptr<WorldContext> CreateNewWorldContext(const EWorldType::Type& WorldType);
+    virtual bool LoadMap(FWorldContext& WorldContext);
+
+public:
+    virtual void WorldAdded(const std::shared_ptr<class UWorld>& InWorld);
+
+    std::shared_ptr<FWorldContext> CreateNewWorldContext(const EWorldType::Type& WorldType);
 protected:
     /** 保存了所有世界对象 */
-    std::vector<std::shared_ptr<WorldContext>> WorldList;
+    std::vector<std::shared_ptr<FWorldContext>> WorldList;
 };
 
 #endif //  _ENGINE_H_

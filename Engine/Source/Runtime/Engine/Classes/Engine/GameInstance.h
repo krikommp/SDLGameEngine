@@ -19,7 +19,7 @@ public:
 
     void Init();
 protected:
-    std::shared_ptr<struct WorldContext> WorldContext;
+    std::shared_ptr<struct FWorldContext> WorldContext;
 };
 
 #endif //  _GAMEINSTANCE_H_

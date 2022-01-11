@@ -7,7 +7,7 @@
 #include "GameFramework/WorldSettings.h"
 #include "Engine/EngineTypes.h"
 
-class World
+class UWorld
 {
 public:
     std::shared_ptr<WorldSettings> GetWorldSetting();
@@ -16,7 +16,7 @@ public:
     std::vector<std::shared_ptr<Level>> Levels;
 
 public:
-    static std::shared_ptr<World> CreateWorld(const EWorldType::Type& InWorldType);
+    static std::shared_ptr<UWorld> CreateWorld(const EWorldType::Type& InWorldType);
 
 public:
     void SetGameInstance(const std::shared_ptr<class UGameInstance>& NewGI);

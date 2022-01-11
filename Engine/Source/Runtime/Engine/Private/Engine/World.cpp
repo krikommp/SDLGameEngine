@@ -3,7 +3,7 @@
 
 extern std::shared_ptr<Engine> GEngine;
 
-std::shared_ptr<WorldSettings> World::GetWorldSetting()
+std::shared_ptr<WorldSettings> UWorld::GetWorldSetting()
 {
     if (PersistentLevel)
     {
@@ -12,8 +12,8 @@ std::shared_ptr<WorldSettings> World::GetWorldSetting()
     return nullptr;
 }
 
-std::shared_ptr<World> World::CreateWorld(const EWorldType::Type& InWorldType) {
-    auto NewWorld = std::make_shared<World>();
+std::shared_ptr<UWorld> UWorld::CreateWorld(const EWorldType::Type& InWorldType) {
+    auto NewWorld = std::make_shared<UWorld>();
     // NewWorld->WorldType = InWorldType;
     if (GEngine != nullptr) {
         GEngine->WorldAdded(NewWorld);
@@ -22,6 +22,6 @@ std::shared_ptr<World> World::CreateWorld(const EWorldType::Type& InWorldType) {
     return NewWorld;
 }
 
-void World::SetGameInstance(const std::shared_ptr<UGameInstance>& NewGI) {
+void UWorld::SetGameInstance(const std::shared_ptr<UGameInstance>& NewGI) {
     OwningGameInstance = NewGI;
 }
