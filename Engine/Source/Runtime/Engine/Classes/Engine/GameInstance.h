@@ -10,7 +10,7 @@
  * 所以一些跟关卡无关的数据可以放在这里
  * 
  */
-class UGameInstance
+class UGameInstance : public std::enable_shared_from_this<UGameInstance>
 {
 public:
     void InitializeStandalone();

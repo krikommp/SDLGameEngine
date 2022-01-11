@@ -13,9 +13,9 @@ extern std::shared_ptr<Engine> GEngine;
 void UGameInstance::InitializeStandalone() {
     assert(GEngine != nullptr && "GEngine is nullptr");
     WorldContext = GEngine->CreateNewWorldContext(WorldType::Game);
-    WorldContext->OwningGameInstance = this;
+    WorldContext->OwningGameInstance = shared_from_this();
     std::shared_ptr<World> DummyWorld = World::CreateWorld(WorldType::Type::Game);
-    DummyWorld->SetGameInstance(this);
+    DummyWorld->SetGameInstance(shared_from_this());
     WorldContext->SetCurrentWorld(DummyWorld);
 
     Init();

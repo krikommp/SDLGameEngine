@@ -25,7 +25,7 @@ public:
     std::shared_ptr<World> CurrentWorld;
 
     /** 指向拥有的 GameInstance */
-    class UGameInstance* OwningGameInstance;
+    std::shared_ptr<class UGameInstance> OwningGameInstance;
 
     /** 当前世界类型 */
     WorldType::Type ThisWorldType;

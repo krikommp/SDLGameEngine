@@ -22,6 +22,6 @@ std::shared_ptr<World> World::CreateWorld(const WorldType::Type& InWorldType) {
     return NewWorld;
 }
 
-void World::SetGameInstance(UGameInstance* NewGI) {
+void World::SetGameInstance(const std::shared_ptr<UGameInstance>& NewGI) {
     OwningGameInstance = NewGI;
 }
