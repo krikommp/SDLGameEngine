@@ -27,6 +27,10 @@ public:
     void CleanupWorld(UWorld* NewWorld = nullptr);
 
     void ClearWorldComponents();
+
+    void SetGameMode();
+
+    void BeginPlay();
 public:
     EWorldType::Type WorldType;
 

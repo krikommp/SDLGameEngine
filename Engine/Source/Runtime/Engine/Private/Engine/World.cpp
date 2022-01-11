@@ -42,5 +42,13 @@ void UWorld::ClearWorldComponents() {
 }
 
 UWorld::~UWorld() {
-    
+    std::cout << "Destruct World" << std::endl;
+}
+
+void UWorld::SetGameMode() {
+
+}
+
+void UWorld::BeginPlay() {
+
 }
