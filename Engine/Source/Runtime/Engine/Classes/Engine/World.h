@@ -10,6 +10,8 @@
 class UWorld
 {
 public:
+    ~UWorld();
+public:
     std::shared_ptr<WorldSettings> GetWorldSetting();
 
 public:
@@ -17,7 +19,7 @@ public:
     std::vector<std::shared_ptr<Level>> Levels;
 
 public:
-    static std::shared_ptr<UWorld> CreateWorld(const EWorldType::Type& InWorldType);
+    static std::unique_ptr<UWorld> CreateWorld(const EWorldType::Type& InWorldType);
 
 public:
     void SetGameInstance(const std::shared_ptr<class UGameInstance>& NewGI);
@@ -35,7 +37,7 @@ private:
     /** Game 模式下指向 PersistentLevel， Editor 模式下可能指向不同的关卡 */
     std::shared_ptr<Level> CurrentLevel;
 
-    std::shared_ptr<class UGameInstance> OwningGameInstance;
+    std::weak_ptr<class UGameInstance> OwningGameInstance;
 };
 
 #endif //  _WORLD_H_

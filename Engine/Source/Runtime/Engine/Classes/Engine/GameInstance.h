@@ -13,6 +13,8 @@
 class UGameInstance : public std::enable_shared_from_this<UGameInstance>
 {
 public:
+    ~UGameInstance();
+public:
     void InitializeStandalone();
 
     void StartGameInstance();

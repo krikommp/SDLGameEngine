@@ -1,6 +1,8 @@
 #include "Engine/World.h"
 #include "Engine/GameEngine.h"
 
+#include <iostream>
+
 extern std::shared_ptr<Engine> GEngine;
 
 std::shared_ptr<WorldSettings> UWorld::GetWorldSetting()
@@ -12,11 +14,11 @@ std::shared_ptr<WorldSettings> UWorld::GetWorldSetting()
     return nullptr;
 }
 
-std::shared_ptr<UWorld> UWorld::CreateWorld(const EWorldType::Type& InWorldType) {
-    auto NewWorld = std::make_shared<UWorld>();
-    // NewWorld->WorldType = InWorldType;
+std::unique_ptr<UWorld> UWorld::CreateWorld(const EWorldType::Type& InWorldType) {
+    auto NewWorld = std::make_unique<UWorld>();
+    NewWorld->WorldType = InWorldType;
     if (GEngine != nullptr) {
-        GEngine->WorldAdded(NewWorld);
+        GEngine->WorldAdded(*NewWorld);
     }
 
     return NewWorld;
@@ -37,4 +39,8 @@ void UWorld::ClearWorldComponents() {
         auto Level = Levels[i];
         Level->ClearLevelComponents();
     }
+}
+
+UWorld::~UWorld() {
+    
 }

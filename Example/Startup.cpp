@@ -163,26 +163,6 @@ public:
 };
 #include "Startup.h"
 
-class TestSharedClass02 {
-public:
-    std::shared_ptr<class TestSharedClass> Instance;
-};
-
-class TestSharedClass : public std::enable_shared_from_this<TestSharedClass>{
-public:
-    std::shared_ptr<TestSharedClass> GetPtr() {
-        return shared_from_this();
-    }
-
-    void SetInstance(const std::shared_ptr<TestSharedClass02>& InClass) {
-        InClass->Instance = shared_from_this();
-        std::cout << "Set Instance" << std::endl;
-    }
-
-public:
-    int a = 0;
-};
-
 int main(int argc, char **args)
 {
     // MyActor actor;

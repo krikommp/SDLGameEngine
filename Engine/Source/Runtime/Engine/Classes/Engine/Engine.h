@@ -7,6 +7,7 @@
 
 #include "World.h"
 #include "EngineTypes.h"
+#include "World.h"
 
 /**
  * @brief 当需要切换不同世界的时候
@@ -17,15 +18,15 @@
 struct FWorldContext
 {
 public:
-    void SetCurrentWorld(const std::shared_ptr<UWorld> &InWorld);
+    void SetCurrentWorld(std::unique_ptr<UWorld>&& InWorld);
 
-    inline std::shared_ptr<UWorld> GetWorld() const { return CurrentWorld; }
+    inline const std::unique_ptr<UWorld>& GetWorld() const { return CurrentWorld; }
 
 public:
-    std::shared_ptr<UWorld> CurrentWorld;
+    std::unique_ptr<UWorld> CurrentWorld;
 
     /** 指向拥有的 GameInstance */
-    std::shared_ptr<class UGameInstance> OwningGameInstance;
+    std::weak_ptr<class UGameInstance> OwningGameInstance;
 
     /** 当前世界类型 */
     EWorldType::Type ThisWorldType;
@@ -61,12 +62,12 @@ public:
     virtual bool LoadMap(FWorldContext& WorldContext);
 
 public:
-    virtual void WorldAdded(const std::shared_ptr<class UWorld>& InWorld);
+    virtual void WorldAdded(const UWorld& InWorld);
 
     std::shared_ptr<FWorldContext> CreateNewWorldContext(const EWorldType::Type& WorldType);
 protected:
     /** 保存了所有世界对象 */
-    std::vector<std::shared_ptr<FWorldContext>> WorldList;
+    std::vector<std::weak_ptr<FWorldContext>> WorldList;
 };
 
 #endif //  _ENGINE_H_

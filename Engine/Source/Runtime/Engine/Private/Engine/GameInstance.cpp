@@ -17,9 +17,9 @@ void UGameInstance::InitializeStandalone() {
     assert(GEngine != nullptr && "GEngine is nullptr");
     WorldContext = GEngine->CreateNewWorldContext(EWorldType::Game);
     WorldContext->OwningGameInstance = shared_from_this();
-    std::shared_ptr<UWorld> DummyWorld = UWorld::CreateWorld(EWorldType::Type::Game);
+    std::unique_ptr<UWorld> DummyWorld = std::move(UWorld::CreateWorld(EWorldType::Type::Game));
     DummyWorld->SetGameInstance(shared_from_this());
-    WorldContext->SetCurrentWorld(DummyWorld);
+    WorldContext->SetCurrentWorld(std::forward<std::unique_ptr<UWorld>>(DummyWorld));
 
     Init();
 }
@@ -32,4 +32,8 @@ void UGameInstance::StartGameInstance() {
     const std::unique_ptr<GameMapsSettings> GameMapSettings = std::make_unique<GameMapsSettings>();
     const std::string DefaultMap = GameMapSettings->GetGameDefaultMap();
     GEngine->Browse(*WorldContext);
+}
+
+UGameInstance::~UGameInstance() {
+
 }

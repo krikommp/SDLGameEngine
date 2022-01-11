@@ -1,18 +1,18 @@
 #include "FakeEngine.h"
 #include "Engine/Engine.h"
-
+#include "Engine/World.h"
 
 #include <iostream>
 
 std::shared_ptr<Engine> GEngine = nullptr;
 
 
-void FWorldContext::SetCurrentWorld(const std::shared_ptr<UWorld> &InWorld)
+void FWorldContext::SetCurrentWorld(std::unique_ptr<UWorld>&&InWorld)
 {
-    CurrentWorld = InWorld;
+    CurrentWorld = std::move(InWorld);
 }
 
-void Engine::WorldAdded(const std::shared_ptr<class UWorld> &InWorld) {
+void Engine::WorldAdded(const UWorld &InWorld) {
     std::cout << "New World Added" << std::endl;
 }
 
