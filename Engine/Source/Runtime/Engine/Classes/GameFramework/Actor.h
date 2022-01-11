@@ -26,6 +26,7 @@ public:
     /** Array of all actors whose Owner is this Actor */
     std::vector<std::weak_ptr<Actor>> Children;
 
+
 protected:
     /** 根组件 如果需要显示在关卡中需要使用 SceneComponent */
     std::shared_ptr<SceneCompoent> RootComponent;

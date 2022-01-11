@@ -16,6 +16,7 @@ class Level
 public:
     std::shared_ptr<WorldSettings> GetWorldSettings() const;
 
+    void ClearLevelComponents();
 public:
     std::vector<std::shared_ptr<Actor>> Actors;
 

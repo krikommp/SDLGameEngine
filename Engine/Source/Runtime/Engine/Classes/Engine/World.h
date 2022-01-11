@@ -13,6 +13,7 @@ public:
     std::shared_ptr<WorldSettings> GetWorldSetting();
 
 public:
+    /** 目前世界中的所有关卡 */
     std::vector<std::shared_ptr<Level>> Levels;
 
 public:
@@ -20,6 +21,10 @@ public:
 
 public:
     void SetGameInstance(const std::shared_ptr<class UGameInstance>& NewGI);
+
+    void CleanupWorld(UWorld* NewWorld = nullptr);
+
+    void ClearWorldComponents();
 public:
     EWorldType::Type WorldType;
 

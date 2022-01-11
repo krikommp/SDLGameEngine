@@ -28,7 +28,7 @@ bool Engine::LoadMap(FWorldContext &WorldContext) {
     std::cout << "Load Map" << std::endl;
 
     if (WorldContext.GetWorld()) {
-
+        WorldContext.GetWorld()->CleanupWorld();
     }
     return false;
 }
