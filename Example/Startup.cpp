@@ -266,6 +266,18 @@ public:
     int Num;
 };
 
+class MyString{
+public:
+    explicit MyString(const char* InStr) {
+        Len = strlen(InStr) + 1;
+        Str = (char*) malloc(Len);
+        strcpy_s(Str, Len, InStr);
+    }
+public:
+    char* Str;
+    std::size_t Len;
+};
+
 int main(int argc, char **args)
 {
     // MyActor actor;
@@ -307,5 +319,10 @@ int main(int argc, char **args)
     std::cout << "============" << std::endl;
     DerivedSneezy DerivedSneezy;
 
+    std::cout << "============" << std::endl;
+    MyString Strss("Hello World");
+    MyString SSA = Strss;
+    std::cout << Strss.Str << std::endl;
+    std::cout << SSA.Str << std::endl;
     return 0;
 }

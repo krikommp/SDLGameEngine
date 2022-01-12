@@ -340,7 +340,10 @@
    ```
    因此引入了一个指针 指向这个 `virual base class`   
    这个指针是由编译器需要的 所以编译器会合成默认构造函数
-8. 
+8. 什么时候需要 `copy construct` ？
+   1. 显式将一个类实例作为另一个类实例的初始化操作 (X a = b; )
+   2. 作为函数参数传入
+   3. 作为函数返回传出
 
 ## CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
