@@ -268,11 +268,18 @@ public:
 
 class MyString{
 public:
+    MyString() : Str(nullptr), Len(0) {}
+
     explicit MyString(const char* InStr) {
         Len = strlen(InStr) + 1;
         Str = (char*) malloc(Len);
         strcpy_s(Str, Len, InStr);
     }
+
+    // Error!! if no copy construct, difference String class will has same pointer point to same memory
+    // when destruct, this memory will be released twice!!
+
+    ~MyString() { delete[] Str; Str = nullptr; Len = 0; }
 public:
     char* Str;
     std::size_t Len;
@@ -321,8 +328,8 @@ int main(int argc, char **args)
 
     std::cout << "============" << std::endl;
     MyString Strss("Hello World");
-    MyString SSA = Strss;
+    // MyString SSA = Strss;
     std::cout << Strss.Str << std::endl;
-    std::cout << SSA.Str << std::endl;
+    // std::cout << SSA.Str << std::endl;
     return 0;
 }
