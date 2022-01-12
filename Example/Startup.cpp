@@ -161,6 +161,70 @@ private:
 public:
         enum { Value = std::is_same<decltype(Check<T>(0)), std::true_type>::value };
 };
+
+#include <cassert>
+
+template <typename T, std::size_t N>
+class FPoint{
+    template<typename ...Args, typename Function> void UnPack(Function Lambda, T Value, Args... Values)
+    {
+        if constexpr(sizeof...(Values) > 0) {
+            UnPack(Lambda, Values...);
+        }
+        Lambda(Value);
+    };
+private:
+public:
+    FPoint() {
+        for(unsigned int Index = 0; Index < N; ++Index) {
+            Coords[Index] = 0;
+        }
+    }
+    explicit FPoint(T InCoords[N]) {
+        for(unsigned int Index = 0; Index < N; ++Index) {
+            Coords[Index] = InCoords[Index];
+        }
+    }
+
+    template<typename ...Args>
+    explicit FPoint(Args... InArgs) {
+        static_assert(sizeof...(InArgs) == N);
+        unsigned int Index = 0;
+        UnPack([&](auto Value){
+            Coords[Index] = Value;
+            ++Index;
+        }, InArgs...);
+    }
+
+public:
+    T& operator[] (std::size_t Index) {
+        assert(Index < N && "Invalid Index");
+        return Coords[Index];
+    }
+
+    T operator[] (std::size_t Index) const {
+        assert(Index < N && "Invalid Index");
+        return Coords[Index];
+    }
+
+private:
+    T Coords[N];
+};
+
+template<typename T, std::size_t N>
+std::ostream& operator<< (std::ostream& OS, const FPoint<T, N>& Point) {
+    OS << "(";
+    for (std::size_t Index = 0; Index < N - 1; ++Index) {
+        OS << Point[Index];
+        OS << ",";
+    }
+    OS << Point[N - 1];
+    OS << ")";
+    return OS;
+}
+
+using FPoint3f =  FPoint<float, 3>;
+
 #include "Startup.h"
 
 int main(int argc, char **args)
@@ -194,9 +258,8 @@ int main(int argc, char **args)
         std::cout << "No F1 Function" << std::endl;
     }
 
-    auto TestValue = std::make_shared<TestSharedClass>();
-    auto TestValue02 = std::make_shared<TestSharedClass02>();
-    TestValue->SetInstance(TestValue02);
-
+    std::cout << "============" << std::endl;
+    FPoint<double, 3> Location(1.0, 0.5, 0.2);
+    std::cout << Location << std::endl;
     return 0;
 }

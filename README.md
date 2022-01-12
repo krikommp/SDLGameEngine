@@ -229,7 +229,81 @@
    enum { Value = std::is_same<decltype(Check<T>(0)), std::true_type>::value };
    };
    ```
-5. 
+   
+## C++ 对象模型
+1. 抽象数据类型 ADT (abstract data type)
+   借助 `class` 我们可以实现一个十分通用的 `point`
+   它将 坐标类型 和 坐标参数 都进行了参数化
+   ```c++
+   template <typename T, std::size_t N>
+   class FPoint{
+   private:
+        // 需要把 ...Args 这种参数包放在函数末尾
+        template<typename ...Args, typename Function> void UnPack(Function Lambda, T Value, Args... Values)
+        {
+            if constexpr(sizeof...(Values) > 0) {
+                UnPack(Lambda, Values...);
+            }
+            Lambda(Value);
+        };
+   public:
+        FPoint() {
+            for(unsigned int Index = 0; Index < N; ++Index) {
+                Coords[Index] = 0;
+            }
+        }
+        explicit FPoint(T InCoords[N]) {
+            for(unsigned int Index = 0; Index < N; ++Index) {
+                Coords[Index] = InCoords[Index];
+            }
+        }
+        
+        // 这里的关键是如何解包
+        // 我使用了一个不太优雅的方式解决了
+        // 可能还有更好的 待续
+       template<typename ...Args>
+       explicit FPoint(Args... InArgs) {
+           static_assert(sizeof...(InArgs) == N);
+           unsigned int Index = 0;
+           UnPack([&](auto Value){
+               Coords[Index] = Value;
+               ++Index;
+           }, InArgs...);
+       }
+   
+   public:
+        T& operator[] (std::size_t Index) {
+            assert(Index < N && "Invalid Index");
+            return Coords[Index];
+        }
+   
+       T operator[] (std::size_t Index) const {
+           assert(Index < N && "Invalid Index");
+           return Coords[Index];
+       }
+   
+   private:
+        T Coords[N];
+   };
+   
+   template<typename T, std::size_t N>
+   std::ostream& operator<< (std::ostream& OS, const FPoint<T, N>& Point) {
+        OS << "(";
+        for (std::size_t Index = 0; Index < N - 1; ++Index) {
+            OS << Point[Index];
+            OS << ",";
+        }
+        OS << Point[N - 1];
+        OS << ")";
+        return OS;
+   }
+   
+   int main() {
+        FPoint<float, 3> Location(3.0f, 1.0f, 0.5f);
+        std::cout << Location << std::endl;
+   }
+   ```
+2. 
 
 ## CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
