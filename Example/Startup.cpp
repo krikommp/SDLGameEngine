@@ -217,6 +217,55 @@ using FPoint3f =  FPoint<float, 3>;
 
 #include "Startup.h"
 
+class Foo{
+public:
+    Foo() { std::cout << "Foo Construct" << std::endl; }
+};
+
+class Bar {
+public:
+    Foo foo;
+    char* str;
+};
+
+class Dopey{
+public:
+    Dopey() { std::cout << "Dopey Construct" << std::endl; }
+};
+
+class Sneezy{
+public:
+    Sneezy() { std::cout << "Sneezy Construct" << std::endl; }
+    Sneezy(int i) { std::cout << "Sneezy i Construct" << std::endl; }
+};
+
+class Bashful{
+public:
+    Bashful() { std::cout << "Bashful Construct" << std::endl; }
+};
+
+class DerivedSneezy : public Sneezy {
+
+};
+
+class WithConstruct {
+public:
+    WithConstruct(int i) : i(i) { std::cout << "WithConstruct" << std::endl; }
+
+private:
+    int i;
+};
+
+class ShowWhite{
+public:
+public:
+    Dopey Dopey;
+    Sneezy Sneezy;
+    Bashful Bashful;
+
+    int Num;
+};
+
 int main(int argc, char **args)
 {
     // MyActor actor;
@@ -251,5 +300,12 @@ int main(int argc, char **args)
 
     FCircle* pCircle = new FCircle();
     FShape* pShape = dynamic_cast<FCircle*>(pCircle);
+
+    Bar bar;
+    ShowWhite ShowWhite;
+
+    std::cout << "============" << std::endl;
+    DerivedSneezy DerivedSneezy;
+
     return 0;
 }

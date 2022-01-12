@@ -314,7 +314,33 @@
    指针不在这个条件内 所以类中指针需要被显式初始化  
    类成员初始化顺序 是按照类成员在类中的声明顺序来初始化的 即使在构造中使用`Construct() : MemClass()` 也是按照声明顺序的  
    如果存在继承关系 子类没有默认构造函数 那么将会合成一个默认构造 调用父类的构造
-6. 
+6. 当存在 `virual function` 时 会发生一下两种扩张
+   1. `virual function table` 会产生 即`vtbl` 用来放置 `virual function` 地址
+   2. `vptr` 指针成员 用来指向类 `virual function table` 地址
+   因此在初始化时 编译器需要为 `vptr` 指定初始值
+7. 什么是 `virual base class`?  
+   当需要多重继承时 B, C 同时继承于 D, 然后 A 继承 B, C  
+   对于非 `virual base class` 相当于 A 继承了两遍 D, 这会造成定义模糊  
+   解决方法是 对于 D, 写成 `virual base class` => ```class B : public virual C```  
+   但是这同时引入了一个问题 无法在编译期决定 `virual base class` 某个成员的位置 例如
+   ```c++
+   class X { public: int x; };
+   class A : public virual X { public: int a; };
+   class B : public virual X { public: int b; };
+   class C : public A, public B { public: int c; }
+   
+   void Foo(const A* pa) { std::cout <<  pa -> x << std::endl; }
+   
+   int main() {
+      Foo(new A());
+      Foo(new C());
+   
+      return 0;
+   }
+   ```
+   因此引入了一个指针 指向这个 `virual base class`   
+   这个指针是由编译器需要的 所以编译器会合成默认构造函数
+8. 
 
 ## CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
