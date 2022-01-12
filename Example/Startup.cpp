@@ -130,20 +130,6 @@ constexpr decltype(auto) Prepare(T Arg) {
     struct tmp { static constexpr decltype(auto) get() { return S; } }; \
     return tmp{}; \
     }()))
-
-
-template <typename T>
-int Compare(const T Left, const T Right) {
-    std::cout << "这是一个泛化的函数" << std::endl;
-    return (Left - Right);
-}
-
-template < >
-int Compare(const char* Left, const char* Right) {
-    std::cout << "这是一个特化的函数" << std::endl;
-    return strcmp(Left, Right);
-}
-
 class TestAA{
 public:
         void f1() { std::cout << "f1 function" << std::endl; }
@@ -223,6 +209,10 @@ std::ostream& operator<< (std::ostream& OS, const FPoint<T, N>& Point) {
     return OS;
 }
 
+class FShape{};
+
+class FCircle : public FShape{};
+
 using FPoint3f =  FPoint<float, 3>;
 
 #include "Startup.h"
@@ -249,9 +239,6 @@ int main(int argc, char **args)
     using Tyu = decltype(Str);
     static_assert(std::is_same<Tyu, std::integer_sequence<char, '1', '2', '3', '4'>>::value, "WTF");
 
-    Compare(12, 13);
-    Compare("My", "My");
-
     if ( HasMemberF1<TestBB>::Value ) {
         std::cout << "Has F1 function" << std::endl;
     }else {
@@ -261,5 +248,8 @@ int main(int argc, char **args)
     std::cout << "============" << std::endl;
     FPoint<double, 3> Location(1.0, 0.5, 0.2);
     std::cout << Location << std::endl;
+
+    FCircle* pCircle = new FCircle();
+    FShape* pShape = dynamic_cast<FCircle*>(pCircle);
     return 0;
 }

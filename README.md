@@ -233,7 +233,7 @@
 ## C++ 对象模型
 1. 抽象数据类型 ADT (abstract data type)
    借助 `class` 我们可以实现一个十分通用的 `point`
-   它将 坐标类型 和 坐标参数 都进行了参数化
+   它将 坐标类型 和 坐标数量 都进行了参数化
    ```c++
    template <typename T, std::size_t N>
    class FPoint{
@@ -303,7 +303,11 @@
         std::cout << Location << std::endl;
    }
    ```
-2. 
+2. 每个 `non-inline member function` 只会诞生一个函数实例 每个 `inline function` 都会在每一个类实例上产生一个函数实例
+   C++ 在布局以及存取时间上的主要额外负担是由 `virual` 引起的
+   - `virual function` 运行期绑定
+   - `virual base class` 多继承体系
+3. `dynamic_cast<Type*>(void*)` 用来进行子类向父类转换
 
 ## CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
