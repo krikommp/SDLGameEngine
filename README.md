@@ -307,7 +307,14 @@
    C++ 在布局以及存取时间上的主要额外负担是由 `virual` 引起的
    - `virual function` 运行期绑定
    - `virual base class` 多继承体系
-3. `dynamic_cast<Type*>(void*)` 用来进行子类向父类转换
+3. `dynamic_cast<typename*>(void*)` 用来进行子类向父类转换 这是一个运行时的操作
+4. `Cast` 只影响 "被指出之内存的大小和其内容"的 解释方式
+5. 如果`class A` 内含一个或一个以上的 `member class objects`，那么 `class A` 的每一个 `constructor` 必须调用每一个 `member classes` 的 `default constructor`  
+   如果程序员提供的构造函数不包含某些类成员初始化 那么编译器会扩张这个构造函数以满足每一个类成员都被调用默认构造函数  
+   指针不在这个条件内 所以类中指针需要被显式初始化  
+   类成员初始化顺序 是按照类成员在类中的声明顺序来初始化的 即使在构造中使用`Construct() : MemClass()` 也是按照声明顺序的  
+   如果存在继承关系 子类没有默认构造函数 那么将会合成一个默认构造 调用父类的构造
+6. 
 
 ## CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
