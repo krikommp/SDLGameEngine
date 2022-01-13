@@ -345,6 +345,15 @@
    2. 作为函数参数传入
    3. 作为函数返回传出
 
+9. 当没有提供 explicit copy construct 时会发生什么？  
+    `default member wise initialization`  
+    将每一个内建或者派生的 data member (例如指针 数组) 复制到这个类上，但是对于 member class object 将会递归的使用 `default member wise initialization`  
+    - 这里要注意 对于指针对象 这种行为只是简单复制了一个指针地址到类中 并没有为这个指针开辟新的空间 所以当需要释放指针指向空间时 将会发生释放同一片地址多次的错误
+10. 什么时候编译器会为 object 生成一个 copy construct?  
+   简而言之 编译器会在需要的时候为其合成 copy construct.只有当类展现出 `bitwise copy semantics` 时才会合成 copy construct  
+11. 什么是 `bitwise copy semantics` ?
+   
+
 ## CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
 2. `add_library(${PROJECT_NAME} ${ALL_SOURCES} ${ALL_INCLUDES})` 用于生成动态库

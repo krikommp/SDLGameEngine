@@ -278,11 +278,27 @@ public:
 
     // Error!! if no copy construct, difference String class will has same pointer point to same memory
     // when destruct, this memory will be released twice!!
+    MyString(const MyString& Other) {
+        Str = (char*) malloc(Other.Len);
+        Len = Other.Len;
+        strcpy_s(Str, Len, Other.Str);
+    }
 
     ~MyString() { delete[] Str; Str = nullptr; Len = 0; }
 public:
     char* Str;
     std::size_t Len;
+};
+
+std::ostream& operator<< (std::ostream& Out, const MyString& String) {
+    Out << String.Str;
+    return Out;
+}
+
+class MyWorld{
+public:
+    int Occurs;
+    MyString String;
 };
 
 int main(int argc, char **args)
@@ -328,8 +344,9 @@ int main(int argc, char **args)
 
     std::cout << "============" << std::endl;
     MyString Strss("Hello World");
-    // MyString SSA = Strss;
-    std::cout << Strss.Str << std::endl;
-    // std::cout << SSA.Str << std::endl;
+    MyString SSA = Strss;
+    std::cout << Strss << std::endl;
+    std::cout << SSA << std::endl;
+    std::cout << "============" << std::endl;
     return 0;
 }
