@@ -356,6 +356,11 @@
     2. 当 class 继承自一个拥有 copy construct 的 base class 时
     3. 当 class 拥有 virtual functions 时
     4. 当 class 的继承链有 virtual base class 时
+11. 当 class 拥有 virtual functions 时
+   如果类相同 就不需要修改 virtual functions table 指针，只需要直接复制，满足 `bitwise copy samantics`，所以编译器不会合成
+   如果时 derived class object 和 base class object，那么就需要重新修改指针，此时编译器会为 class object 合成 copy construct
+12. virtual base class subobject
+   
 
 ## CMakeLists 笔记
 1. `include_directories(${PATH_NAME})` 用来指定目录下头文件路径
