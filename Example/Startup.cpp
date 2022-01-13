@@ -276,7 +276,7 @@ public:
         strcpy_s(Str, Len, InStr);
     }
 
-    // Error!! if no copy construct, difference String class will has same pointer point to same memory
+    // Error!! if no explicit copy construct, difference String class will has same pointer point to same memory
     // when destruct, this memory will be released twice!!
     MyString(const MyString& Other) {
         Str = (char*) malloc(Other.Len);
