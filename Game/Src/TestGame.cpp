@@ -3,8 +3,8 @@
 
 #include "GraphicInterface.h"
 
-#define WINDOW_WIDTH 64
-#define WINDOW_HEIGHT 88
+#define WINDOW_WIDTH 600 / 4
+#define WINDOW_HEIGHT 600 / 4
 
 static bool bExit = false;
 
@@ -29,8 +29,19 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            RHI.ClearColor();
-            RHI.Render();
+            {
+                RHIRendererRALL RHIScope(&RHI);
+                RHI.ClearColor(FColor(173, 216, 230, 255));
+
+                for (uint32 X = 0; X < WINDOW_WIDTH; ++X) {
+                    RHI.SetPixel(X, X, FColor(255, 0, 0, 255));
+                }
+                for (uint32 X = 0; X < WINDOW_WIDTH; ++X) {
+                    RHI.SetPixel(WINDOW_WIDTH - X, X, FColor(255, 0, 0, 255));
+                }
+
+                RHI.Render();
+            }
         }
     }
 

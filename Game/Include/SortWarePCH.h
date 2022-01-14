@@ -26,7 +26,5 @@ private:
     const NonCopyable& operator=(const NonCopyable&) = delete;
 };
 
-#include "GraphicMath.h"
-
 
 #endif //SDLGAMEENGINE_SORTWAREPCH_H

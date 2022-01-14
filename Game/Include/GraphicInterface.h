@@ -6,6 +6,7 @@
 #define SDLGAMEENGINE_GRAPHICINTERFACE_H
 
 #include "SortWarePCH.h"
+#include "GraphicMath.h"
 
 struct SWindowInfo{
     uint32 Width;
@@ -19,6 +20,8 @@ class SoftWareRHI : public NonCopyable{
 public:
     SoftWareRHI(const SWindowInfo& InWindowInfo) : WindowInfo(InWindowInfo) {
         SDL_Init(SDL_INIT_VIDEO);
+        Pixels = nullptr;
+        Pitch = 0;
     }
 
     ~SoftWareRHI() {
@@ -38,21 +41,30 @@ public:
         return true;
     }
 
-    bool ClearColor() {
-        void* Pixels;
-        int Pitch;
-        if (SDL_LockTexture(Buffer, nullptr, &Pixels, &Pitch) < 0) return false;
-
+    bool ClearColor(const FColor& Color) {
         uint32* Dst;
         for (uint32 Row = 0; Row < WindowInfo.Height; ++Row) {
             Dst = (uint32*)((uint8 *)Pixels + Row * Pitch);
             for (uint32 Col = 0; Col < WindowInfo.Width; ++Col) {
-                *Dst++ = 0xFF0000FF;
+                *Dst++ = ConvertColorToHEX(Color);
             }
         }
-
-        SDL_UnlockTexture(Buffer);
         return true;
+    }
+
+    inline bool BeginRHI() {
+        return SDL_LockTexture(Buffer, nullptr, &Pixels, &Pitch) >= 0;
+    }
+
+    void SetPixel(uint32 X, uint32 Y, const FColor& Color) {
+        uint32* Dst = (uint32*)((uint8*)Pixels + X * Pitch);
+        *(Dst + Y) = ConvertColorToHEX(Color);
+    }
+
+    inline void EndRHI() {
+        SDL_UnlockTexture(Buffer);
+        Pixels = nullptr;
+        Pitch = 0;
     }
 
     bool Render() {
@@ -68,6 +80,23 @@ private:
     SDL_Texture* Buffer;
 
     SWindowInfo WindowInfo;
+
+private:
+    void* Pixels;
+    int Pitch;
+};
+
+class RHIRendererRALL{
+public:
+    RHIRendererRALL(SoftWareRHI* InRHI) : RHI(InRHI) {
+        RHI -> BeginRHI();
+    }
+    ~RHIRendererRALL() {
+        RHI -> EndRHI();
+    }
+
+private:
+    SoftWareRHI* RHI;
 };
 
 #endif //SDLGAMEENGINE_GRAPHICINTERFACE_H
