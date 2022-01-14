@@ -28,10 +28,12 @@ public:
     static void ExitApp();
 
 protected:
-    void SetWidth(uint32 InWidth) { Width = InWidth; }
-    void SetHeight(uint32 InHeight) { Height = InHeight; }
+    void SetWidth(uint32 InWidth) { Width = InWidth / 4; }
+    void SetHeight(uint32 InHeight) { Height = InHeight / 4; }
     void SetTitle(const char* InTitle) { Title = InTitle; }
     void SetClearColor(const FColor& Color) { ClearColor = Color; }
+
+    void SetPixel(uint32 X, uint32 Y, const FColor& Color) { RHI.SetPixel(X, Y, Color); }
 protected:
     uint32 Width = 100;
     uint32 Height = 100;

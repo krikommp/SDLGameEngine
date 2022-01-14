@@ -14,7 +14,7 @@ void AppEngine::ExitApp() {
 void AppEngine::Construct() {
     OnStart();
 
-    SWindowInfo Info{.Width = Width / 4, .Height = Height / 4, .Title = Title};
+    SWindowInfo Info{.Width = Width, .Height = Height, .Title = Title};
     RHI.InitRHI(Info);
     GAppObserver.Register(AppEngine::ExitApp);
 }
