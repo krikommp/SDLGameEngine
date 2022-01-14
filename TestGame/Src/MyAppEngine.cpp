@@ -6,23 +6,20 @@
 
 void MyAppEngine::OnStart() {
     SetWidth(600);
-    SetHeight(600);
+    SetHeight(300);
 
-    SetClearColor(FColor(173, 246, 230, 255));
+    SetClearColor(Color::Sky);
 
     SetTitle("MyAppEngine");
 }
 
 void MyAppEngine::OnUpdate() {
+    static float K = float(Height) / float(Width);
     for(uint32 X = 0; X < Width; ++X) {
-        for (uint32 Y = 0; Y < Height; ++Y) {
-            SetPixel(X, X, Color::Red);
-        }
+        SetPixel(X, K * X, Color::Black);
     }
     for(uint32 X = 0; X < Width; ++X) {
-        for (uint32 Y = 0; Y < Height; ++Y) {
-            SetPixel(Width - X, X, Color::Green);
-        }
+        SetPixel(Width - X, K * X, Color::Red);
     }
 }
 

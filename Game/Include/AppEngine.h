@@ -28,8 +28,8 @@ public:
     static void ExitApp();
 
 protected:
-    void SetWidth(uint32 InWidth) { Width = InWidth / 4; }
-    void SetHeight(uint32 InHeight) { Height = InHeight / 4; }
+    void SetWidth(uint32 InWidth) { Width = InWidth; }
+    void SetHeight(uint32 InHeight) { Height = InHeight; }
     void SetTitle(const char* InTitle) { Title = InTitle; }
     void SetClearColor(const FColor& Color) { ClearColor = Color; }
 
