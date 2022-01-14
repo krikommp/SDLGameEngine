@@ -29,7 +29,7 @@ public:
 
 public:
     bool InitRHI() {
-        Window = SDL_CreateWindow(WindowInfo.Title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WindowInfo.Width, WindowInfo.Height, SDL_WINDOW_RESIZABLE);
+        Window = SDL_CreateWindow(WindowInfo.Title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WindowInfo.Width * 4, WindowInfo.Height * 4, SDL_WINDOW_RESIZABLE);
         if (Window == nullptr) return false;
         Renderer = SDL_CreateRenderer(Window, -1,  SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
         if (Renderer == nullptr) return false;
@@ -43,9 +43,13 @@ public:
         int Pitch;
         if (SDL_LockTexture(Buffer, nullptr, &Pixels, &Pitch) < 0) return false;
 
-        SDL_PixelFormat* Format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
-        // uint32 Color = SDL_MapRGBA(Format, 0xff, 0, 0, 0xff / 3);
-        SDL_memset(Pixels, 0, WindowInfo.Height * Pitch);
+        uint32* Dst;
+        for (uint32 Row = 0; Row < WindowInfo.Height; ++Row) {
+            Dst = (uint32*)((uint8 *)Pixels + Row * Pitch);
+            for (uint32 Col = 0; Col < WindowInfo.Width; ++Col) {
+                *Dst++ = 0xFF0000FF;
+            }
+        }
 
         SDL_UnlockTexture(Buffer);
         return true;
