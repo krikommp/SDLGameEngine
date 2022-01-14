@@ -11,6 +11,10 @@
 #include <fstream>
 #include <iostream>
 #include <cassert>
+#include <chrono>
+#include <functional>
+#include <vector>
+
 #include <SDL.h>
 
 using uint32 = unsigned int;
@@ -25,6 +29,33 @@ private:
     NonCopyable(const NonCopyable&) = delete;
     const NonCopyable& operator=(const NonCopyable&) = delete;
 };
+
+template <typename Signature>
+struct Listener;
+
+template <typename RET, typename... ArgTypes>
+struct Listener<RET(ArgTypes...)> {
+    using Functor = std::function<void(ArgTypes...)>;
+
+public:
+    void Register(Functor&& Func) {
+        Functions.push_back(Func);
+    }
+
+    void NotifyAll(ArgTypes... Args) {
+        for(const auto& Func : Functions) {
+            Func(Args...);
+        }
+    }
+
+private:
+    std::vector<Functor> Functions;
+};
+
+Listener<void(void)> GAppObserver;
+
+
+
 
 
 #endif //SDLGAMEENGINE_SORTWAREPCH_H

@@ -16,14 +16,7 @@ struct SWindowInfo{
 };
 
 class SoftWareRHI : public NonCopyable{
-    friend class RHITexture;
 public:
-    SoftWareRHI(const SWindowInfo& InWindowInfo) : WindowInfo(InWindowInfo) {
-        SDL_Init(SDL_INIT_VIDEO);
-        Pixels = nullptr;
-        Pitch = 0;
-    }
-
     ~SoftWareRHI() {
         SDL_DestroyRenderer(Renderer);
         SDL_DestroyWindow(Window);
@@ -31,7 +24,12 @@ public:
     }
 
 public:
-    bool InitRHI() {
+    bool InitRHI(const SWindowInfo& InWindowInfo) {
+        WindowInfo = InWindowInfo;
+        SDL_Init(SDL_INIT_VIDEO);
+        Pixels = nullptr;
+        Pitch = 0;
+
         Window = SDL_CreateWindow(WindowInfo.Title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WindowInfo.Width * 4, WindowInfo.Height * 4, SDL_WINDOW_RESIZABLE);
         if (Window == nullptr) return false;
         Renderer = SDL_CreateRenderer(Window, -1,  SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
@@ -74,6 +72,13 @@ public:
         return true;
     }
 
+public:
+    void SetTitleText(float FPS) {
+        char NewTitle[1024];
+        sprintf(NewTitle ,"%s - FPS: %3.2f", WindowInfo.Title, FPS);
+        SDL_SetWindowTitle(Window, NewTitle);
+    }
+
 private:
     SDL_Window* Window;
     SDL_Renderer* Renderer;
@@ -86,9 +91,9 @@ private:
     int Pitch;
 };
 
-class RHIRendererRALL{
+class RHIRendererRALL : public NonCopyable{
 public:
-    RHIRendererRALL(SoftWareRHI* InRHI) : RHI(InRHI) {
+    explicit RHIRendererRALL(SoftWareRHI* InRHI) : RHI(InRHI) {
         RHI -> BeginRHI();
     }
     ~RHIRendererRALL() {
