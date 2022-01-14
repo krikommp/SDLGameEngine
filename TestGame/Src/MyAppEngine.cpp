@@ -5,8 +5,8 @@
 #include "MyAppEngine.h"
 
 void MyAppEngine::OnStart() {
-    SetWidth(600);
-    SetHeight(300);
+    SetWidth(1280);
+    SetHeight(720);
 
     SetClearColor(Color::Sky);
 
