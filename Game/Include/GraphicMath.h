@@ -2,10 +2,12 @@
 // Created by chenyifei on 2022/1/13.
 //
 
-#ifndef SDLGAMEENGINE_MATH_H
-#define SDLGAMEENGINE_MATH_H
+#ifndef SDLGAMEENGINE_GRAPHICMATH_H
+#define SDLGAMEENGINE_GRAPHICMATH_H
 
-template <typename T, std::size_t N>
+#include <cassert>
+
+template <typename T, size_t N>
 class FPoint{
     template<typename ...Args, typename Function> void UnPack(Function Lambda, T Value, Args... Values)
     {
@@ -38,12 +40,12 @@ public:
     }
 
 public:
-    T& operator[] (std::size_t Index) {
+    T& operator[] (size_t Index) {
         assert(Index < N && "Invalid Index");
         return Coords[Index];
     }
 
-    T operator[] (std::size_t Index) const {
+    T operator[] (size_t Index) const {
         assert(Index < N && "Invalid Index");
         return Coords[Index];
     }
@@ -56,17 +58,4 @@ using FVector3f = FPoint<float, 3>;
 using FColor = FVector3f;
 using FPoint3f = FVector3f;
 
-template<typename T, std::size_t N>
-std::ostream& operator<< (std::ostream& OS, const FPoint<T, N>& Point) {
-    OS << "(";
-    for (std::size_t Index = 0; Index < N - 1; ++Index) {
-        OS << Point[Index];
-        OS << ",";
-    }
-    OS << Point[N - 1];
-    OS << ")";
-    return OS;
-}
-
-
-#endif //SDLGAMEENGINE_MATH_H
+#endif //SDLGAMEENGINE_GRAPHICMATH_H
