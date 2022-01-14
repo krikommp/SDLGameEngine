@@ -64,4 +64,13 @@ static uint32 ConvertColorToHEX(const FColor& Color) {
     return FormatColor;
 }
 
+namespace Color{
+    static FColor White(255, 255, 255, 255);
+    static FColor Sky(173, 216, 230, 255);
+    static FColor Black(0, 0, 0, 255);
+    static FColor Red(255, 0, 0, 255);
+    static FColor Green(0, 255, 0, 255);
+    static FColor Blue(0, 0, 255, 255);
+}
+
 #endif //SDLGAMEENGINE_GRAPHICMATH_H

@@ -53,5 +53,4 @@ private:
 };
 
 extern Listener<void(void)> GAppObserver;
-
 #endif //SDLGAMEENGINE_SORTWAREPCH_H
