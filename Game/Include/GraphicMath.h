@@ -58,7 +58,7 @@ using FVector3f = FPoint<float, 3>;
 using FColor = FPoint<uint8, 4>;
 using FPoint3f = FVector3f;
 
-uint32 ConvertColorToHEX(const FColor& Color) {
+static uint32 ConvertColorToHEX(const FColor& Color) {
     // R G B A
     uint32 FormatColor = (Color[0] << 24) | (Color[1] << 16) | (Color[2] << 8) | (Color[3]);
     return FormatColor;

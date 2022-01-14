@@ -52,10 +52,6 @@ private:
     std::vector<Functor> Functions;
 };
 
-Listener<void(void)> GAppObserver;
-
-
-
-
+extern Listener<void(void)> GAppObserver;
 
 #endif //SDLGAMEENGINE_SORTWAREPCH_H

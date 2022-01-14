@@ -30,3 +30,5 @@ add_subdirectory(Engine)
 # Test Module
 add_subdirectory(Example)
 add_subdirectory(Game)
+
+add_subdirectory(TestGame)

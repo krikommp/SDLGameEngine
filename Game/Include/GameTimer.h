@@ -13,12 +13,7 @@ public:
      GameTimer() : TimePoint1(std::chrono::system_clock::now()), TimePoint2(std::chrono::system_clock::now()) {}
 
 public:
-    void Tick() override {
-        TimePoint2 = std::chrono::system_clock::now();
-        ElapsedTime = TimePoint2 - TimePoint1;
-        TimePoint1 = TimePoint2;
-        fElapsedTime = ElapsedTime.count();
-    }
+    void Tick() override;
 
     float GetFPS() const { return 1.0f / fElapsedTime; }
 

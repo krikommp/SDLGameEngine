@@ -9,42 +9,23 @@
 #include "GameTimer.h"
 #include "GameController.h"
 
-static bool bExit = false;
-
-void OnExit() {
-    bExit = true;
-}
-
 class AppEngine {
 protected:
-    virtual void OnStart() {}
+    virtual void OnStart() = 0;
 
-    virtual void OnUpdate() {}
+    virtual void OnUpdate() = 0;
 
-    virtual void OnExit() {}
+    virtual void OnExit() = 0;
 
 public:
-    void Construct() {
-        SWindowInfo Info{.Width = Width, .Height = Height, .Title = Title};
-        RHI.InitRHI(Info);
-        GAppObserver.Register(::OnExit);
-    }
+    void Construct();
 
-    void Start() {
-        while(!bExit) {
-            Controller.Tick();
-            Timer.Tick();
+    void Start();
 
-            RHIRendererRALL RHIScope(&RHI);
-            RHI.ClearColor(ClearColor);
+public:
+    static bool bExit;
 
-            OnUpdate();
-
-            RHI.Render();
-            RHI.SetTitleText(Timer.GetFPS());
-        }
-        OnExit();
-    }
+    static void ExitApp();
 
 protected:
     void SetWidth(uint32 InWidth) { Width = InWidth; }
