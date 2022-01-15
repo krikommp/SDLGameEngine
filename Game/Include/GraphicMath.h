@@ -6,6 +6,7 @@
 #define SDLGAMEENGINE_GRAPHICMATH_H
 
 #include "SortWarePCH.h"
+#include <cmath>
 
 template <typename T, size_t N>
 class FPoint{
@@ -56,6 +57,7 @@ private:
 
 using FVector3f = FPoint<float, 3>;
 using FColor = FPoint<uint8, 4>;
+using FVector2i = FPoint<int, 2>;
 using FPoint3f = FVector3f;
 
 static uint32 ConvertColorToHEX(const FColor& Color) {

@@ -22,7 +22,7 @@ public:
 
     void Start();
 
-public:
+private:
     static bool bExit;
 
     static void ExitApp();
@@ -39,7 +39,7 @@ protected:
     uint32 Height = 100;
     const char* Title = "Blank";
 
-private:
+protected:
     SoftWareRHI RHI;
     GameTimer Timer;
     GameController Controller;

@@ -57,6 +57,27 @@ void SoftWareRHI::SetTitleText(float FPS) {
     SDL_SetWindowTitle(Window, NewTitle);
 }
 
+void DrawLine(SoftWareRHI& RHI, const FVector2i& A, const FVector2i& B, const FColor& Color)
+{
+    DrawLine(RHI, A[0], A[1], B[0], B[1], Color);
+}
+
+void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Color)
+{
+
+    int DX = abs(BX - AX), SX = AX < BX ? 1 : -1;
+    int DY = -abs(BY - AY), SY = AY < BY ? 1 : -1;
+    int Err = DX + DY, E2;
+    for(;;)
+    {
+        RHI.SetPixel(AX, AY, Color);
+        if (AX == BX && AY == BY) break;
+        E2 = 2 * Err;
+        if (E2 >= DY) { Err += DY; AX += SX; }
+        if (E2 <= DX) { Err += DX; AY += SY; }
+    }
+}
+
 bool SoftWareRHI::BeginRHI() {
     return SDL_LockTexture(Buffer, nullptr, &Pixels, &Pitch) >= 0;
 }

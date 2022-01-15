@@ -60,4 +60,7 @@ private:
     SoftWareRHI* RHI;
 };
 
+void DrawLine(SoftWareRHI& RHI, const FVector2i& A, const FVector2i& B, const FColor& Color);
+void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Color);
+
 #endif //SDLGAMEENGINE_GRAPHICINTERFACE_H
