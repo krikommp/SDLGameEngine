@@ -6,8 +6,12 @@
 
 bool AppEngine::bExit = false;
 
-void AppEngine::ExitApp() {
-    AppEngine::bExit = true;
+void AppEngine::OnExitApp(IInputEvent* pEvent) {
+    AppExitEvent* Event = dynamic_cast<AppExitEvent*>(pEvent);
+    if (Event != nullptr)
+    {
+    	AppEngine::bExit = true;
+    }
 }
 
 
@@ -16,7 +20,7 @@ void AppEngine::Construct() {
 
     SWindowInfo Info{.Width = Width, .Height = Height, .Title = Title};
     RHI.InitRHI(Info);
-    GAppObserver.Register(AppEngine::ExitApp);
+    GInputObserver.Register(AppEngine::OnExitApp);
 }
 
 void AppEngine::Start() {

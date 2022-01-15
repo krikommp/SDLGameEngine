@@ -9,6 +9,7 @@ FILE (GLOB ALL_INCLUDES "Include/*.hpp" "Include/*.h")
 
 add_library(${PROJECT_NAME} ${ALL_SOURCES} ${ALL_INCLUDES})
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2-static)
+target_link_libraries(${PROJECT_NAME} fmt)
 
 target_include_directories(${PROJECT_NAME} INTERFACE Include)
 # target_link_libraries(${PROJECT_NAME} gtest_main)

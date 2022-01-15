@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <SDL.h>
+#include <fmt/format.h>
 
 using uint32 = unsigned int;
 using uint8 = uint8_t;
@@ -51,6 +52,4 @@ public:
 private:
     std::vector<Functor> Functions;
 };
-
-extern Listener<void(void)> GAppObserver;
 #endif //SDLGAMEENGINE_SORTWAREPCH_H

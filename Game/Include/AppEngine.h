@@ -25,7 +25,7 @@ public:
 private:
     static bool bExit;
 
-    static void ExitApp();
+    static void OnExitApp(IInputEvent* pEvent);
 
 protected:
     void SetWidth(uint32 InWidth) { Width = InWidth; }
