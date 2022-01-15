@@ -28,6 +28,7 @@ private:
     static void OnExitApp(IInputEvent* pEvent);
 
 protected:
+    void SetWidthAndHeight(const FVector2i& Size) { Width = Size[0]; Height = Size[1]; }
     void SetWidth(uint32 InWidth) { Width = InWidth; }
     void SetHeight(uint32 InHeight) { Height = InHeight; }
     void SetTitle(const char* InTitle) { Title = InTitle; }

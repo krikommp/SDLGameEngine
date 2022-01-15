@@ -55,6 +55,19 @@ private:
     T Coords[N];
 };
 
+template <typename T, size_t N>
+std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
+{
+    Out << "(";
+    for (uint32 i = 0;i < N - 1; ++i)
+    {
+        Out << Value[i] << ", ";
+    }
+    Out << Value[N - 1];
+    Out << ")";
+    return Out;
+}
+
 using FVector3f = FPoint<float, 3>;
 using FColor = FPoint<uint8, 4>;
 using FVector2i = FPoint<int, 2>;

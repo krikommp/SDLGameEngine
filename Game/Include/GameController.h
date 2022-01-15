@@ -37,10 +37,10 @@ public:
     void Tick() override;
 
 public:
-    bool GetMouseState(MouseType Type) { return MouseButton[static_cast<int>(Type)]; }
+    bool GetMouseButtonDown(MouseType Type) const { return MouseButtonDown[static_cast<int>(Type)]; }
 
 private:
-    uint32 MouseButton[3] = { 0 };
+    uint32 MouseButtonDown[3] = { 0 };
 };
 
 extern Listener<void(IInputEvent*)> GInputObserver;
