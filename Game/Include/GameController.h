@@ -25,11 +25,25 @@ public:
     AppExitEvent() : IInputEvent("AppExit") {}
 };
 
-extern Listener<void(IInputEvent*)> GInputObserver;
+enum class MouseType
+{
+	MOUSE_LEFT = 0,
+    MOUSE_MIDDLE = 1,
+    MOUSE_RIGHT = 2
+};
 
 class GameController : public ITickEngine {
 public:
     void Tick() override;
+
+public:
+    bool GetMouseState(MouseType Type) { return MouseButton[static_cast<int>(Type)]; }
+
+private:
+    uint32 MouseButton[3] = { 0 };
 };
+
+extern Listener<void(IInputEvent*)> GInputObserver;
+
 
 #endif //SDLGAMEENGINE_GAMECONTROLLER_H
