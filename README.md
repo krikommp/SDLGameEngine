@@ -412,6 +412,7 @@
     }
    ```
 ## 图形学
-$$
-\frac{abc}{xyz}
-$$
+1. 画线算法
+    1. 中点画线算法  
+      ![MidAlgorithm](./Image/MidAlgorithm.png) 
+    
