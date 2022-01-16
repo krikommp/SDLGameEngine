@@ -414,5 +414,4 @@
 ## 图形学
 1. 画线算法
     1. 中点画线算法  
-      ![MidAlgorithm](https://github.com/krikommp/SDLGameEngine/blob/main/Image/MidAlgorithm.png) 
-    
+   ![MidAlgorithm](https://imgur.com/gallery/1nnrUGK)
