@@ -38,9 +38,10 @@ public:
 
 public:
     bool GetMouseButtonDown(MouseType Type) const { return MouseButtonDown[static_cast<int>(Type)]; }
-
+    const FVector2i& GetMousePosition() const { return MousePosition; }
 private:
     uint32 MouseButtonDown[3] = { 0 };
+    FVector2i MousePosition;
 };
 
 extern Listener<void(IInputEvent*)> GInputObserver;

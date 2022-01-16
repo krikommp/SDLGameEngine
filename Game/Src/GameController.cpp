@@ -9,6 +9,9 @@ Listener<void(IInputEvent*)> GInputObserver;
 void GameController::Tick() {
     SDL_Event Event;
     while (SDL_PollEvent(&Event)) {
+        int X, Y;
+        uint32 Button = SDL_GetMouseState(&X, &Y);
+        MousePosition = FVector2i(X, Y);
         switch (Event.type) {
             case SDL_KEYDOWN:
 	            {
@@ -20,8 +23,6 @@ void GameController::Tick() {
                 break;
 			case SDL_MOUSEBUTTONDOWN:
 				{
-					int X, Y;
-					uint32 Button = SDL_GetMouseState(&X, &Y);
 					MouseButtonDown[0] = Button & SDL_BUTTON_LMASK ? 1 : 0;
 					MouseButtonDown[1] = Button & SDL_BUTTON_MMASK ? 1 : 0;
 					MouseButtonDown[2] = Button & SDL_BUTTON_RMASK ? 1 : 0;

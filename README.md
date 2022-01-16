@@ -7,20 +7,20 @@
     如果希望支持至少一个参数，可以使用 `template <typename T, typename... Ts> class Magic{};` 的写法。
 2. 同样的，可以在函数中使用上述的变长参数模板。  
    例如，对于 `printf` 函数可以写出一个类型安全版  
-   ```C++
+```C++
    template <typename... Ts>
    void prinft(std::string& Str, Ts.. Args);
-   ```
+```
 3. 如何解包  
    可以使用 `sizeof...(Args)` 来计算可变参数的长度  
-   ```C++
+```C++
    template <typename... Ts>
    void Magic(Ts... Args) {
        std::cout << sizeof...(Args) << std::endl;
    }
-   ```
+```
    递归模板参数  
-   ```C++
+```C++
    // 类似与递归函数的结束条件
    // 为什么不能在一个函数中完成
    // 因为我们需要判断是否有结束条件产生, 这个判断是 sizeof...(Args) 是否大于0
@@ -38,9 +38,9 @@
        // 这里需要把参数包传递过去
        printf(Args...);
    }
-   ``` 
+``` 
    C++17 提供了变参模板展开的支持，可以在一个模板函数中完成展开
-   ```C++
+```C++
    template <typename T, typename... Ts>
    void Printf(T Value, Ts... Args) {
        std::cout << Value << ", ";
@@ -50,10 +50,10 @@
            std::cout << std::endl;
        }    
    }
-   ```
+```
 4. `std::make_index_sequence`  
    简单来说，就是可以在编译期构造出 N 个 `size_t` 元素，例如
-   ```C++
+```C++
    // 这里 std::index_sequence 只是用来接受 std::make_index_sequence 参数
    // 实际的 N... 已经构造出来了
    template <size_t N>
@@ -65,12 +65,12 @@
        // Output: 0, 1, 2, ... , 10
        PrintfIndexSequence(std::make_index_sequence<10>());
    }
-   ```
+```
    这里会用到模板的非类型形参，对于非类型形参，编译器会当作一个编译期常量来处理  
    这个常量只适用于模板内部  
    形参类型只能是 *整数 指针 引用*，除此之外都无法适用。
    非类型形参也可以支持可变
-   ```c++
+```c++
    template <typename T, T... Ins> class TestClass {
    public:
         void Test() {
@@ -82,9 +82,9 @@
        TestClass<int, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0> a;
        a.Test();    // Output = 10, 9, ..., 0
    }
-   ```
+```
    在使用非类型参数模版的时候，对于指针和引用需要指向外部链接对象，否则将会不被编译通过
-   ```c++
+```c++
    // in Startup.h
    extern double PI;
    
@@ -105,11 +105,11 @@
        std::cout << Process<PI>(1.0) << std::endl;
        std::cout << Process<&PI>(1.0) << std::endl;
    }
-   ```
+```
 
    那么如何实现一个 `std::make_index_sequence` 呢？  
    继承的方式
-   ```c++
+```c++
    // 这里的目的只是为了提出 N... 
    // 这个结构体并没有其他意义
    template <typename... N>
@@ -126,10 +126,10 @@
    
    template <int... M>
    struct MakeIndexSequence<0, M...> : public IndexSequence<M...>{};
-   ```
+```
 
    一个简单的例子 使用 `std::make_index_sequence` 实现 `std::apply`
-   ```c++
+```c++
    template <typename Tuple, typename Func, size_t... N>
    void FunCallTuple(const Tuple& tuple, Func&& Function, std::index_sequence<N...>) {
        // 用到了逗号运算符，会返回逗号后面的数值
@@ -142,10 +142,10 @@
        // 从这里可以看出 使用 ...Args 来获取参数的技巧很常见
        FunCallTuple(InTuple, std::forward<Function>(Lambda), std::make_index_sequence<sizeof...(Args)>());
    }
-   ```
+```
    
    如果对于模板参数传入的是一个 `lambda` 表达式，这个表达式需要有一个返回值，那么这个表达式将会被执行
-   ```c++
+```c++
    template <typename T>
    void TestFunc(T t) {}
    
@@ -155,11 +155,11 @@
         return 1;
     }());   // Run Here 
    }
-   ```
+```
    
    如何判断类中是否存在某个成员变量
    1. 通过作用域分辨符可以直接访问到类成员(当父类和子类拥有同名成员变量时，如何区分)
-   ```c++
+```c++
    class Parent{
    public:
         int X;
@@ -183,11 +183,11 @@
         CCC.Debug();
         // Output : Child X = 1, Parent X = 2
    }
-   ```
+```
    2. 判断是否拥有某个成员变量的关键是理解 SFINAE(Subsititution Failure Is Not An Error 替换失败并非错误)。
    就是如果存在两个重载泛型函数 C++ 会选择能够被编译通过的函数来实例化 调用  
    下面写一个简单的例子
-   ```c++
+```c++
    class TValue {
    public:
     int X;
@@ -212,9 +212,9 @@
    template <class U> void CheckFunc(...) { 
    std::cout << "has X value" << std::endl; 
    }
-   ```
+```
    3. 使用 `std::declval()` 函数，用于返回一个对象的引用，不论这个对象是否可以被实例化
-   ```c++
+```c++
    // 这里也用到了 替换失败并非错误
    // 当需要对比的类型中不含有这个成员
    // 那么第一个 Check C++ 不会编译而是选择第二个重载函数
@@ -228,13 +228,13 @@
    public:
    enum { Value = std::is_same<decltype(Check<T>(0)), std::true_type>::value };
    };
-   ```
+```
    
 ## C++ 对象模型
 1. 抽象数据类型 ADT (abstract data type)
    借助 `class` 我们可以实现一个十分通用的 `point`
    它将 坐标类型 和 坐标数量 都进行了参数化
-   ```c++
+```c++
    template <typename T, std::size_t N>
    class FPoint{
    private:
@@ -302,7 +302,7 @@
         FPoint<float, 3> Location(3.0f, 1.0f, 0.5f);
         std::cout << Location << std::endl;
    }
-   ```
+```
 2. 每个 `non-inline member function` 只会诞生一个函数实例 每个 `inline function` 都会在每一个类实例上产生一个函数实例
    C++ 在布局以及存取时间上的主要额外负担是由 `virual` 引起的
    - `virual function` 运行期绑定
@@ -323,7 +323,7 @@
    对于非 `virual base class` 相当于 A 继承了两遍 D, 这会造成定义模糊  
    解决方法是 对于 D, 写成 `virual base class` => ```class B : public virual C```  
    但是这同时引入了一个问题 无法在编译期决定 `virual base class` 某个成员的位置 例如
-   ```c++
+```c++
    class X { public: int x; };
    class A : public virual X { public: int a; };
    class B : public virual X { public: int b; };
@@ -337,7 +337,7 @@
    
       return 0;
    }
-   ```
+```
    因此引入了一个指针 指向这个 `virual base class`   
    这个指针是由编译器需要的 所以编译器会合成默认构造函数
 8. 什么时候需要 `copy construct` ？
@@ -368,21 +368,21 @@
 3. `target_include_directories(${PROJECT_NAME} INTERFACE ${PATH_NAME})` 外部引用动态库时，可以通过此方法指定动态库的头文件路径，需要在 `add_library` 之后
 4. `target_link_libraries(${PROJECT_NAME} ${LIB_NAME})` 用来指定链接库，输入名字，需要在 `add_executable` 之后 
 5. `warning C4819: 该文件包含不能在当前代码页(936)中表示的字符` 可以在 CMAKE 中加入 
-    ```C++
+ ```c++
         if (MSVC)
             # 设置 msvc 输入代码编码格式为 utf-8
             set(CMAKE_C_FLAGS /source-charset:utf-8)
         endif()
-    ```
+```
 6. .gitgnore 文件更新
-   ```git
+```git
    git rm -r --cached .
    git add .
    git commit -m 'update .gitignore'
    git push -u origin master
-   ```
+```
 7. `std::enable_shared_from_this` 如果父子类都需要这个特性，那么只需要在父类中继承这个类就可以了。在子类中可以通过 `std::static_ptr_cast<>` 方法来转换到子类的 `shared_ptr`
-   ```C++
+```C++
    class A : public std::enable_shared_from_this<A>
     {
     };
@@ -410,7 +410,7 @@
 
         return 0;
     }
-   ```
+```
 ## 图形学
 1. 画线算法
     1. 中点画线算法  
@@ -418,5 +418,24 @@
    要求斜率在 (0, 1) 之间  
    对于确定的点 P (x, y)， 下一个点应当是 Px (x + 1, y) 或者 Pxy (x + 1, y + 1)  
    设定 Pm 在 Px 和 Pxy 之间，判断这个点在直线的上面还是下面，如果在直线上面，那么下一点就是 Pxy，否则就是 Px
-    2. Horner's algorithm
+    2. Horner's algorithm  
+   是一种快速求解多项式的方法  
+   在斜率为正的前提下  
+   对于任意的 P 点，下一个点一定会在 Px(x, y + 1), Py(x + 1, y), Pxy(x + 1, y + 1) 这三个点之中  
+   设定 E 为 这三个点与曲线的偏差值，分别为 Ex, Ey, Exy  
+   如果 |Exy| < |Ex| 那么 x 方向需要递增  
+   如果 |Exy| < |Ey| 那么 y 方向需要递增   
+   又因为斜率为正 就可以得到下面的表达式
+   > if Ex + Exy > 0 then increment x   
+     if Ey + Exy < 0 then increment y
+   3. 算法过程
+   对于直线隐式方程 (x1 - x0)(y - y0) - (x - x0)(y1 - y0) = 0  
+   dx = x1 - x0    dy = y1 - y0  
+   令 E = (y - y0)dx - (x - x0)dy  
+   Exy = (y + 1 - y0)dx - (x + 1 - x0)dy = E + dx - dy  
+   Ex = (y + 1 - y0)dx - (x - x0)dy = Exy + dy  
+   Ey = (y - y0)dx - (x + 1 - x0)dy = Exy - dx
+   对于起点 (x0, y0) => E1 = (y0 + 1 - y0)dx - (x0 + 1 - x0)dy = dx - dy
+2. 
+
    
