@@ -14,9 +14,6 @@ void MyAppEngine::OnStart() {
 
     SetTitle("MyAppEngine");
 
-    FVector2i I(12, 13);
-    std::cout << I << std::endl;
-
     srand(0);
 }
 constexpr int Num = 1000;

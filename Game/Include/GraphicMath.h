@@ -8,9 +8,12 @@
 #include "SortWarePCH.h"
 #include <cmath>
 
-template <typename T, size_t N>
+template<typename T>
+concept VectorType = std::is_integral<T>::value || std::is_floating_point<T>::value;
+
+template <VectorType T, size_t N>
 class FPoint{
-    template<typename ...Args, typename Function> void UnPack(Function Lambda, T Value, Args... Values)
+    template<VectorType ...Args, typename Function> void UnPack(Function Lambda, T Value, Args... Values)
     {
         Lambda(Value);
         if constexpr(sizeof...(Values) > 0) {
@@ -30,7 +33,7 @@ public:
         }
     }
 
-    template<typename ...Args>
+    template<VectorType ...Args>
     explicit FPoint(Args... InArgs) {
         static_assert(sizeof...(InArgs) == N);
         unsigned int Index = 0;
@@ -55,7 +58,7 @@ private:
     T Coords[N];
 };
 
-template <typename T, size_t N>
+template <VectorType T, size_t N>
 std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
 {
     Out << "(";

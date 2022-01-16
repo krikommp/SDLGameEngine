@@ -414,4 +414,9 @@
 ## 图形学
 1. 画线算法
     1. 中点画线算法  
-   ![MidAlgorithm](https://imgur.com/gallery/1nnrUGK)
+   对于隐式方程 f(x, y) = 0  
+   要求斜率在 (0, 1) 之间  
+   对于确定的点 P (x, y)， 下一个点应当是 Px (x + 1, y) 或者 Pxy (x + 1, y + 1)  
+   设定 Pm 在 Px 和 Pxy 之间，判断这个点在直线的上面还是下面，如果在直线上面，那么下一点就是 Pxy，否则就是 Px
+    2. Horner's algorithm
+   
