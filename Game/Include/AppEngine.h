@@ -56,7 +56,6 @@ protected:
     SoftWareRHI RHI;
     GameTimer Timer;
     GameController Controller;
-
 private:
     FColor ClearColor;
 };

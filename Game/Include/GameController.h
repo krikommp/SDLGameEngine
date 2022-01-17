@@ -32,16 +32,37 @@ enum class MouseType
     MOUSE_RIGHT = 2
 };
 
+struct ButtonState {
+    bool bPressed = false;
+    bool bReleased = false;
+    bool bHold = false;
+};
+
 class GameController : public ITickEngine {
 public:
     void Tick() override;
 
 public:
-    bool GetMouseButtonDown(MouseType Type) const { return MouseButtonDown[static_cast<int>(Type)]; }
-    const FVector2i& GetMousePosition() const { return MousePosition; }
+    FORCEINLINE const FVector2i& GetMousePosition() const { return MousePosition; }
+
+    FORCEINLINE const ButtonState& GetMouse(MouseType Type) const { return MouseButton[static_cast<int>(Type)]; }
+
 private:
-    uint32 MouseButtonDown[3] = { 0 };
+    FORCEINLINE void ClearMouseState() {
+        MouseButton[0].bReleased = false;
+        MouseButton[0].bPressed = false;
+
+        MouseButton[1].bReleased = false;
+        MouseButton[1].bPressed = false;
+
+        MouseButton[2].bReleased = false;
+        MouseButton[2].bPressed = false;
+    }
+private:
     FVector2i MousePosition;
+    ButtonState MouseButton[3];
+
+    uint32 OldButton;
 };
 
 extern Listener<void(IInputEvent*)> GInputObserver;

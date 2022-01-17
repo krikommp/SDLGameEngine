@@ -3,10 +3,11 @@
 //
 
 #include "MyAppEngine.h"
+std::vector<FVector2i> Points;
 
 void MyAppEngine::OnStart() {
     SetWidthAndHeight(FVector2i(480, 240));
-    SetPixelSize(1);
+    SetPixelSize(4);
     SetClearColor(Color::Sky);
     SetTitle("MyAppEngine");
 }

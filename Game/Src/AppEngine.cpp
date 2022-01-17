@@ -16,11 +16,12 @@ void AppEngine::OnExitApp(IInputEvent* pEvent) {
 
 
 void AppEngine::Construct() {
+    srand(static_cast<uint32>(time(nullptr)));
+
     OnStart();
 
     SWindowInfo Info(Width, Height, Title, Pixel);
     RHI.InitRHI(Info);
-    srand(static_cast<uint32>(time(nullptr)));
     GInputObserver.Register(AppEngine::OnExitApp);
 }
 
