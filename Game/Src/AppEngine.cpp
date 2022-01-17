@@ -20,6 +20,7 @@ void AppEngine::Construct() {
 
     SWindowInfo Info{.Width = Width, .Height = Height, .Title = Title};
     RHI.InitRHI(Info);
+    srand(time(0));
     GInputObserver.Register(AppEngine::OnExitApp);
 }
 

@@ -14,6 +14,9 @@
 #include <chrono>
 #include <functional>
 #include <vector>
+#include <exception>
+#include <random>
+#include <thread>
 
 #include <SDL.h>
 #include <fmt/format.h>
