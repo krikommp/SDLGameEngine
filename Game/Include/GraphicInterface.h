@@ -8,11 +8,35 @@
 #include "SortWarePCH.h"
 #include "GraphicMath.h"
 
-struct SWindowInfo{
+class SWindowInfo{
+public:
+    SWindowInfo() {
+        Title = nullptr;
+        Pixel = 1;
+        Width = 1;
+        Height = 1;
+        PixelWidth = 1;
+        PixelHeight = 1;
+    }
+    SWindowInfo(uint32 InWidth, uint32 InHeight, const char* InTitle, uint32 InPixel = 1) {
+        Title = InTitle;
+        Pixel = InPixel;
+
+        Width = InWidth;
+        Height = InHeight;
+
+        PixelWidth = Width / Pixel;
+        PixelHeight = Height / Pixel;
+    }
+public:
     uint32 Width;
     uint32 Height;
+    uint32 Pixel;
 
     const char* Title;
+
+    uint32 PixelWidth;
+    uint32 PixelHeight;
 };
 
 class SoftWareRHI : public NonCopyable{
@@ -40,6 +64,7 @@ private:
     SDL_Renderer* Renderer;
     SDL_Texture* Buffer;
 
+public:
     SWindowInfo WindowInfo;
 
 private:

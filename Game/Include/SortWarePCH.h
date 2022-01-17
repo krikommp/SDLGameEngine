@@ -55,4 +55,9 @@ public:
 private:
     std::vector<Functor> Functions;
 };
+
+/* 注意区分什么时候需要内联，当函数体内部执行时间大于函数调用时间，那么内联就没有很大的作用了 */
+#define FORCEINLINE  __forceinline
+#define FORCENOINLINE __declspec(noinline)
+
 #endif //SDLGAMEENGINE_SORTWAREPCH_H

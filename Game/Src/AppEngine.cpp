@@ -18,9 +18,9 @@ void AppEngine::OnExitApp(IInputEvent* pEvent) {
 void AppEngine::Construct() {
     OnStart();
 
-    SWindowInfo Info{.Width = Width, .Height = Height, .Title = Title};
+    SWindowInfo Info(Width, Height, Title, Pixel);
     RHI.InitRHI(Info);
-    srand(time(0));
+    srand(static_cast<uint32>(time(nullptr)));
     GInputObserver.Register(AppEngine::OnExitApp);
 }
 

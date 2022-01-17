@@ -20,7 +20,7 @@ bool SoftWareRHI::InitRHI(const SWindowInfo &InWindowInfo) {
     if (Window == nullptr) return false;
     Renderer = SDL_CreateRenderer(Window, -1,  SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
     if (Renderer == nullptr) return false;
-    Buffer = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WindowInfo.Width, WindowInfo.Height);
+    Buffer = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WindowInfo.PixelWidth, WindowInfo.PixelHeight);
     if (Buffer == nullptr) return false;
     return true;
 }
@@ -29,13 +29,12 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
     uint32* Dst;
     uint32 Row = 0;
     uint32 Col = 0;
-    for (Row = 0; Row < WindowInfo.Height; ++Row) {
+    for (Row = 0; Row < WindowInfo.PixelHeight; ++Row) {
         Dst = (uint32*)((uint8 *)Pixels + Row * Pitch);
-        for (Col = 0; Col < WindowInfo.Width; ++Col) {
+        for (Col = 0; Col < WindowInfo.PixelWidth; ++Col) {
             *Dst++ = ConvertColorToHEX(Color);
         }
     }
-    // std::cout << Row << "  " << Col << std::endl;
     return true;
 }
 

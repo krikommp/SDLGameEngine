@@ -59,6 +59,15 @@ private:
 };
 
 template <VectorType T, size_t N>
+FPoint<T, N> operator/(const FPoint<T, N>& InPoint, T Value) {
+    FPoint<T, N> Res;
+    for (uint32 Index = 0; Index < N; ++Index) {
+        Res[Index] = InPoint[Index] / Value;
+    }
+    return Res;
+}
+
+template <VectorType T, size_t N>
 std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
 {
     Out << "(";
@@ -74,6 +83,7 @@ std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
 using FVector3f = FPoint<float, 3>;
 using FColor = FPoint<uint8, 4>;
 using FVector2i = FPoint<int, 2>;
+using FVector2ui = FPoint<uint32, 2>;
 using FPoint3f = FVector3f;
 
 static uint32 ConvertColorToHEX(const FColor& Color) {
