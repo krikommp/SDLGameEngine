@@ -527,7 +527,7 @@ lua_tostring(L, -1);
    Exy = (y + 1 - y0)dx - (x + 1 - x0)dy = E + dx - dy  
    Ex = (y + 1 - y0)dx - (x - x0)dy = Exy + dy  
    Ey = (y - y0)dx - (x + 1 - x0)dy = Exy - dx
-   对于起点 (x0, y0) => E1 = (y0 + 1 - y0)dx - (x0 + 1 - x0)dy = dx - dy
+   对于起点 (x0, y0) => E1 = (y0 + 1 - y0)dx - (x0 + 1 - x0)dy = dx + dy
 2. 
 
 

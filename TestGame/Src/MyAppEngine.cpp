@@ -27,6 +27,8 @@ void MyAppEngine::OnUpdate() {
     if (Points.size() > 0) {
         DrawLine(RHI, Points[Index] / int(GetPixelSize()), Controller.GetMousePosition() / int(GetPixelSize()), Color::Red);
     }
+
+    DrawEllipse(RHI, 100, 100, 50, 50, Color::Red);
 }
 
 void MyAppEngine::OnExit() {

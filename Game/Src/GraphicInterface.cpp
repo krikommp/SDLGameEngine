@@ -76,6 +76,29 @@ void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Co
     }
 }
 
+void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& Color) {
+    int X = -A, Y = 0;
+    long E2 = (long) B * B, Err = X * (2 * E2 + X) + E2;
+    do {
+        RHI.SetPixel(MX - X, MY + Y, Color);
+        RHI.SetPixel(MX + X, MY + Y, Color);
+        RHI.SetPixel(MX + X, MY - Y, Color);
+        RHI.SetPixel(MX - X, MY - Y, Color);
+        E2 = 2 * Err;
+        if (E2 >= (X * 2 + 1) * (long) B * B) {
+            Err += (++X * 2 + 1) + (long) B * B;
+        }
+        if (E2 <= (Y * 2 + 1) * (long) A * A) {
+            Err += (++Y * 2 + 1) + (long) A * A;
+        }
+    }while( X <= 0);
+
+    while (Y++ < B) {
+        RHI.SetPixel(MX, MY + Y, Color);
+        RHI.SetPixel(MX, MY - Y, Color);
+    }
+}
+
 bool SoftWareRHI::BeginRHI() {
     return SDL_LockTexture(Buffer, nullptr, &Pixels, &Pitch) >= 0;
 }
