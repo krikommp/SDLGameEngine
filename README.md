@@ -427,10 +427,82 @@ C++ 端也可以通过 lua api 来或获取栈上的数据
     // 最后需要释放掉 lua虚拟机
     lua_close(L);
 ```
+> 需要注意的是，必须要先进行 lua_pcall() 操作，才可以针对 lua 虚拟栈进行操作，否则将会报错。 (lua_getglobal 等)
+> lua 调用 c 函数的注册可以在 lua_pcall() 之前完成。(lua_setglobal)
 2. 调用 C++ 函数
-   - c++ 函数需要有 ```extern "C``` 
-3. dsad
-4. 
+   - c++ 函数需要有 ```extern "C"``` 包裹
+   - 所有 C++ 函数都需要一个形如 ```typedef int(*lua_CFunction)(lua_State* L)``` 的辅助函数包裹，在这个函数内部通过虚拟栈获取参数，然后调用 C 函数，将返回值压入虚拟栈中
+```C++
+EXPORTC long long CCodeMyAdd(long long A, long long B) {
+    return A + B;
+}
+
+EXPORTC int PCFCCodeMyAdd(lua_State* L) {
+    long long A = lua_tointeger(L, -2);
+    long long B = lua_tointeger(L, -1);
+    long long Ret = CCodeMyAdd(A, B);
+    lua_pushinteger(L, Ret);
+    return 1;
+}
+void Test_CCode_For_Lua()
+{
+	cout << "---------------test c code for lua--------------------" << endl;
+	lua_State* lua = luaL_newstate();
+	luaL_openlibs(lua);
+    // 首先要进行 c 函数注册，否则 lua 中无法获取到函数
+	lua_register(lua, "CCode_MyAdd", pcf_CCode_MyAdd);
+    // 执行 lua 脚本
+	luaL_dostring(lua, "print(\"lua add:\"..CCode_MyAdd(100,1000))");
+
+	lua_close(lua);
+	cout << "---------------test c code for lua--------------------" << endl;
+}
+```
+3. 在 c/c++ 中调用 lua 函数
+   - 通过 `lua_getglobal(L, n)` 设置 lua 函数的名字
+   - 通过 `lua_pushinteger(L, n)` 等一系列函数设置 lua 函数需要的参数
+   - 通过 `lua_call(L, n, r)` 来调用 lua 函数，n 表示传入参数的格式，r 表示传出返回值个数
+   - 通过 `lua_tointeger(L, n)` 等一系列函数从虚拟栈上获取函数的返回值（-1）
+   - 通过 `lua_pop(L, 1)` 来恢复栈
+```c++
+   // lua加载字符，生成lua全局函数LuaCode_MyAdd
+   luaL_dostring(lua, "function LuaCode_MyAdd (x,y) return x+y end");
+   // lua栈和压入数据
+   lua_getglobal(lua, "LuaCode_MyAdd");
+   lua_pushinteger(lua, 100);
+   lua_pushinteger(lua, 200);
+   // C调用lua中的函数，2个传入参数，1个返回参数
+   lua_call(lua, 2, 1);
+   cout << "lua function ret:" << lua_tointeger(lua, -1) << endl;
+   // 栈回到原始状态
+   lua_pop(lua, 1);
+```
+4. c/c++ 访问与修改 lua 变量
+   - 访问普通的值  
+   1. 通过 `lua_getglobal` 将值压入栈顶
+   2. 通过 `lua_tostring(-1)` 将刚刚压入的栈顶值读出来
+   - 访问 table  
+   首先清空栈，将需要获取的 table 名字压入栈中，此时 table 名字位于 -1。然后将需要获取的字段，例如 name（字符串），压入栈中，此时 name = -1, table = -2,  
+   然后调用 `lua_gettable(L, Index)`, 参数中的 Index 表示当前 table 表的下标，他会把栈顶 -1 的 name 替换成 table 表中的 name 字段值。
+   也可以使用 `lua_getfield(L, Index, Name)` 代替上述过程
+```c++
+// in XXX.lua
+
+GlobalReadTable = {Name = "Name", Age = 12};
+
+// in Main.cpp
+
+lua_getglobal(L, "GlobalReadTable");
+// 设置查询的 key 值，此时 GlobalReadTable = -2, Name = -1
+lua_pushstring(L, "Name")
+// -2 是指 GlobalReadTable 的栈索引，调用之后会把 GlobalReadTable 中的 Name 值放到 -1 中
+lua_gettable(L, -2);
+// 然后就可以从栈顶取出查询出来的值
+lua_tostring(L, -1);
+```
+   - 修改 table
+   
+5. 
 ## 图形学
 1. 画线算法
     1. 中点画线算法  
