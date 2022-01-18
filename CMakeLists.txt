@@ -32,3 +32,4 @@ add_subdirectory(Example)
 add_subdirectory(Game)
 
 add_subdirectory(TestGame)
+add_subdirectory(LuaGame)

@@ -411,6 +411,26 @@
         return 0;
     }
 ```
+## Lua 交互
+lua 本质就是管理了一些栈结构，所以一些需要交互的函数或者参数等，都需要经过压栈的操作
+lua 端就是从这个虚拟栈中取出数据执行
+C++ 端也可以通过 lua api 来或获取栈上的数据
+1. 创建 Lua 虚拟机
+```c++
+    lua_State *L;
+    L = luaL_newstate();
+    // 加载一些必要库，比如 stl
+    luaL_openlibs(L);
+    
+    /* some code */
+    
+    // 最后需要释放掉 lua虚拟机
+    lua_close(L);
+```
+2. 调用 C++ 函数
+   - c++ 函数需要有 ```extern "C``` 
+3. dsad
+4. 
 ## 图形学
 1. 画线算法
     1. 中点画线算法  
@@ -444,4 +464,7 @@
    File -> Setting -> Editor -> File Encoding 下  
    将所有 Encoding 设置为 utf-8  
    然后将项目文件设置为 GBK
+2. CLion 下加载文件路径不对的问题  
+   只能根据绝对路径加载   
+   解决方法：打开 Build Configurations.. ，设置 Working directory 到需要的路径
    

@@ -104,7 +104,7 @@ void TestMakeIndex(IndexSeq<N...>) {
 
 template <typename Tuple, typename Func, size_t... N>
 void FunCallTuple(const Tuple& tuple, Func&& Function, std::index_sequence<N...>) {
-    // 用到了逗号运算符，会返回逗号后面的数值
+    // ?????????????????????????????
     static_cast<void>(std::initializer_list<int>{ (Function(std::get<N>(tuple)), 0)... });
 }
 
@@ -317,7 +317,7 @@ int main(int argc, char* argv[]) {
     lua_State *L;
     L = luaL_newstate();
     luaL_openlibs(L);
-    if (luaL_loadfile(L, "D:\\CppProjects\\SDLGameEngine\\Example\\luascript.lua")) {
+    if (luaL_loadfile(L, "F:\\CppProjects\\SDLGameEngine\\Example\\luascript.lua")) {
         cerr << "Load Lua file Error" << endl;
         cerr << lua_tostring(L, -1) << endl;
         lua_pop(L,1);
