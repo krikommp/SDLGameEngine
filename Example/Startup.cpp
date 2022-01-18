@@ -104,7 +104,7 @@ void TestMakeIndex(IndexSeq<N...>) {
 
 template <typename Tuple, typename Func, size_t... N>
 void FunCallTuple(const Tuple& tuple, Func&& Function, std::index_sequence<N...>) {
-    // ç”¨åˆ°äº†é€—å·è¿ç®—ç¬¦ï¼Œä¼šè¿”å›é€—å·åé¢çš„æ•°å€¼
+    // ÓÃµ½ÁË¶ººÅÔËËã·û£¬»á·µ»Ø¶ººÅºóÃæµÄÊıÖµ
     static_cast<void>(std::initializer_list<int>{ (Function(std::get<N>(tuple)), 0)... });
 }
 
@@ -301,52 +301,116 @@ public:
     MyString String;
 };
 
-int main(int argc, char **args)
-{
-    // MyActor actor;
-    // actor.Tick(0.5f);
+#include <lua.hpp>
 
-    Printf2("Hello World", 2, 2.04, 0x001);
-    // PrintfIndexSequence(std::make_index_sequence<10>());
-    TestClass<int, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0> a;
-    a.Test();
+extern "C" {
+    static int l_cppfunction(lua_State* L) {
+        double arg = luaL_checknumber(L, 1);
+        lua_pushnumber(L, arg * 0.5);
+        return 1;
+    }
+}
 
-    TestMakeIndex(MakeIndexSeq<100>());
+using namespace std;
 
-    auto T = std::make_tuple(1, 0.3545, "Happy Day");
-    TravelTuple(T, [](auto&& Item){
-        std::cout << Item << ", ";
-    });
-    std::cout << std::endl;
-
-    auto Str = STRING("1234");
-    using Tyu = decltype(Str);
-    static_assert(std::is_same<Tyu, std::integer_sequence<char, '1', '2', '3', '4'>>::value, "WTF");
-
-    if ( HasMemberF1<TestBB>::Value ) {
-        std::cout << "Has F1 function" << std::endl;
-    }else {
-        std::cout << "No F1 Function" << std::endl;
+int main(int argc, char* argv[]) {
+    lua_State *L;
+    L = luaL_newstate();
+    luaL_openlibs(L);
+    if (luaL_loadfile(L, "D:\\CppProjects\\SDLGameEngine\\Example\\luascript.lua")) {
+        cerr << "Load Lua file Error" << endl;
+        cerr << lua_tostring(L, -1) << endl;
+        lua_pop(L,1);
     }
 
-    std::cout << "============" << std::endl;
-    FPoint<double, 3> Location(1.0, 0.5, 0.2);
-    std::cout << Location << std::endl;
+    cout << ">> ´Ó C++ Ğ´ÈëÊı¾İµ½ cppvar" << endl;
+    lua_pushnumber(L, 1.1);
+    lua_setglobal(L, "cppvar");
 
-    FCircle* pCircle = new FCircle();
-    FShape* pShape = dynamic_cast<FCircle*>(pCircle);
+    cout << ">> Ö´ĞĞ lua ÎÄ¼ş" << endl << endl;
+    if (lua_pcall(L,0, LUA_MULTRET, 0)) {
+        cerr << "Ö´ĞĞÎÄ¼ş³öÏÖ´íÎó" << endl;
+        cerr << lua_tostring(L, -1) << endl;
+        lua_pop(L,1);
+    }
 
-    Bar bar;
-    ShowWhite ShowWhite;
+    cout << ">> ´Ó lua ÖĞ¶ÁÈ¡È«¾Ö±äÁ¿ luavar µ½ C++" << endl;
+    lua_getglobal(L, "luavar");
+    double luavar = lua_tonumber(L,-1);
+    lua_pop(L,1);
+    cout << "C++ ´Ó Lua ¶ÁÈ¡µ½µÄ luavar = " << luavar << endl << endl;
 
-    std::cout << "============" << std::endl;
-    DerivedSneezy DerivedSneezy;
+    cout << ">> ´Ó lua ÖĞÖ´ĞĞ myfunction ·½·¨" << endl;
+    lua_getglobal(L, "myluafunction");
+    lua_pushnumber(L, 5);
+    lua_pcall(L, 1, 1, 0);
+    cout << "º¯ÊıµÄ·µ»ØÖµµÄ: " << lua_tostring(L, -1) << endl << endl;
+    lua_pop(L,1);
 
-    std::cout << "============" << std::endl;
-    MyString Strss("Hello World");
-    MyString SSA = Strss;
-    std::cout << Strss << std::endl;
-    std::cout << SSA << std::endl;
-    std::cout << "============" << std::endl;
+    cout << ">> ´Ó lua Ö´ĞĞ C++ ·½·¨" << endl;
+    cout << ">>>> Ê×ÏÈÒªÔÚ lua ÖĞ×¢²á C++ ·½·¨" << endl;
+    lua_pushcfunction(L,l_cppfunction);
+    lua_setglobal(L, "cppfunction");
+
+    cout << ">>>> µ÷ÓÃ lua º¯ÊıÒÔÖ´ĞĞ c++ º¯Êı" << endl;
+    lua_getglobal(L, "myfunction");
+    lua_pushnumber(L, 5);
+    lua_pcall(L, 1, 1, 0);
+    cout << "º¯ÊıµÄ·µ»ØÖµÊÇ£º" << lua_tonumber(L, -1) << endl << endl;
+    lua_pop(L,1);
+
+    cout << "ÊÍ·Å lua ×ÊÔ´" << endl;
+    lua_close(L);
+
     return 0;
 }
+
+//int main(int argc, char **args)
+//{
+//    // MyActor actor;
+//    // actor.Tick(0.5f);
+//
+//    Printf2("Hello World", 2, 2.04, 0x001);
+//    // PrintfIndexSequence(std::make_index_sequence<10>());
+//    TestClass<int, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0> a;
+//    a.Test();
+//
+//    TestMakeIndex(MakeIndexSeq<100>());
+//
+//    auto T = std::make_tuple(1, 0.3545, "Happy Day");
+//    TravelTuple(T, [](auto&& Item){
+//        std::cout << Item << ", ";
+//    });
+//    std::cout << std::endl;
+//
+//    auto Str = STRING("1234");
+//    using Tyu = decltype(Str);
+//    static_assert(std::is_same<Tyu, std::integer_sequence<char, '1', '2', '3', '4'>>::value, "WTF");
+//
+//    if ( HasMemberF1<TestBB>::Value ) {
+//        std::cout << "Has F1 function" << std::endl;
+//    }else {
+//        std::cout << "No F1 Function" << std::endl;
+//    }
+//
+//    std::cout << "============" << std::endl;
+//    FPoint<double, 3> Location(1.0, 0.5, 0.2);
+//    std::cout << Location << std::endl;
+//
+//    FCircle* pCircle = new FCircle();
+//    FShape* pShape = dynamic_cast<FCircle*>(pCircle);
+//
+//    Bar bar;
+//    ShowWhite ShowWhite;
+//
+//    std::cout << "============" << std::endl;
+//    DerivedSneezy DerivedSneezy;
+//
+//    std::cout << "============" << std::endl;
+//    MyString Strss("Hello World");
+//    MyString SSA = Strss;
+//    std::cout << Strss << std::endl;
+//    std::cout << SSA << std::endl;
+//    std::cout << "============" << std::endl;
+//    return 0;
+//}

@@ -438,4 +438,10 @@
    对于起点 (x0, y0) => E1 = (y0 + 1 - y0)dx - (x0 + 1 - x0)dy = dx - dy
 2. 
 
+
+## 额外
+1. clion 下中文乱码问题
+   File -> Setting -> Editor -> File Encoding 下  
+   将所有 Encoding 设置为 utf-8  
+   然后将项目文件设置为 GBK
    

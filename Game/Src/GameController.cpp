@@ -23,6 +23,10 @@ void GameController::Tick() {
 						AppExitEvent Event;
 						GInputObserver.NotifyAll(&Event);
 	                }
+                    if (Event.key.keysym.sym == SDLK_ESCAPE) {
+                        AppExitEvent Event;
+                        GInputObserver.NotifyAll(&Event);
+                    }
 	            }
                 break;
 			case SDL_MOUSEBUTTONDOWN:
