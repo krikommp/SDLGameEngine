@@ -6,7 +6,7 @@
 std::vector<FVector2i> Points;
 
 void MyAppEngine::OnStart() {
-    SetWidthAndHeight(FVector2i(480, 240));
+    SetWidthAndHeight(FVector2i(1280, 720));
     SetPixelSize(1);
     SetClearColor(Color::Sky);
     SetTitle("MyAppEngine");
@@ -28,7 +28,7 @@ void MyAppEngine::OnUpdate() {
         DrawLine(RHI, Points[Index] / int(GetPixelSize()), Controller.GetMousePosition() / int(GetPixelSize()), Color::Red);
     }
 
-    DrawEllipse(RHI, 100, 100, 50, 50, Color::Red);
+    DrawEllipse(RHI, GetPixelWidth() / 2, GetPixelHeight() / 2, 50, 100, Color::Red);
 }
 
 void MyAppEngine::OnExit() {

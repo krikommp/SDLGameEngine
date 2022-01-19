@@ -77,21 +77,24 @@ void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Co
 }
 
 void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& Color) {
-    int X = -A, Y = 0;
-    long E2 = (long) B * B, Err = X * (2 * E2 + X) + E2;
+    long X = -A, Y = 0;
+    long E2 = B, DX = (1 + 2 * X) * E2 * E2;
+    long DY = X * X, Err = DX + DY;
     do {
         RHI.SetPixel(MX - X, MY + Y, Color);
         RHI.SetPixel(MX + X, MY + Y, Color);
         RHI.SetPixel(MX + X, MY - Y, Color);
         RHI.SetPixel(MX - X, MY - Y, Color);
         E2 = 2 * Err;
-        if (E2 >= (X * 2 + 1) * (long) B * B) {
-            Err += (++X * 2 + 1) + (long) B * B;
+        if (E2 >= DX) {
+            X++;
+            Err += DX += 2 * (long)B * B;
         }
-        if (E2 <= (Y * 2 + 1) * (long) A * A) {
-            Err += (++Y * 2 + 1) + (long) A * A;
+        if (E2 <= DY) {
+            Y++;
+            Err += DY += 2 * (long) A * A;
         }
-    }while( X <= 0);
+    }while(X <= 0);
 
     while (Y++ < B) {
         RHI.SetPixel(MX, MY + Y, Color);
