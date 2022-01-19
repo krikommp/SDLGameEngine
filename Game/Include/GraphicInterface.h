@@ -5,7 +5,7 @@
 #ifndef SDLGAMEENGINE_GRAPHICINTERFACE_H
 #define SDLGAMEENGINE_GRAPHICINTERFACE_H
 
-#include "SortWarePCH.h"
+#include "SoftWarePCH.h"
 #include "GraphicMath.h"
 
 class SWindowInfo{

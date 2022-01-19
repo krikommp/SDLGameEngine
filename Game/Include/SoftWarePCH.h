@@ -2,8 +2,8 @@
 // Created by chenyifei on 2022/1/13.
 //
 
-#ifndef SDLGAMEENGINE_SORTWAREPCH_H
-#define SDLGAMEENGINE_SORTWAREPCH_H
+#ifndef SDLGAMEENGINE_SOFTWAREPCH_H
+#define SDLGAMEENGINE_SOFTWAREPCH_H
 
 #include <cstdlib>
 #include <ostream>
@@ -60,4 +60,4 @@ private:
 #define FORCEINLINE  __forceinline
 #define FORCENOINLINE __declspec(noinline)
 
-#endif //SDLGAMEENGINE_SORTWAREPCH_H
+#endif //SDLGAMEENGINE_SOFTWAREPCH_H

@@ -5,7 +5,7 @@
 #ifndef SDLGAMEENGINE_GRAPHICMATH_H
 #define SDLGAMEENGINE_GRAPHICMATH_H
 
-#include "SortWarePCH.h"
+#include "SoftWarePCH.h"
 #include <cmath>
 
 template<typename T>

@@ -12,7 +12,9 @@ void MyAppEngine::OnStart() {
     SetTitle("MyAppEngine");
 }
 
+float t = 0.0f;
 void MyAppEngine::OnUpdate() {
+    t += Timer.fElapsedTime;
     if (Controller.GetMouse(MouseType::MOUSE_LEFT).bPressed) {
         Points.push_back(Controller.GetMousePosition());
     }
@@ -24,11 +26,11 @@ void MyAppEngine::OnUpdate() {
         DrawLine(RHI, Points[Index] / int(GetPixelSize()), Points[Index + 1] / int(GetPixelSize()), Color::Red);
         Index++;
     }
-    if (Points.size() > 0) {
+    if (!Points.empty()) {
         DrawLine(RHI, Points[Index] / int(GetPixelSize()), Controller.GetMousePosition() / int(GetPixelSize()), Color::Red);
     }
 
-    DrawEllipse(RHI, int(GetPixelWidth()) / 2, int(GetPixelHeight()) / 2, 50, 150, Color::Red);
+    DrawEllipse(RHI, int(GetPixelWidth()) / 2, int(GetPixelHeight()) / 2, int(50 * abs(cos(t) + 2)), int(50 * abs(cos(t) + 2)), Color::Red);
 }
 
 void MyAppEngine::OnExit() {
