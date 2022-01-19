@@ -68,7 +68,9 @@ void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Co
     int Err = DX + DY, E2;  // E = dx + (-dy) = dx - dy 这是初始的 E1
     for(;;)
     {
-        RHI.SetPixel(AX, AY, Color);
+        if (CheckPixelInScope(RHI, AX, AY)) {
+            RHI.SetPixel(AX, AY, Color);
+        }
         if (AX == BX && AY == BY) break;
         E2 = 2 * Err;      // Exy + Ex = Exy + Exy + dy = 2Exy - (-dy) > 0     Exy + Ey = 2Exy - dx < 0
         if (E2 >= DY) { Err += DY; AX += SX; }  // 这里因为 dy 是负值 所以写成 2Exy - dy > 0 => 2Exy > dy
@@ -81,10 +83,10 @@ void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& C
     long E2 = B, DX = (1 + 2 * X) * E2 * E2;
     long DY = X * X, Err = DX + DY;
     do {
-        RHI.SetPixel(MX - X, MY + Y, Color);
-        RHI.SetPixel(MX + X, MY + Y, Color);
-        RHI.SetPixel(MX + X, MY - Y, Color);
-        RHI.SetPixel(MX - X, MY - Y, Color);
+        if (CheckPixelInScope(RHI, MX - X, MY + Y)) RHI.SetPixel(MX - X, MY + Y, Color);
+        if (CheckPixelInScope(RHI, MX + X, MY + Y)) RHI.SetPixel(MX + X, MY + Y, Color);
+        if (CheckPixelInScope(RHI, MX + X, MY - Y)) RHI.SetPixel(MX + X, MY - Y, Color);
+        if (CheckPixelInScope(RHI, MX - X, MY - Y)) RHI.SetPixel(MX - X, MY - Y, Color);
         E2 = 2 * Err;
         if (E2 >= DX) {
             X++;

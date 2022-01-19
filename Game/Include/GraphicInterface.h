@@ -59,6 +59,9 @@ public:
 public:
     void SetTitleText(float FPS);
 
+public:
+    uint32 GetPixelWidth() const { return WindowInfo.PixelWidth; }
+    uint32 GetPixelHeight() const { return WindowInfo.PixelHeight; }
 private:
     SDL_Window* Window;
     SDL_Renderer* Renderer;
@@ -85,6 +88,7 @@ private:
     SoftWareRHI* RHI;
 };
 
+FORCEINLINE bool CheckPixelInScope(const SoftWareRHI& RHI ,int X, int Y) { return X >= 0 && X < static_cast<int>(RHI.GetPixelWidth()) && Y >= 0 &&  Y < static_cast<int>(RHI.GetPixelHeight());  }
 void DrawLine(SoftWareRHI& RHI, const FVector2i& A, const FVector2i& B, const FColor& Color);
 void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Color);
 void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& Color);
