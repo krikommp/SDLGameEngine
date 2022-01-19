@@ -104,6 +104,12 @@ void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& C
     }
 }
 
+void DrawTriangle(SoftWareRHI &RHI, const FVector2i &A, const FVector2i &B, const FVector2i &C, const FColor& Color) {
+    DrawLine(RHI, A, B, Color);
+    DrawLine(RHI, A, C, Color);
+    DrawLine(RHI, B, C, Color);
+}
+
 bool SoftWareRHI::BeginRHI() {
     return SDL_LockTexture(Buffer, nullptr, &Pixels, &Pitch) >= 0;
 }
