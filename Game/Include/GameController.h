@@ -48,16 +48,9 @@ public:
     FORCEINLINE const ButtonState& GetMouse(MouseType Type) const { return MouseButton[static_cast<int>(Type)]; }
 
 private:
-    FORCEINLINE void ClearMouseState() {
-        MouseButton[0].bReleased = false;
-        MouseButton[0].bPressed = false;
+    FORCEINLINE void ClearMouseState();
 
-        MouseButton[1].bReleased = false;
-        MouseButton[1].bPressed = false;
-
-        MouseButton[2].bReleased = false;
-        MouseButton[2].bPressed = false;
-    }
+    FORCEINLINE void SetButtonState(int State, ButtonState& Button);
 private:
     FVector2i MousePosition;
     ButtonState MouseButton[3];

@@ -32,38 +32,26 @@ void GameController::Tick() {
 			case SDL_MOUSEBUTTONDOWN:
 				{
                     if (Button & SDL_BUTTON_LMASK) {
-                        MouseButton[0].bPressed = true;
-                        MouseButton[0].bHold = true;
-                        MouseButton[0].bReleased = false;
+                        SetButtonState(1, MouseButton[0]);
                     }
                     if (Button & SDL_BUTTON_MMASK) {
-                        MouseButton[1].bPressed = true;
-                        MouseButton[1].bHold = true;
-                        MouseButton[1].bReleased = false;
+                        SetButtonState(1, MouseButton[1]);
                     }
                     if (Button & SDL_BUTTON_RMASK) {
-                        MouseButton[2].bPressed = true;
-                        MouseButton[2].bHold = true;
-                        MouseButton[2].bReleased = false;
+                        SetButtonState(1, MouseButton[2]);
                     }
 				}
 				break;
             case SDL_MOUSEBUTTONUP:
                 {
                     if ((OldButton ^ Button) & SDL_BUTTON_LMASK) {
-                        MouseButton[0].bPressed = false;
-                        MouseButton[0].bHold = false;
-                        MouseButton[0].bReleased = true;
+                        SetButtonState(0, MouseButton[0]);
                     }
                     if ((OldButton ^ Button) & SDL_BUTTON_MMASK) {
-                        MouseButton[1].bPressed = false;
-                        MouseButton[1].bHold = false;
-                        MouseButton[1].bReleased = true;
+                        SetButtonState(0, MouseButton[1]);
                     }
                     if ((OldButton ^ Button) & SDL_BUTTON_RMASK) {
-                        MouseButton[2].bPressed = false;
-                        MouseButton[2].bHold = false;
-                        MouseButton[2].bReleased = true;
+                        SetButtonState(0, MouseButton[2]);
                     }
                 }
                 break;
@@ -77,5 +65,29 @@ void GameController::Tick() {
                 break;
         }
         OldButton = Button;
+    }
+}
+
+void GameController::ClearMouseState() {
+    for (auto & Index : MouseButton) {
+        Index.bReleased = false;
+        Index.bPressed = false;
+    }
+}
+
+void GameController::SetButtonState(int State, ButtonState &Button) {
+    switch (State) {
+        case 0:
+            Button.bPressed = false;
+            Button.bReleased = true;
+            Button.bHold = false;
+            break;
+        case 1:
+            Button.bPressed = true;
+            Button.bReleased = false;
+            Button.bHold = true;
+            break;
+        default:
+            break;
     }
 }
