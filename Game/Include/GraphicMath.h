@@ -90,6 +90,8 @@ public:
     FORCEINLINE FPoint<T, 3> operator +(const FPoint<T, 3>& V) const { return FPoint<T, 3>(X + V.X, Y + V.Y, Z + V.Z); }
     FORCEINLINE FPoint<T, 3> operator -(const FPoint<T, 3>& V) const { return FPoint<T, 3>(X - V.X, Y - V.Y, Z - V.Z); }
     FORCEINLINE FPoint<T, 3> operator *(float V) const { return FPoint<T, 3>(X * V, Y * V, Z * V); }
+    FORCEINLINE FPoint<T, 3> operator +(float V) const { return FPoint<T, 3>(X + V, Y + V, Z + V); }
+    FORCEINLINE FPoint<T, 3> operator -(float V) const { return FPoint<T, 3>(X - V, Y - V, Z - V); }
     FORCEINLINE T operator *(const FPoint<T, 3>& V) const { return X * V.X + Y * V.Y + Z * V.Z; }
     float Norm() const { return std::sqrt(X * X + Y * Y + Z * Z); }
     FPoint<T, 3>& Normalize(T L = 1) { *this = (*this) * (L / Norm()); return *this; }
