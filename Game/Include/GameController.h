@@ -48,14 +48,14 @@ public:
     FORCEINLINE const ButtonState& GetMouse(MouseType Type) const { return MouseButton[static_cast<int>(Type)]; }
 
 private:
-    FORCEINLINE void ClearMouseState();
+    void ClearMouseState();
 
     FORCEINLINE void SetButtonState(int State, ButtonState& Button);
 private:
     FVector2i MousePosition;
     ButtonState MouseButton[3];
 
-    uint32 OldButton;
+    uint32 OldButton = 0;
 };
 
 extern Listener<void(IInputEvent*)> GInputObserver;

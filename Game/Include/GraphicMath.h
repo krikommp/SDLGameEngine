@@ -58,6 +58,54 @@ private:
     T Coords[N];
 };
 
+template <VectorType T>
+class FPoint<T, 2>{
+public:
+    FPoint() { Coords[0] = Coords[1] = 0; }
+    FPoint(T InX, T InY) { Coords[0] = InX; Coords[1] = InY; }
+
+public:
+    FORCEINLINE FPoint<T, 2> operator +(const FPoint<T, 2>& InV) const { return FPoint<T, 2>(U + InV.U, V + InV.V); }
+    FORCEINLINE FPoint<T, 2> operator -(const FPoint<T, 2>& InV) const { return FPoint<T, 2>(U - InV.U, V - InV.V); }
+    FORCEINLINE FPoint<T, 2> operator *(float InF) const { return FPoint<T, 2>(U * InF, V * InF); }
+    FORCEINLINE T& operator[] (size_t Index) { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
+    FORCEINLINE T operator[] (size_t Index) const { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
+public:
+    union {
+        struct {T U, V;};
+        struct {T X, Y;};
+        T Coords[2];
+    };
+};
+
+template <VectorType T>
+class FPoint<T, 3> {
+public:
+    FPoint() { Coords[0] = Coords[1] = Coords[2] = 0; }
+    FPoint(T InX, T InY, T InZ) { Coords[0] = InX; Coords[1] = InY; Coords[2] = InZ; }
+
+public:
+
+    FORCEINLINE FPoint<T, 3> operator ^(const FPoint<T, 3>& V) const { return FPoint<T, 3>(Y * V.Z - Z * V.Y, Z * V.X - X * V.Z, X * V.Y - Y * V.X); }
+    FORCEINLINE FPoint<T, 3> operator +(const FPoint<T, 3>& V) const { return FPoint<T, 3>(X + V.X, Y + V.Y, Z + V.Z); }
+    FORCEINLINE FPoint<T, 3> operator -(const FPoint<T, 3>& V) const { return FPoint<T, 3>(X - V.X, Y - V.Y, Z - V.Z); }
+    FORCEINLINE FPoint<T, 3> operator *(float V) const { return FPoint<T, 3>(X * V, Y * V, Z * V); }
+    FORCEINLINE T operator *(const FPoint<T, 3>& V) const { return X * V.X + Y * V.Y + Z * V.Z; }
+    float Norm() const { return std::sqrt(X * X + Y * Y + Z * Z); }
+    FPoint<T, 3>& Normalize(T L = 1) { *this = (*this) * (L / Norm()); return *this; }
+
+    FORCEINLINE T& operator[] (size_t Index) { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
+
+    FORCEINLINE T operator[] (size_t Index) const { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
+
+public:
+    union {
+        T Coords[3];
+        struct {T X, Y, Z;};
+        struct {T iVert, iUV, iNorm;};
+    };
+};
+
 template <VectorType T, size_t N>
 FPoint<T, N> operator/(const FPoint<T, N>& InPoint, T Value) {
     FPoint<T, N> Res;
@@ -80,8 +128,10 @@ std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
     return Out;
 }
 
+using FVector3i = FPoint<int, 3>;
 using FVector3f = FPoint<float, 3>;
 using FColor = FPoint<uint8, 4>;
+using FVector2f = FPoint<float, 2>;
 using FVector2i = FPoint<int, 2>;
 using FVector2ui = FPoint<uint32, 2>;
 using FPoint3f = FVector3f;
