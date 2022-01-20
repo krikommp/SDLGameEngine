@@ -93,8 +93,8 @@ public:
     FORCEINLINE FPoint<T, 3> operator +(float V) const { return FPoint<T, 3>(X + V, Y + V, Z + V); }
     FORCEINLINE FPoint<T, 3> operator -(float V) const { return FPoint<T, 3>(X - V, Y - V, Z - V); }
     FORCEINLINE T operator *(const FPoint<T, 3>& V) const { return X * V.X + Y * V.Y + Z * V.Z; }
-    float Norm() const { return std::sqrt(X * X + Y * Y + Z * Z); }
-    FPoint<T, 3>& Normalize(T L = 1) { *this = (*this) * (L / Norm()); return *this; }
+    FORCEINLINE float Norm() const { return std::sqrt(X * X + Y * Y + Z * Z); }
+    FORCEINLINE FPoint<T, 3>& Normalize(T L = 1) { *this = (*this) * (L / Norm()); return *this; }
 
     FORCEINLINE T& operator[] (size_t Index) { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
 
@@ -131,7 +131,7 @@ std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
 }
 
 template <VectorType T, size_t N>
-void Swap(FPoint<T, N>& Left, FPoint<T, N>& Right) {
+FORCEINLINE void Swap(FPoint<T, N>& Left, FPoint<T, N>& Right) {
     FPoint<T, N> Tmp;
     for (uint32 Index = 0; Index < N; ++Index) {
         Tmp[Index] = Left[Index];
@@ -148,7 +148,7 @@ using FVector2i = FPoint<int, 2>;
 using FVector2ui = FPoint<uint32, 2>;
 using FPoint3f = FVector3f;
 
-static uint32 ConvertColorToHEX(const FColor& Color) {
+FORCEINLINE static uint32 ConvertColorToHEX(const FColor& Color) {
     // R G B A
     uint32 FormatColor = (Color[0] << 24) | (Color[1] << 16) | (Color[2] << 8) | (Color[3]);
     return FormatColor;
@@ -156,7 +156,7 @@ static uint32 ConvertColorToHEX(const FColor& Color) {
 
 namespace Color{
     static FColor White(255, 255, 255, 255);
-    static FColor  Sky(173, 216, 230, 255);
+    static FColor Sky(173, 216, 230, 255);
     static FColor Black(0, 0, 0, 255);
     static FColor Red(255, 0, 0, 255);
     static FColor Green(0, 255, 0, 255);
