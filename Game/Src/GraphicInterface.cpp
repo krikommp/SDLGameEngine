@@ -39,7 +39,7 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
 }
 
 void SoftWareRHI::SetPixel(uint32 X, uint32 Y, const FColor &Color) {
-    uint32* Dst = (uint32*)((uint8*)Pixels + Y * Pitch);
+    uint32* Dst = (uint32*)((uint8*)Pixels + (WindowInfo.PixelHeight - Y) * Pitch);
     *(Dst + X) = ConvertColorToHEX(Color);
 }
 
@@ -104,10 +104,16 @@ void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& C
     }
 }
 
-void DrawTriangle(SoftWareRHI &RHI, const FVector2i &A, const FVector2i &B, const FVector2i &C, const FColor& Color) {
-    DrawLine(RHI, A, B, Color);
-    DrawLine(RHI, A, C, Color);
-    DrawLine(RHI, B, C, Color);
+void DrawTriangle(SoftWareRHI &RHI, FVector2i &A, FVector2i &B,  FVector2i &C, const FColor& Color) {
+    // 首先从上到下，从左到右绘制三角形
+    // 从上到下依次是： A -> B -> C
+    if (A.Y < B.Y) Swap(A, B);
+    if (A.Y < C.Y) Swap(A, C);
+    if (B.Y < C.Y) Swap(B, C);
+
+    DrawLine(RHI, A, B, Color::Green);
+    DrawLine(RHI, A, C, Color::Blue);
+    DrawLine(RHI, B, C, Color::Red);
 }
 
 bool SoftWareRHI::BeginRHI() {

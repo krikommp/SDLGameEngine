@@ -7,13 +7,28 @@
 
 #include <AppEngine.h>
 
-class MyAppEngine : public AppEngine {
-protected:
-    void OnStart() override;
+namespace Chapter01 {
+    class WireframeApp : public AppEngine {
+    protected:
+        void OnStart() override;
 
-    void OnUpdate() override;
+        void OnUpdate() override;
 
-    void OnExit() override;
-};
+        void OnExit() override;
+    };
+}
+
+namespace Chapter02 {
+    class DrawTriangleApp : public AppEngine {
+    protected:
+        void OnStart() override;
+
+        void OnUpdate() override;
+
+        void OnExit() override;
+    };
+}
+
+
 
 #endif //SDLGAMEENGINE_MYAPPENGINE_H

@@ -4,7 +4,7 @@
 #include "MyAppEngine.h"
 
 int main(int argc, char *argv[]) {
-    MyAppEngine GApp;
+    Chapter02::DrawTriangleApp GApp;
     GApp.Construct();
     GApp.Start();
 

@@ -91,7 +91,7 @@ private:
 FORCEINLINE bool CheckPixelInScope(const SoftWareRHI& RHI ,int X, int Y) { return X >= 0 && X < static_cast<int>(RHI.GetPixelWidth()) && Y >= 0 &&  Y < static_cast<int>(RHI.GetPixelHeight());  }
 void DrawLine(SoftWareRHI& RHI, const FVector2i& A, const FVector2i& B, const FColor& Color);
 void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Color);
-void DrawTriangle(SoftWareRHI& RHI, const FVector2i& A, const FVector2i& B, const FVector2i& C, const FColor& Color);
+void DrawTriangle(SoftWareRHI &RHI, FVector2i &A, FVector2i &B,  FVector2i &C, const FColor& Color);
 void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& Color);
 
 #endif //SDLGAMEENGINE_GRAPHICINTERFACE_H

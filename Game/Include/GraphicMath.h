@@ -130,6 +130,16 @@ std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
     return Out;
 }
 
+template <VectorType T, size_t N>
+void Swap(FPoint<T, N>& Left, FPoint<T, N>& Right) {
+    FPoint<T, N> Tmp;
+    for (uint32 Index = 0; Index < N; ++Index) {
+        Tmp[Index] = Left[Index];
+        Left[Index] = Right[Index];
+        Right[Index] = Tmp[Index];
+    }
+}
+
 using FVector3i = FPoint<int, 3>;
 using FVector3f = FPoint<float, 3>;
 using FColor = FPoint<uint8, 4>;
