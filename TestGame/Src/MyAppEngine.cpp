@@ -42,13 +42,15 @@ namespace Chapter02 {
     }
 
     void DrawTriangleApp::OnUpdate() {
-        FVector2i t0[3] = {FVector2i(10, 70), FVector2i(50, 160), FVector2i(70, 80) };
-        FVector2i t1[3] = {FVector2i(180, 50),  FVector2i(150, 1),   FVector2i(70, 180)};
-        FVector2i t2[3] = {FVector2i(180, 150), FVector2i(120, 160), FVector2i(130, 180)};
-
-        DrawTriangle(RHI, t0[0], t0[1], t0[2], Color::Red);
-        DrawTriangle(RHI, t1[0], t1[1], t1[2], Color::White);
-        DrawTriangle(RHI, t2[0], t2[1], t2[2], Color::Green);
+        for (int i = 0; i < model.GetFaces(); ++i) {
+            std::vector<int> Face = model.GetFace(i);
+            FVector2i screen_coords[3];
+            for (int j=0; j<3; j++) {
+                FVector3f world_coords = model.GetVert(Face[j]);
+                screen_coords[j] = FVector2i(int(float(world_coords.X + 1.) * float(GetPixelWidth() / 2.)), int(float(world_coords.Y + 1.) * float(GetPixelHeight() / 2.)));
+            }
+            DrawTriangle(RHI, screen_coords[0], screen_coords[1], screen_coords[2], FColor(rand() % 255, rand() % 255, rand() % 255, 255));
+        }
     }
 
     void DrawTriangleApp::OnExit() {

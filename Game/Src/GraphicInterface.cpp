@@ -112,8 +112,10 @@ void DrawTriangle(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2
     if (T1.Y > T2.Y) Swap(T1, T2);
 
     int TotalHeight = T2.Y - T0.Y;
+    if (TotalHeight == 0) return;
     for (int Y = T0.Y; Y <= T1.Y; ++Y) {
         int SegmentHeight = T1.Y - T0.Y + 1;
+        if (SegmentHeight == 0) break;
         float Alpha = float(Y - T0.Y) / float(TotalHeight);
         float Beta = float(Y - T0.Y) / float(SegmentHeight);
         FVector2i A = T0 + (T2 - T0) * Alpha;
@@ -125,6 +127,7 @@ void DrawTriangle(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2
     }
     for (int Y = T1.Y; Y <= T2.Y; ++Y) {
         int SegmentHeight = T2.Y - T1.Y + 1;
+        if (SegmentHeight == 0) break;
         float Alpha = float(Y - T0.Y) / float(TotalHeight);
         float Beta = float(Y - T1.Y) / float(SegmentHeight);
         FVector2i A = T0 + (T2 - T0) * Alpha;
