@@ -67,7 +67,7 @@ public:
 public:
     FORCEINLINE FPoint<T, 2> operator +(const FPoint<T, 2>& InV) const { return FPoint<T, 2>(U + InV.U, V + InV.V); }
     FORCEINLINE FPoint<T, 2> operator -(const FPoint<T, 2>& InV) const { return FPoint<T, 2>(U - InV.U, V - InV.V); }
-    FORCEINLINE FPoint<T, 2> operator *(float InF) const { return FPoint<T, 2>(U * InF, V * InF); }
+    FORCEINLINE FPoint<T, 2> operator *(float InF) const { return FPoint<T, 2>(static_cast<T>(U * InF), static_cast<T>(V * InF)); }
     FORCEINLINE T& operator[] (size_t Index) { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
     FORCEINLINE T operator[] (size_t Index) const { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
 public:

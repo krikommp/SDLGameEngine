@@ -104,16 +104,36 @@ void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& C
     }
 }
 
-void DrawTriangle(SoftWareRHI &RHI, FVector2i &A, FVector2i &B,  FVector2i &C, const FColor& Color) {
+void DrawTriangle(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2, const FColor& Color) {
     // 首先从上到下，从左到右绘制三角形
-    // 从上到下依次是： A -> B -> C
-    if (A.Y < B.Y) Swap(A, B);
-    if (A.Y < C.Y) Swap(A, C);
-    if (B.Y < C.Y) Swap(B, C);
+    // 从上到下依次是： T0 < T1 < T2
+    if (T0.Y > T1.Y) Swap(T0, T1);
+    if (T0.Y > T2.Y) Swap(T0, T2);
+    if (T1.Y > T2.Y) Swap(T1, T2);
 
-    DrawLine(RHI, A, B, Color::Green);
-    DrawLine(RHI, A, C, Color::Blue);
-    DrawLine(RHI, B, C, Color::Red);
+    int TotalHeight = T2.Y - T0.Y;
+    for (int Y = T0.Y; Y <= T1.Y; ++Y) {
+        int SegmentHeight = T1.Y - T0.Y + 1;
+        float Alpha = float(Y - T0.Y) / float(TotalHeight);
+        float Beta = float(Y - T0.Y) / float(SegmentHeight);
+        FVector2i A = T0 + (T2 - T0) * Alpha;
+        FVector2i B = T0 + (T1 - T0) * Beta;
+        if (A.X > B.X) Swap(A, B);
+        for (int J = A.X; J <= B.X; ++J) {
+            RHI.SetPixel(J, Y, Color);
+        }
+    }
+    for (int Y = T1.Y; Y <= T2.Y; ++Y) {
+        int SegmentHeight = T2.Y - T1.Y + 1;
+        float Alpha = float(Y - T0.Y) / float(TotalHeight);
+        float Beta = float(Y - T1.Y) / float(SegmentHeight);
+        FVector2i A = T0 + (T2 - T0) * Alpha;
+        FVector2i B = T1 + (T2 - T1) * Beta;
+        if (A.X > B.X) Swap(A, B);
+        for (int J = A.X; J <= B.X; ++J) {
+            RHI.SetPixel(J, Y, Color);
+        }
+    }
 }
 
 bool SoftWareRHI::BeginRHI() {
