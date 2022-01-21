@@ -5,6 +5,7 @@
 #include "GraphicInterface.h"
 
 SoftWareRHI::~SoftWareRHI() {
+    delete[] ZBuffer;
     SDL_DestroyRenderer(Renderer);
     SDL_DestroyWindow(Window);
     SDL_Quit();
@@ -22,6 +23,8 @@ bool SoftWareRHI::InitRHI(const SWindowInfo &InWindowInfo) {
     if (Renderer == nullptr) return false;
     Buffer = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WindowInfo.PixelWidth, WindowInfo.PixelHeight);
     if (Buffer == nullptr) return false;
+    ZBuffer = (int*) malloc(WindowInfo.PixelWidth * WindowInfo.PixelHeight * sizeof(int));
+    if (ZBuffer == nullptr) return false;
     return true;
 }
 
@@ -39,6 +42,7 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
 }
 
 void SoftWareRHI::SetPixel(uint32 X, uint32 Y, const FColor &Color) {
+    if (!CheckPixelInScope(*this, X, Y)) return;
     uint32* Dst = (uint32*)((uint8*)Pixels + (WindowInfo.PixelHeight - Y) * Pitch);
     *(Dst + X) = ConvertColorToHEX(Color);
 }
@@ -104,7 +108,7 @@ void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& C
     }
 }
 
-void DrawTriangle(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2, const FColor& Color) {
+void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2, const FColor& Color) {
     // 首先从上到下，从左到右绘制三角形
     // 从上到下依次是： T0 < T1 < T2
     if (T0.Y > T1.Y) Swap(T0, T1);
@@ -135,6 +139,34 @@ void DrawTriangle(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2
         if (A.X > B.X) Swap(A, B);
         for (int J = A.X; J <= B.X; ++J) {
             RHI.SetPixel(J, Y, Color);
+        }
+    }
+}
+FVector3f Barycentric(FVector2i* Pts, FVector2i P) {
+    FVector3f u = Cross(FVector3f(Pts[2][0]-Pts[0][0], Pts[1][0]-Pts[0][0], Pts[0][0]-P[0]), FVector3f(Pts[2][1]-Pts[0][1], Pts[1][1]-Pts[0][1], Pts[0][1]-P[1]));
+    /* `pts` and `P` has integer value as coordinates
+       so `abs(u[2])` < 1 means `u[2]` is 0, that means
+       triangle is degenerate, in this case return something with negative coordinates */
+    if (std::abs(u[2])<1) return FVector3f(-1,1,1);
+    return FVector3f(1.f-(u.X+u.Y)/u.Z, u.Y/u.Z, u.X/u.Z);
+}
+
+void DrawTriangle(SoftWareRHI &RHI, FVector2i* Pts, const FColor &Color) {
+    FVector2i AABBmin(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
+    FVector2i AABBmax(0, 0);
+    FVector2i Clamp(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
+    for (int i=0; i<3; i++) {
+        for (int j=0; j<2; j++) {
+            AABBmin[j] = std::max(0,        std::min(AABBmin[j], Pts[i][j]));
+            AABBmax[j] = std::min(Clamp[j], std::max(AABBmax[j], Pts[i][j]));
+        }
+    }
+    FVector2i P;
+    for (P.X = AABBmin.X; P.X <= AABBmax.X; ++P.X) {
+        for (P.Y = AABBmin.Y; P.Y <= AABBmax.Y; ++P.Y) {
+            FVector3f ScreenBC = Barycentric(Pts, P);
+            if (ScreenBC.X<0 || ScreenBC.Y<0 || ScreenBC.Z<0) continue;
+            RHI.SetPixel(P.X, P.Y, Color);
         }
     }
 }
