@@ -5,7 +5,7 @@
 #include "MyAppEngine.h"
 #include "Model.h"
 
-static Model model("./Asserts/Lowpoly_tree_sample.obj");
+static Model model("./Asserts/Face.obj");
 namespace Chapter01 {
     void WireframeApp::OnStart() {
         SetWidthAndHeight(FVector2i(480, 240));
@@ -50,11 +50,12 @@ namespace Chapter02 {
                 // FVector3f world_coords = model.GetVert(Face[j]);
                 // screen_coords[j] = FVector2i(int(float(world_coords.X + 1.) * float(GetPixelWidth() / 2.) * 0.05) + 200, int(float(world_coords.Y + 1.) * float(GetPixelHeight() / 2.) * 0.05) + 50);
                 FVector3f V = model.GetVert(Face[j]);
-                ScreenCoords[j] = FVector2i(int(float(V.X + 1.) * float(GetPixelWidth() / 2.) * 0.05) + 200, int(float(V.Y + 1.) * float(GetPixelHeight() / 2.) * 0.05) + 50);
+                ScreenCoords[j] = FVector2i(int(float(V.X + 1.) * float(GetPixelWidth() / 2.)), int(float(V.Y + 1.) * float(GetPixelHeight() / 2.)));
                 WorldCoords[j] = V;
             }
             FVector3f N = (WorldCoords[2] - WorldCoords[0]) ^ (WorldCoords[1] - WorldCoords[0]);
             N.Normalize();
+            // 计算世界坐标下 三角形的法线与光方向夹角
             float Intensity = N * FVector3f(0, 0, -1);
             if (Intensity > 0) {
                 // DrawTriangleTwo(RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], FColor(Intensity * 255, Intensity * 255, Intensity * 255, 255));
