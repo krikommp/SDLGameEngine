@@ -149,8 +149,9 @@ using FVector2ui = FPoint<uint32, 2>;
 using FPoint3f = FVector3f;
 using FVector3 = FPoint<double, 3>;
 
-FORCEINLINE FPoint<float, 3>  Cross(FPoint<float, 3> V1, const FPoint<float, 3>& V2) {
-    return FPoint<float, 3>{V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X};
+template <VectorType T>
+FORCEINLINE FPoint<T, 3>  Cross(FPoint<T, 3> V1, const FPoint<T, 3>& V2) {
+    return FPoint<T, 3>{V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X};
 }
 
 FORCEINLINE static uint32 ConvertColorToHEX(const FColor& Color) {
