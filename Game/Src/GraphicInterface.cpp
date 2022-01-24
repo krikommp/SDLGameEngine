@@ -25,6 +25,9 @@ bool SoftWareRHI::InitRHI(const SWindowInfo &InWindowInfo) {
     if (Buffer == nullptr) return false;
     ZBuffer = (int*) malloc(WindowInfo.PixelWidth * WindowInfo.PixelHeight * sizeof(int));
     if (ZBuffer == nullptr) return false;
+    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) {
+        ZBuffer[i] = - std::numeric_limits<int>::max();
+    }
     return true;
 }
 
@@ -37,6 +40,9 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
         for (Col = 0; Col < WindowInfo.PixelWidth; ++Col) {
             *Dst++ = ConvertColorToHEX(Color);
         }
+    }
+    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) {
+        ZBuffer[i] = - std::numeric_limits<int>::max();
     }
     return true;
 }
