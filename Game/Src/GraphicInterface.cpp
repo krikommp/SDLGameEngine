@@ -144,8 +144,8 @@ void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i 
         }
     }
 }
-FVector3f Barycentric(Vertice* Pts, FVector3i P) {
-    FVector3f u = Cross(FVector3f(Pts[2].pos[0]-Pts[0].pos[0], Pts[1].pos[0]-Pts[0].pos[0], Pts[0].pos[0]-P[0]), FVector3f(Pts[2].pos[1]-Pts[0].pos[1], Pts[1].pos[1]-Pts[0].pos[1], Pts[0].pos[1]-P[1]));
+FVector3f Barycentric(FVector3i* Pts, FVector3i P) {
+    FVector3f u = Cross(FVector3f(Pts[2][0]-Pts[0][0], Pts[1][0]-Pts[0][0], Pts[0][0]-P[0]), FVector3f(Pts[2][1]-Pts[0][1], Pts[1][1]-Pts[0][1], Pts[0][1]-P[1]));
     /* `pts` and `P` has integer value as coordinates
        so `abs(u[2])` < 1 means `u[2]` is 0, that means
        triangle is degenerate, in this case return something with negative coordinates */
@@ -153,14 +153,14 @@ FVector3f Barycentric(Vertice* Pts, FVector3i P) {
     return FVector3f(1.f-(u.X+u.Y)/u.Z, u.Y/u.Z, u.X/u.Z);
 }
 
-void DrawTriangle(SoftWareRHI& RHI, Vertice* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, const FColor& Color) {
+void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, const FColor& Color) {
     FVector2i AABBmin(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
     FVector2i AABBmax(0, 0);
     FVector2i Clamp(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
     for (int i=0; i<3; i++) {
         for (int j=0; j<2; j++) {
-            AABBmin[j] = std::max(0,        std::min(AABBmin[j], Pts[i].pos[j]));
-            AABBmax[j] = std::min(Clamp[j], std::max(AABBmax[j], Pts[i].pos[j]));
+            AABBmin[j] = std::max(0,        std::min(AABBmin[j], Pts[i][j]));
+            AABBmax[j] = std::min(Clamp[j], std::max(AABBmax[j], Pts[i][j]));
         }
     }
     FVector3i P;
@@ -171,7 +171,7 @@ void DrawTriangle(SoftWareRHI& RHI, Vertice* Pts, const FVector2i& uv0, const FV
             if (ScreenBC.X<0 || ScreenBC.Y<0 || ScreenBC.Z<0) continue;
             uv = uv0 * ScreenBC.X + uv1 * ScreenBC.Y + uv2 * ScreenBC.Z;
             P.Z = 0;
-            for (int i = 0; i < 3; ++i) P.Z += Pts[i].pos[2] * ScreenBC[i];
+            for (int i = 0; i < 3; ++i) P.Z += Pts[i][2] * ScreenBC[i];
             if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
                 RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
                 TGAColor c = RHI.Image.get(uv.X, uv.Y);

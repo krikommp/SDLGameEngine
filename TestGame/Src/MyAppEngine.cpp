@@ -35,7 +35,7 @@ namespace Chapter01 {
 
 namespace Chapter02 {
     void DrawTriangleApp::OnStart() {
-        SetWidthAndHeight(FVector2i(800, 800));
+        SetWidthAndHeight(FVector2i(480, 240));
         SetPixelSize(1);
         SetClearColor(Color::Sky);
         SetTitle("Chapter02 - DrawTriangle");
@@ -47,13 +47,13 @@ namespace Chapter02 {
     void DrawTriangleApp::OnUpdate() {
         for (int i = 0; i < model.GetFaces(); ++i) {
             std::vector<int> Face = model.GetFace(i);
-            Vertice  ScreenCoords[3];
+            FVector3i ScreenCoords[3];
             FVector3f WorldCoords[3];
             for (int j=0; j<3; j++) {
                 // FVector3f world_coords = model.GetVert(Face[j]);
                 // screen_coords[j] = FVector2i(int(float(world_coords.X + 1.) * float(GetPixelWidth() / 2.) * 0.05) + 200, int(float(world_coords.Y + 1.) * float(GetPixelHeight() / 2.) * 0.05) + 50);
                 FVector3f V = model.GetVert(Face[j]);
-                ScreenCoords[j].pos = FVector2i(int(float(V.X + 1.) * float(GetPixelWidth() / 2.)), int(float(V.Y + 1.) * float(GetPixelHeight() / 2.)));
+                ScreenCoords[j] = FVector3i(int(float(V.X + 1.) * float(GetPixelWidth() / 2.)), int(float(V.Y + 1.) * float(GetPixelHeight() / 2.)), int(float(V.Z + 1.0f) * float(200 / 2.f)));
                 WorldCoords[j] = V;
             }
             FVector3f N = (WorldCoords[2] - WorldCoords[0]) ^ (WorldCoords[1] - WorldCoords[0]);

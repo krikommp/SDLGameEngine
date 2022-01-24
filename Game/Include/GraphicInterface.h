@@ -100,7 +100,7 @@ FORCEINLINE bool CheckPixelInScope(const SoftWareRHI& RHI ,int X, int Y) { retur
 void DrawLine(SoftWareRHI& RHI, const FVector2i& A, const FVector2i& B, const FColor& Color);
 void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Color);
 void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2, const FColor& Color);
-void DrawTriangle(SoftWareRHI& RHI, Vertice* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, const FColor& Color);
+void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, const FColor& Color);
 void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& Color);
 
 #endif //SDLGAMEENGINE_GRAPHICINTERFACE_H
