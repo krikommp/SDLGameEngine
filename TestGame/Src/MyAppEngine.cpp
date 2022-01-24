@@ -35,13 +35,11 @@ namespace Chapter01 {
 
 namespace Chapter02 {
     void DrawTriangleApp::OnStart() {
-        SetWidthAndHeight(FVector2i(480, 240));
+        SetWidthAndHeight(FVector2i(200, 200));
         SetPixelSize(1);
         SetClearColor(Color::Sky);
         SetTitle("Chapter02 - DrawTriangle");
-        if(!RHI.SetImage("./Asserts/african_head_diffuse.tga")) {
-            std::cerr << "Load Image Failure" << std::endl;
-        }
+        RHI.SetModel(model);
     }
 
     void DrawTriangleApp::OnUpdate() {

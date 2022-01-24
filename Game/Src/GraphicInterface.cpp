@@ -174,10 +174,7 @@ void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const 
             for (int i = 0; i < 3; ++i) P.Z += Pts[i][2] * ScreenBC[i];
             if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
                 RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
-                TGAColor c = RHI.Image.get(uv.X, uv.Y);
-                FColor ct(c[2], c[1], c[0], c[3]);
-                // FColor uvColor(uv.X * 255, uv.Y * 255, 255, 255);
-                RHI.SetPixel(P.X, P.Y, ct);
+                RHI.SetPixel(P.X, P.Y,  RHI.RenderModel.Diffuse(uv));
             }
         }
     }
@@ -193,6 +190,7 @@ void SoftWareRHI::EndRHI() {
     Pitch = 0;
 }
 
-bool SoftWareRHI::SetImage(const char *ImageName) {
-    return Image.read_tga_file(ImageName);
+bool SoftWareRHI::SetModel(const Model& InModel) {
+    RenderModel = InModel;
+    return true;
 }

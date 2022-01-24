@@ -7,7 +7,7 @@
 
 #include "SoftWarePCH.h"
 #include "GraphicMath.h"
-#include "tgaimage.h"
+#include "Model.h"
 
 class SWindowInfo{
 public:
@@ -52,7 +52,7 @@ public:
 public:
     bool InitRHI(const SWindowInfo& InWindowInfo);
 
-    bool SetImage(const char* ImageName);
+    bool SetModel(const Model& InModel);
 
     bool ClearColor(const FColor& Color);
 
@@ -77,7 +77,7 @@ private:
 public:
     SWindowInfo WindowInfo;
     int* ZBuffer = nullptr;
-    TGAImage Image;
+    Model RenderModel;
 private:
     void* Pixels;
     int Pitch;

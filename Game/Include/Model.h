@@ -12,6 +12,7 @@
 
 class Model {
 public:
+    Model() {}
     Model(const char* FileName);
     ~Model();
 
@@ -26,8 +27,10 @@ public:
 
     FVector2i GetUV(int InFace, int  InVert);
 
+    FColor Diffuse(const FVector2i& InUV);
 private:
     void LoadTexture(const char* FileName, const char* Suffix, TGAImage& Img);
+
 
 private:
     std::vector<FVector3f> Verts;

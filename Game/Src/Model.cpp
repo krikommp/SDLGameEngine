@@ -83,6 +83,10 @@ void Model::LoadTexture(const char *FileName, const char *Suffix, TGAImage &Img)
     if (Dot != std::string::npos) {
         TexFile = TexFile.substr(0, Dot) + std::string(Suffix);
         std::cerr << "texture file " << TexFile << " loading " << (Img.read_tga_file(TexFile.c_str()) ? "ok" : "failed") << std::endl;
-        Img.flip_vertically();
     }
+}
+
+FColor Model::Diffuse(const FVector2i &InUV) {
+    TGAColor c = DiffuseMap.get(InUV.U, InUV.V);
+    return FColor(c[2], c[1], c[0], c[3]);
 }
