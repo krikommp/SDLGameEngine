@@ -24,10 +24,8 @@ bool SoftWareRHI::InitRHI(const SWindowInfo &InWindowInfo) {
     Buffer = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WindowInfo.PixelWidth, WindowInfo.PixelHeight);
     if (Buffer == nullptr) return false;
     ZBuffer = (int*) malloc(WindowInfo.PixelWidth * WindowInfo.PixelHeight * sizeof(int));
+    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) ZBuffer[i] = - std::numeric_limits<int>::max();
     if (ZBuffer == nullptr) return false;
-    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) {
-        ZBuffer[i] = - std::numeric_limits<int>::max();
-    }
     return true;
 }
 
@@ -41,9 +39,7 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
             *Dst++ = ConvertColorToHEX(Color);
         }
     }
-    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) {
-        ZBuffer[i] = - std::numeric_limits<int>::max();
-    }
+    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) ZBuffer[i] = - std::numeric_limits<int>::max();
     return true;
 }
 
@@ -148,39 +144,36 @@ void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i 
         }
     }
 }
-FVector3f Barycentric(FVector2i* Pts, FVector2i P) {
-    // 下面的 cross 相当于求 [u, v, 1]
-    FVector3f u = Cross(FVector3f(Pts[2][0]-Pts[0][0], Pts[1][0]-Pts[0][0], Pts[0][0]-P[0]), FVector3f(Pts[2][1]-Pts[0][1], Pts[1][1]-Pts[0][1], Pts[0][1]-P[1]));
-    // 注意最后一个并不是 1，所以要进行齐次操作
-    // U.Z 的值需要不为0，因为需要做齐次除法
-    // 并且由于这个三角形中每个像素位置都是定点
-    // 通过 std::abs() 来判断，所有小于 1 的都是 0
+FVector3f Barycentric(Vertice* Pts, FVector3i P) {
+    FVector3f u = Cross(FVector3f(Pts[2].pos[0]-Pts[0].pos[0], Pts[1].pos[0]-Pts[0].pos[0], Pts[0].pos[0]-P[0]), FVector3f(Pts[2].pos[1]-Pts[0].pos[1], Pts[1].pos[1]-Pts[0].pos[1], Pts[0].pos[1]-P[1]));
+    /* `pts` and `P` has integer value as coordinates
+       so `abs(u[2])` < 1 means `u[2]` is 0, that means
+       triangle is degenerate, in this case return something with negative coordinates */
     if (std::abs(u[2])<1) return FVector3f(-1,1,1);
-    // [u, v, 1] = [U.X / U.Z, U.Y / U.Z, U.Z / U.Z]
-    // P = [(1 - u, v)A + uB + vC]
     return FVector3f(1.f-(u.X+u.Y)/u.Z, u.Y/u.Z, u.X/u.Z);
 }
 
-void DrawTriangle(SoftWareRHI &RHI, FVector2i* Pts, const FColor &Color) {
-    // 首先计算出这个三角形的 包围盒
+void DrawTriangle(SoftWareRHI &RHI, Vertice* Pts, const FColor &Color) {
     FVector2i AABBmin(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
     FVector2i AABBmax(0, 0);
     FVector2i Clamp(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
     for (int i=0; i<3; i++) {
         for (int j=0; j<2; j++) {
-            AABBmin[j] = std::max(0,        std::min(AABBmin[j], Pts[i][j]));
-            AABBmax[j] = std::min(Clamp[j], std::max(AABBmax[j], Pts[i][j]));
+            AABBmin[j] = std::max(0,        std::min(AABBmin[j], Pts[i].pos[j]));
+            AABBmax[j] = std::min(Clamp[j], std::max(AABBmax[j], Pts[i].pos[j]));
         }
     }
-    // 接着遍历这个包围盒中的所有像素点
-    // 通过转换到三角形重心坐标系来判断这个点是否在三角形中
-    FVector2i P;
+    FVector3i P;
     for (P.X = AABBmin.X; P.X <= AABBmax.X; ++P.X) {
         for (P.Y = AABBmin.Y; P.Y <= AABBmax.Y; ++P.Y) {
             FVector3f ScreenBC = Barycentric(Pts, P);
-            // 上面的公式算出来的是点 P 在三角形中的 重心坐标
             if (ScreenBC.X<0 || ScreenBC.Y<0 || ScreenBC.Z<0) continue;
-            RHI.SetPixel(P.X, P.Y, Color);
+            P.Z = 0;
+            for (int i = 0; i < 3; ++i) P.Z += Pts[i].pos[2] * ScreenBC[i];
+            if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
+                RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
+                RHI.SetPixel(P.X, P.Y, Color);
+            }
         }
     }
 }
@@ -193,4 +186,8 @@ void SoftWareRHI::EndRHI() {
     SDL_UnlockTexture(Buffer);
     Pixels = nullptr;
     Pitch = 0;
+}
+
+bool SoftWareRHI::SetImage(const char *ImageName) {
+    return Image.read_tga_file(ImageName);
 }

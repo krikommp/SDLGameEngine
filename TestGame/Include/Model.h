@@ -22,9 +22,12 @@ public:
     FVector3f GetVert(int Index);
 
     std::vector<int> GetFace(int Index);
+
+    FVector2f GetUV(int Index);
 private:
     std::vector<FVector3f> Verts;
     std::vector<std::vector<int>> Faces;
+    std::vector<FVector2f> Uvs;
 };
 
 #endif //SDLGAMEENGINE_MODEL_H
