@@ -24,6 +24,11 @@ Model::Model(const char *FileName) {
             FVector3f V;
             for (int i = 0; i < 3; ++i) Iss >> V.Coords[i];
             Verts.push_back(V);
+        }else if (!Line.compare(0, 2, "vt")) {
+            Iss >> Trash;
+            FVector2f uv;
+            for (int i = 0; i < 3; ++i) Iss >> uv.Coords[i];
+            Uvs.push_back(uv);
         }else if (!Line.compare(0, 2, "f ")) {
             std::vector<int> F;
             int iTrash, Idx;
@@ -56,4 +61,8 @@ FVector3f Model::GetVert(int Index) {
 
 std::vector<int> Model::GetFace(int Index) {
     return Faces[Index];
+}
+
+FVector2f Model::GetUV(int Index) {
+    return Uvs[Index];
 }
