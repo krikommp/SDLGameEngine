@@ -60,11 +60,12 @@ namespace Chapter02 {
             N.Normalize();
             float Intensity = N * FVector3f(0, 0, -1);
             if (Intensity > 0) {
+                FVector2i uvs[3];
                 for (int k = 0; k < 3; ++k) {
-                    ScreenCoords[k].uv = model.GetUV(i, k);
+                    uvs[k] = model.GetUV(i, k);
                 }
                 // DrawTriangleTwo(RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], FColor(Intensity * 255, Intensity * 255, Intensity * 255, 255));
-                DrawTriangle(RHI, ScreenCoords, FColor(uint8(Intensity * 255), uint8(Intensity * 255), uint8(Intensity * 255), 255));
+                DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], FColor(uint8(Intensity * 255), uint8(Intensity * 255), uint8(Intensity * 255), 255));
             }
         }
     }
