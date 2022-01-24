@@ -6,6 +6,7 @@
 #define SDLGAMEENGINE_MODEL_H
 
 #include <GraphicMath.h>
+#include "tgaimage.h"
 
 #include <vector>
 
@@ -23,11 +24,19 @@ public:
 
     std::vector<int> GetFace(int Index);
 
-    FVector2f GetUV(int Index);
+    FVector2i GetUV(int InFace, int InVert);
+
+    FColor Diffuse(const FVector2i& InUV);
+
+private:
+    void LoadTexture(const char* FileName, const char* suffix, TGAImage& Img);
+
 private:
     std::vector<FVector3f> Verts;
-    std::vector<std::vector<int>> Faces;
+    std::vector<std::vector<FVector3i>> Faces;
     std::vector<FVector2f> Uvs;
+    std::vector<FVector3f> Normals;
+    TGAImage DiffuseMap;
 };
 
 #endif //SDLGAMEENGINE_MODEL_H

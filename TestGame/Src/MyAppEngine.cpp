@@ -5,7 +5,7 @@
 #include "MyAppEngine.h"
 #include "Model.h"
 
-static Model model("./Asserts/Face.obj");
+static Model model("./Asserts/african_head.obj");
 namespace Chapter01 {
     void WireframeApp::OnStart() {
         SetWidthAndHeight(FVector2i(480, 240));
@@ -54,13 +54,15 @@ namespace Chapter02 {
                 // screen_coords[j] = FVector2i(int(float(world_coords.X + 1.) * float(GetPixelWidth() / 2.) * 0.05) + 200, int(float(world_coords.Y + 1.) * float(GetPixelHeight() / 2.) * 0.05) + 50);
                 FVector3f V = model.GetVert(Face[j]);
                 ScreenCoords[j].pos = FVector2i(int(float(V.X + 1.) * float(GetPixelWidth() / 2.)), int(float(V.Y + 1.) * float(GetPixelHeight() / 2.)));
-                ScreenCoords[j].uv = model.GetUV(Face[j]);
                 WorldCoords[j] = V;
             }
             FVector3f N = (WorldCoords[2] - WorldCoords[0]) ^ (WorldCoords[1] - WorldCoords[0]);
             N.Normalize();
             float Intensity = N * FVector3f(0, 0, -1);
             if (Intensity > 0) {
+                for (int k = 0; k < 3; ++k) {
+                    ScreenCoords[k].uv = model.GetUV(i, k);
+                }
                 // DrawTriangleTwo(RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], FColor(Intensity * 255, Intensity * 255, Intensity * 255, 255));
                 DrawTriangle(RHI, ScreenCoords, FColor(uint8(Intensity * 255), uint8(Intensity * 255), uint8(Intensity * 255), 255));
             }

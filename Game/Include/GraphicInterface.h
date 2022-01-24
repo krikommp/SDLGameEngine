@@ -42,7 +42,7 @@ public:
 
 struct Vertice {
     FVector2i pos;
-    FVector2f uv;
+    FVector2i uv;
 };
 
 class SoftWareRHI : public NonCopyable{

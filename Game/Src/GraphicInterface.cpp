@@ -24,7 +24,7 @@ bool SoftWareRHI::InitRHI(const SWindowInfo &InWindowInfo) {
     Buffer = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WindowInfo.PixelWidth, WindowInfo.PixelHeight);
     if (Buffer == nullptr) return false;
     ZBuffer = (int*) malloc(WindowInfo.PixelWidth * WindowInfo.PixelHeight * sizeof(int));
-    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) ZBuffer[i] = - std::numeric_limits<int>::max();
+    for (uint32 i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) ZBuffer[i] = - std::numeric_limits<int>::max();
     if (ZBuffer == nullptr) return false;
     return true;
 }
@@ -39,7 +39,7 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
             *Dst++ = ConvertColorToHEX(Color);
         }
     }
-    for (int i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) ZBuffer[i] = - std::numeric_limits<int>::max();
+    for (uint32 i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) ZBuffer[i] = - std::numeric_limits<int>::max();
     return true;
 }
 
@@ -164,15 +164,20 @@ void DrawTriangle(SoftWareRHI &RHI, Vertice* Pts, const FColor &Color) {
         }
     }
     FVector3i P;
+    FVector2i uv;
     for (P.X = AABBmin.X; P.X <= AABBmax.X; ++P.X) {
         for (P.Y = AABBmin.Y; P.Y <= AABBmax.Y; ++P.Y) {
             FVector3f ScreenBC = Barycentric(Pts, P);
             if (ScreenBC.X<0 || ScreenBC.Y<0 || ScreenBC.Z<0) continue;
+            uv = Pts[0].uv * ScreenBC.X + Pts[1].uv * ScreenBC.Y + Pts[2].uv * ScreenBC.Z;
             P.Z = 0;
             for (int i = 0; i < 3; ++i) P.Z += Pts[i].pos[2] * ScreenBC[i];
             if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
                 RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
-                RHI.SetPixel(P.X, P.Y, Color);
+                TGAColor c = RHI.Image.get(uv.X, uv.Y);
+                FColor ct(c[2], c[1], c[0], c[3]);
+                FColor uvColor(uv.X * 255, uv.Y * 255, 255, 255);
+                RHI.SetPixel(P.X, P.Y, ct);
             }
         }
     }
