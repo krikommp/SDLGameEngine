@@ -9,7 +9,6 @@
 
 #include "Model.h"
 
-
 Model::Model(const char *FileName) {
     std::ifstream In;
     In.open(FileName, std::ifstream::in);
@@ -33,7 +32,7 @@ Model::Model(const char *FileName) {
             Iss >> Trash >> Trash;
             FVector2f uv;
             for (int i = 0; i < 2; ++i) Iss >> uv.Coords[i];
-            Uvs.push_back({uv.X, 1.f - uv.Y});
+            Uvs.push_back({uv.X, 1 - uv.Y});
         }else if (!Line.compare(0, 2, "f ")) {
             std::vector<FVector3i> f;
             FVector3i Tmp;
@@ -73,22 +72,17 @@ std::vector<int> Model::GetFace(int Index) {
     return Face;
 }
 
-FVector2i Model::GetUV(int InFace, int InVert) {
+FVector2i Model::GetUV(int InFace, int  InVert) {
     int idx = Faces[InFace][InVert][1];
     return FVector2i(Uvs[idx].X * DiffuseMap.get_width(), Uvs[idx].Y * DiffuseMap.get_height());
 }
 
-void Model::LoadTexture(const char* FileName, const char* suffix, TGAImage& Img) {
+void Model::LoadTexture(const char *FileName, const char *Suffix, TGAImage &Img) {
     std::string TexFile(FileName);
     size_t Dot = TexFile.find_last_of(".");
     if (Dot != std::string::npos) {
-        TexFile = TexFile.substr(0, Dot) + std::string(suffix);
+        TexFile = TexFile.substr(0, Dot) + std::string(Suffix);
         std::cerr << "texture file " << TexFile << " loading " << (Img.read_tga_file(TexFile.c_str()) ? "ok" : "failed") << std::endl;
         Img.flip_vertically();
     }
-}
-
-FColor Model::Diffuse(const FVector2i& InUV) {
-    TGAColor Color = DiffuseMap.get(InUV.X, InUV.Y);
-    return FColor(Color[2], Color[1], Color[0], Color[3]);
 }

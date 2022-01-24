@@ -153,7 +153,7 @@ FVector3f Barycentric(Vertice* Pts, FVector3i P) {
     return FVector3f(1.f-(u.X+u.Y)/u.Z, u.Y/u.Z, u.X/u.Z);
 }
 
-void DrawTriangle(SoftWareRHI &RHI, Vertice* Pts, const FColor &Color) {
+void DrawTriangle(SoftWareRHI& RHI, Vertice* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, const FColor& Color) {
     FVector2i AABBmin(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
     FVector2i AABBmax(0, 0);
     FVector2i Clamp(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
@@ -169,14 +169,14 @@ void DrawTriangle(SoftWareRHI &RHI, Vertice* Pts, const FColor &Color) {
         for (P.Y = AABBmin.Y; P.Y <= AABBmax.Y; ++P.Y) {
             FVector3f ScreenBC = Barycentric(Pts, P);
             if (ScreenBC.X<0 || ScreenBC.Y<0 || ScreenBC.Z<0) continue;
-            uv = Pts[0].uv * ScreenBC.X + Pts[1].uv * ScreenBC.Y + Pts[2].uv * ScreenBC.Z;
+            uv = uv0 * ScreenBC.X + uv1 * ScreenBC.Y + uv2 * ScreenBC.Z;
             P.Z = 0;
             for (int i = 0; i < 3; ++i) P.Z += Pts[i].pos[2] * ScreenBC[i];
             if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
                 RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
                 TGAColor c = RHI.Image.get(uv.X, uv.Y);
                 FColor ct(c[2], c[1], c[0], c[3]);
-                FColor uvColor(uv.X * 255, uv.Y * 255, 255, 255);
+                // FColor uvColor(uv.X * 255, uv.Y * 255, 255, 255);
                 RHI.SetPixel(P.X, P.Y, ct);
             }
         }
