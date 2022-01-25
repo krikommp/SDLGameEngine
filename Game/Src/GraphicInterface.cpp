@@ -145,7 +145,7 @@ void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i 
     }
 }
 FVector3f Barycentric(FVector3i* Pts, FVector3i P) {
-    FVector3f u = Cross(FVector3f(Pts[2][0]-Pts[0][0], Pts[1][0]-Pts[0][0], Pts[0][0]-P[0]), FVector3f(Pts[2][1]-Pts[0][1], Pts[1][1]-Pts[0][1], Pts[0][1]-P[1]));
+    FVector3f u = Cross(FVector3f(float(Pts[2][0])-float(Pts[0][0]), float(Pts[1][0])-float(Pts[0][0]), float(Pts[0][0])-float(P[0])), FVector3f(float(Pts[2][1])-float(Pts[0][1]), float(Pts[1][1])-float(Pts[0][1]), float(Pts[0][1])-float(P[1])));
     /* `pts` and `P` has integer value as coordinates
        so `abs(u[2])` < 1 means `u[2]` is 0, that means
        triangle is degenerate, in this case return something with negative coordinates */
@@ -171,7 +171,7 @@ void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const 
             if (ScreenBC.X<0 || ScreenBC.Y<0 || ScreenBC.Z<0) continue;
             uv = uv0 * ScreenBC.X + uv1 * ScreenBC.Y + uv2 * ScreenBC.Z;
             P.Z = 0;
-            for (int i = 0; i < 3; ++i) P.Z += Pts[i][2] * ScreenBC[i];
+            for (int i = 0; i < 3; ++i) P.Z += Pts[i][2] * int(ScreenBC[i]);
             if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
                 RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
                 RHI.SetPixel(P.X, P.Y,  RHI.RenderModel.Diffuse(uv));
