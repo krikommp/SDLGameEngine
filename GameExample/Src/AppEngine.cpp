@@ -4,7 +4,7 @@
 #include "MyAppEngine.h"
 
 int main(int argc, char *argv[]) {
-    Chapter02::DrawTriangleApp GApp;
+    Chapter03::PerspectiveProjectionApp GApp;
     GApp.Construct();
     GApp.Start();
 

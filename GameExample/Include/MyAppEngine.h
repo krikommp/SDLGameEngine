@@ -29,6 +29,17 @@ namespace Chapter02 {
     };
 }
 
+namespace Chapter03 {
+    class PerspectiveProjectionApp : public AppEngine {
+    protected:
+        void OnStart() override;
+
+        void OnUpdate() override;
+
+        void OnExit() override;
+    };
+}
+
 
 
 #endif //SDLGAMEENGINE_MYAPPENGINE_H

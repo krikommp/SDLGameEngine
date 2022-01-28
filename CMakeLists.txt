@@ -26,9 +26,8 @@ add_definitions(/wd"4819" /wd"4996" /wd"4800")
 
 add_subdirectory(3rdparty)
 add_subdirectory(Engine)
-
+add_subdirectory(SDLGameEngine)
 # Test Module
-add_subdirectory(Example)
-add_subdirectory(Game)
+add_subdirectory(GameExample)
 
-add_subdirectory(TestGame)
+add_subdirectory(SandBox)

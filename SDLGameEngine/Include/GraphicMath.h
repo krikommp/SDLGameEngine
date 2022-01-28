@@ -154,6 +154,25 @@ FORCEINLINE FPoint<T, 3>  Cross(FPoint<T, 3> V1, const FPoint<T, 3>& V2) {
     return FPoint<T, 3>{V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X};
 }
 
+constexpr int DEFAULT_ALLOC = 4;
+
+class Matrix {
+    friend std::ostream& operator<<(std::ostream& In, Matrix& InM);
+public:
+    Matrix(int InRows = DEFAULT_ALLOC, int InCols = DEFAULT_ALLOC);
+    FORCEINLINE int GetCol();
+    FORCEINLINE int GetRow();
+
+    static Matrix Identity(int Dimensions);
+    std::vector<float>& operator[] (const int Idx);
+    Matrix operator*(const Matrix& InA);
+    Matrix Transpose();
+    Matrix Inverse();
+private:
+    std::vector<std::vector<float>> M;
+    int Rows, Cols;
+};
+
 FORCEINLINE static uint32 ConvertColorToHEX(const FColor& Color) {
     // R G B A
     uint32 FormatColor = (Color[0] << 24) | (Color[1] << 16) | (Color[2] << 8) | (Color[3]);
