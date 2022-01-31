@@ -5,7 +5,7 @@
 #include "MyAppEngine.h"
 #include "Model.h"
 
-static Model model("./Asserts/african_head.obj");
+static Model model(RootPath + "/Asserts/african_head.obj");
 namespace Chapter01 {
     void WireframeApp::OnStart() {
         SetWidthAndHeight(FVector2i(480, 240));
@@ -35,7 +35,7 @@ namespace Chapter01 {
 
 namespace Chapter02 {
     void DrawTriangleApp::OnStart() {
-        SetWidthAndHeight(FVector2i(200, 200));
+        SetWidthAndHeight(FVector2i(400, 400));
         SetPixelSize(1);
         SetClearColor(Color::Sky);
         SetTitle("Chapter02 - DrawTriangle");
@@ -74,10 +74,10 @@ namespace Chapter02 {
 }
 
 namespace Chapter03 {
-    Model CubeModel("./Asserts/cube.obj");
+    Model CubeModel(RootPath + "/Asserts/cube.obj");
 
-    constexpr int gWidth = 100;
-    constexpr int gHeight = 100;
+    constexpr int gWidth = 400;
+    constexpr int gHeight = 400;
     constexpr int gDepth = 255;
 
     FVector3f m2v(Matrix m) {

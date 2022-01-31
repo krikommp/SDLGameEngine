@@ -13,39 +13,15 @@ Model::Model(const char *FileName) {
     std::ifstream In;
     In.open(FileName, std::ifstream::in);
     if (In.fail()) return;
-    std::string Line;
-    while (!In.eof()) {
-        std::getline(In, Line);
-        std::istringstream  Iss(Line.c_str());
-        char Trash;
-        if (!Line.compare(0, 2, "v ")) {
-            Iss >> Trash;
-            FVector3f V;
-            for (int i = 0; i < 3; ++i) Iss >> V.Coords[i];
-            Verts.push_back(V);
-        }else if (!Line.compare(0, 3, "vn ")) {
-            Iss >> Trash >> Trash;
-            FVector3f n;
-            for (int i = 0; i < 3; ++i) Iss >> n[i];
-            Normals.push_back(n);
-        }else if (!Line.compare(0, 3, "vt ")) {
-            Iss >> Trash >> Trash;
-            FVector2f uv;
-            for (int i = 0; i < 2; ++i) Iss >> uv.Coords[i];
-            Uvs.push_back({uv.X, 1 - uv.Y});
-        }else if (!Line.compare(0, 2, "f ")) {
-            std::vector<FVector3i> f;
-            FVector3i Tmp;
-            Iss >> Trash;
-            while (Iss >> Tmp[0] >> Trash >> Tmp[1] >> Trash >> Tmp[2]) {
-                for (int i = 0; i < 3; ++i) Tmp[i]--;
-                f.push_back(Tmp);
-            }
-            Faces.push_back(f);
-        }
-    }
-    std::cerr << "# v# " << Verts.size() << " f# "  << Faces.size() << " vt# " << Uvs.size() << " vn# " << Normals.size() << std::endl;
-    LoadTexture(FileName, "_diffuse.tga", DiffuseMap);
+    Init(In);
+}
+
+Model::Model(const std::string_view& FileName)
+{
+    std::ifstream In;
+    In.open(FileName.data(), std::ifstream::in);
+    if (In.fail()) return;
+    Init(In);
 }
 
 Model::~Model() {
@@ -84,6 +60,46 @@ void Model::LoadTexture(const char *FileName, const char *Suffix, TGAImage &Img)
         TexFile = TexFile.substr(0, Dot) + std::string(Suffix);
         std::cerr << "texture file " << TexFile << " loading " << (Img.read_tga_file(TexFile.c_str()) ? "ok" : "failed") << std::endl;
     }
+}
+
+void Model::Init(std::ifstream& In)
+{
+    std::string Line;
+    while (!In.eof()) {
+        std::getline(In, Line);
+        std::istringstream  Iss(Line.c_str());
+        char Trash;
+        if (!Line.compare(0, 2, "v ")) {
+            Iss >> Trash;
+            FVector3f V;
+            for (int i = 0; i < 3; ++i) Iss >> V.Coords[i];
+            Verts.push_back(V);
+        }
+        else if (!Line.compare(0, 3, "vn ")) {
+            Iss >> Trash >> Trash;
+            FVector3f n;
+            for (int i = 0; i < 3; ++i) Iss >> n[i];
+            Normals.push_back(n);
+        }
+        else if (!Line.compare(0, 3, "vt ")) {
+            Iss >> Trash >> Trash;
+            FVector2f uv;
+            for (int i = 0; i < 2; ++i) Iss >> uv.Coords[i];
+            Uvs.push_back({ uv.X, 1 - uv.Y });
+        }
+        else if (!Line.compare(0, 2, "f ")) {
+            std::vector<FVector3i> f;
+            FVector3i Tmp;
+            Iss >> Trash;
+            while (Iss >> Tmp[0] >> Trash >> Tmp[1] >> Trash >> Tmp[2]) {
+                for (int i = 0; i < 3; ++i) Tmp[i]--;
+                f.push_back(Tmp);
+            }
+            Faces.push_back(f);
+        }
+    }
+    std::cerr << "# v# " << Verts.size() << " f# " << Faces.size() << " vt# " << Uvs.size() << " vn# " << Normals.size() << std::endl;
+    // LoadTexture(FileName, "_diffuse.tga", DiffuseMap);
 }
 
 FColor Model::Diffuse(const FVector2i &InUV) {

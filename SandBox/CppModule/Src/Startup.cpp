@@ -436,7 +436,7 @@
 //    std::cout << "============" << std::endl;
 //    return 0;
 //}
-
+#include "Startup.h"
 #include <iostream>
 
 class MyTest {
@@ -472,4 +472,5 @@ int main() {
     MyTest c = a + b;
     std::cout << c << std::endl;
     std::cout << a + c << std::endl;
+    std::cout << RootPath + "/Assets" << std::endl;
 }

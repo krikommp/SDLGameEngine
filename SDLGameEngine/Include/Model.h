@@ -9,11 +9,13 @@
 #include "tgaimage.h"
 
 #include <vector>
+#include <string>
 
 class Model {
 public:
     Model() {}
     Model(const char* FileName);
+    Model(const std::string_view& FileName);
     ~Model();
 
 public:
@@ -31,6 +33,8 @@ public:
 private:
     void LoadTexture(const char* FileName, const char* Suffix, TGAImage& Img);
 
+private:
+    void Init(std::ifstream& In);
 
 private:
     std::vector<FVector3f> Verts;

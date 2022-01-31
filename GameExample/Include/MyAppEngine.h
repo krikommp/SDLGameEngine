@@ -7,6 +7,8 @@
 
 #include <AppEngine.h>
 
+const std::string RootPath(ROOTPATH);
+
 namespace Chapter01 {
     class WireframeApp : public AppEngine {
     protected:
