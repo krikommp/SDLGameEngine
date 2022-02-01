@@ -14,6 +14,7 @@ Model::Model(const char *FileName) {
     In.open(FileName, std::ifstream::in);
     if (In.fail()) return;
     Init(In);
+    LoadTexture(FileName, "_diffuse.tga", DiffuseMap);
 }
 
 Model::Model(const std::string_view& FileName)
@@ -22,6 +23,7 @@ Model::Model(const std::string_view& FileName)
     In.open(FileName.data(), std::ifstream::in);
     if (In.fail()) return;
     Init(In);
+    LoadTexture(FileName.data(), "_diffuse.tga", DiffuseMap);
 }
 
 Model::~Model() {
@@ -99,7 +101,6 @@ void Model::Init(std::ifstream& In)
         }
     }
     std::cerr << "# v# " << Verts.size() << " f# " << Faces.size() << " vt# " << Uvs.size() << " vn# " << Normals.size() << std::endl;
-    // LoadTexture(FileName, "_diffuse.tga", DiffuseMap);
 }
 
 FColor Model::Diffuse(const FVector2i &InUV) {

@@ -5,8 +5,8 @@
 #include "MyAppEngine.h"
 #include "Model.h"
 
-static Model model(RootPath + "/Asserts/african_head.obj");
 namespace Chapter01 {
+	Model model(RootPath + "/Asserts/african_head.obj");
     void WireframeApp::OnStart() {
         SetWidthAndHeight(FVector2i(480, 240));
         SetPixelSize(1);
@@ -34,6 +34,7 @@ namespace Chapter01 {
 }
 
 namespace Chapter02 {
+	Model model(RootPath + "/Asserts/african_head.obj");
     void DrawTriangleApp::OnStart() {
         SetWidthAndHeight(FVector2i(400, 400));
         SetPixelSize(1);
@@ -74,7 +75,7 @@ namespace Chapter02 {
 }
 
 namespace Chapter03 {
-    Model CubeModel(RootPath + "/Asserts/cube.obj");
+	Model model(RootPath + "/Asserts/cube.obj");
 
     constexpr int gWidth = 400;
     constexpr int gHeight = 400;
@@ -162,8 +163,8 @@ namespace Chapter03 {
             DrawLine(RHI, o.X, o.Y, y.X, y.Y, Color::Green);
         }
 
-        for (int i = 0; i < CubeModel.GetFaces(); ++i) {
-            std::vector<int> face = CubeModel.GetFace(i);
+        for (int i = 0; i < model.GetFaces(); ++i) {
+            std::vector<int> face = model.GetFace(i);
             for (int j = 0; j < (int)face.size(); ++j) {
                 FVector3f wp0 = model.GetVert(face[j]);
                 FVector3f wp1 = model.GetVert(face[(j + 1) % face.size()]);

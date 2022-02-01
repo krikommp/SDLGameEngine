@@ -17,8 +17,8 @@ public:
     Model(const char* FileName);
     Model(const std::string_view& FileName);
     ~Model();
-
 public:
+
     int GetVerts();
 
     int GetFaces();
