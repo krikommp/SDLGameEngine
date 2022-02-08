@@ -145,6 +145,20 @@ namespace Chapter03 {
         return R;
     }
 
+    Matrix Lookup(const FVector3f&  Eye, const FVector3f& Center, const FVector3f& Up) {
+        FVector3f Z = (Eye - Center).Normalize();
+        FVector3f X = Cross(Up, Z).Normalize();
+        FVector3f Y = Cross(Z, X).Normalize();
+        Matrix Res = Matrix::Identity(4);
+        for (int i = 0; i < 3; ++i) {
+            Res[0][i] = X[i];
+            Res[1][i] = Y[i];
+            Res[2][i] = Z[i];
+            Res[i][3] = -Center[i];
+        }
+        return Res;
+    }
+
     void PerspectiveProjectionApp::OnStart() {
         SetWidthAndHeight(FVector2i(gWidth, gHeight));
         SetPixelSize(1);
@@ -197,6 +211,8 @@ namespace Chapter03 {
 
     FVector3f Camera(0, 0, 3);
     FVector3f LightDir(0, 0, -1);
+    FVector3f EyeDir(1, 0, 3);
+    FVector3f CenterDir(0, 0, 0);
 
     void PerspectiveModelApp::OnStart() {
         SetWidthAndHeight(FVector2i(gWidth, gHeight));
@@ -207,6 +223,7 @@ namespace Chapter03 {
     }
 
     void PerspectiveModelApp::OnUpdate() {
+        Matrix ModelView = Lookup(EyeDir, CenterDir, FVector3f(0, 1, 0));
         Matrix Projection = Matrix::Identity(4);
         Matrix Viewport = viewport(gWidth / 8, gHeight / 8, gWidth * 3 / 4, gHeight * 3 / 4);
         Projection[3][2] = -1.f / Camera.Z;
@@ -216,7 +233,7 @@ namespace Chapter03 {
             FVector3f WorldCoords[3];
             for (int j = 0; j < 3; ++j) {
                 FVector3f Vert = HeadModel.GetVert(Faces[j]);
-                ScreenCoords[j] = VectorCast(m2v(Viewport * Projection * v2m(Vert)));
+                ScreenCoords[j] = VectorCast(m2v(Viewport * Projection * ModelView * v2m(Vert)));
                 WorldCoords[j] = Vert;
             }
             FVector3f Normal = (WorldCoords[2] - WorldCoords[0]) ^ (WorldCoords[1] - WorldCoords[0]);
