@@ -40,6 +40,15 @@ namespace Chapter03 {
 
         void OnExit() override;
     };
+
+    class PerspectiveModelApp : public AppEngine {
+    protected:
+        void OnStart() override;
+
+        void OnUpdate() override;
+
+        void OnExit() override;
+    };
 }
 
 

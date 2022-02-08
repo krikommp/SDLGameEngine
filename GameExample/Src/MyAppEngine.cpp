@@ -76,6 +76,7 @@ namespace Chapter02 {
 
 namespace Chapter03 {
 	Model model(RootPath + "/Asserts/cube.obj");
+    Model HeadModel(RootPath + "/Asserts/african_head.obj");
 
     constexpr int gWidth = 400;
     constexpr int gHeight = 400;
@@ -175,7 +176,8 @@ namespace Chapter03 {
                     DrawLine(RHI, sp0.X, sp0.Y, sp1.X, sp1.Y, Color::White);
                 }
                 {
-                    Matrix T = zoom(1.5);
+                    Matrix T = Matrix::Identity(4);
+                    T[3][0] = - (1.f / 5.f);
 //                  Matrix T = Matrix::identity(4);
 //                  T[0][1] = 0.333;
 //                Matrix T = translation(Vec3f(.33, .5, 0))*rotation_z(cos(10.*M_PI/180.), sin(10.*M_PI/180.));
@@ -190,6 +192,47 @@ namespace Chapter03 {
     }
 
     void PerspectiveProjectionApp::OnExit() {
+
+    }
+
+    FVector3f Camera(0, 0, 3);
+    FVector3f LightDir(0, 0, -1);
+
+    void PerspectiveModelApp::OnStart() {
+        SetWidthAndHeight(FVector2i(gWidth, gHeight));
+        SetPixelSize(1);
+        SetClearColor(Color::Sky);
+        SetTitle("Chapter03 - Perspective_Projection_Model");
+        RHI.SetModel(HeadModel);
+    }
+
+    void PerspectiveModelApp::OnUpdate() {
+        Matrix Projection = Matrix::Identity(4);
+        Matrix Viewport = viewport(gWidth / 8, gHeight / 8, gWidth * 3 / 4, gHeight * 3 / 4);
+        Projection[3][2] = -1.f / Camera.Z;
+        for (int i = 0; i < HeadModel.GetFaces(); ++i) {
+            std::vector<int> Faces = HeadModel.GetFace(i);
+            FVector3i ScreenCoords[3];
+            FVector3f WorldCoords[3];
+            for (int j = 0; j < 3; ++j) {
+                FVector3f Vert = HeadModel.GetVert(Faces[j]);
+                ScreenCoords[j] = VectorCast(m2v(Viewport * Projection * v2m(Vert)));
+                WorldCoords[j] = Vert;
+            }
+            FVector3f Normal = (WorldCoords[2] - WorldCoords[0]) ^ (WorldCoords[1] - WorldCoords[0]);
+            Normal.Normalize();
+            float Intensity = Normal * LightDir;
+            if (Intensity > 0) {
+                FVector2i uvs[3];
+                for (int k = 0; k < 3; ++k) {
+                    uvs[k] = HeadModel.GetUV(i, k);
+                }
+                DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], FColor(uint8(Intensity * 255), uint8(Intensity * 255), uint8(Intensity * 255), 255));
+            }
+        }
+    }
+
+    void PerspectiveModelApp::OnExit() {
 
     }
 }

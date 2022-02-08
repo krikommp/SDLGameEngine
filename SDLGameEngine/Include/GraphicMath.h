@@ -140,6 +140,24 @@ FORCEINLINE void Swap(FPoint<T, N>& Left, FPoint<T, N>& Right) {
     }
 }
 
+template <size_t N>
+FORCEINLINE FPoint<float, N> VectorCast(const FPoint<int, N>& InVec) {
+    FPoint<float, N> Res;
+    for (uint32 i = 0; i < N; ++i) {
+        Res[i] = float(InVec[i] + 0.5f);
+    }
+    return Res;
+}
+
+template <size_t N>
+FORCEINLINE FPoint<int, N> VectorCast(const FPoint<float, N>& InVec) {
+    FPoint<int, N> Res;
+    for (uint32 i = 0; i < N; ++i) {
+        Res[i] = int(InVec[i]);
+    }
+    return Res;
+}
+
 using FVector3i = FPoint<int, 3>;
 using FVector3f = FPoint<float, 3>;
 using FColor = FPoint<uint8, 4>;
