@@ -130,6 +130,20 @@ std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
     return Out;
 }
 
+using FVector3i = FPoint<int, 3>;
+using FVector3f = FPoint<float, 3>;
+using FColor = FPoint<uint8, 4>;
+using FVector2f = FPoint<float, 2>;
+using FVector2i = FPoint<int, 2>;
+using FVector2ui = FPoint<uint32, 2>;
+using FPoint3f = FVector3f;
+using FVector3 = FPoint<double, 3>;
+
+template <VectorType T>
+FORCEINLINE FPoint<T, 3>  Cross(FPoint<T, 3> V1, const FPoint<T, 3>& V2) {
+    return FPoint<T, 3>{V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X};
+}
+
 template <VectorType T, size_t N>
 FORCEINLINE void Swap(FPoint<T, N>& Left, FPoint<T, N>& Right) {
     FPoint<T, N> Tmp;
@@ -158,18 +172,12 @@ FORCEINLINE FPoint<int, N> VectorCast(const FPoint<float, N>& InVec) {
     return Res;
 }
 
-using FVector3i = FPoint<int, 3>;
-using FVector3f = FPoint<float, 3>;
-using FColor = FPoint<uint8, 4>;
-using FVector2f = FPoint<float, 2>;
-using FVector2i = FPoint<int, 2>;
-using FVector2ui = FPoint<uint32, 2>;
-using FPoint3f = FVector3f;
-using FVector3 = FPoint<double, 3>;
-
-template <VectorType T>
-FORCEINLINE FPoint<T, 3>  Cross(FPoint<T, 3> V1, const FPoint<T, 3>& V2) {
-    return FPoint<T, 3>{V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X};
+FORCEINLINE FColor ColorMul(const FColor& LVal, const FColor& RVal) {
+    FColor Res;
+    for (int i = 0; i < 4; ++i) {
+        Res[i] = LVal[i] * RVal[i];
+    }
+    return Res;
 }
 
 constexpr int DEFAULT_ALLOC = 4;

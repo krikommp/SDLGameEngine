@@ -153,7 +153,7 @@ FVector3f Barycentric(FVector3i* Pts, FVector3i P) {
     return FVector3f(1.f-(u.X+u.Y)/u.Z, u.Y/u.Z, u.X/u.Z);
 }
 
-void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, const FColor& Color) {
+void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, float Intensity) {
     FVector2i AABBmin(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
     FVector2i AABBmax(0, 0);
     FVector2i Clamp(RHI.GetPixelWidth() - 1, RHI.GetPixelHeight() - 1);
@@ -174,7 +174,8 @@ void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const 
             for (int i = 0; i < 3; ++i) P.Z += Pts[i][2] * int(ScreenBC[i]);
             if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
                 RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
-                RHI.SetPixel(P.X, P.Y,  RHI.RenderModel.Diffuse(uv));
+                FColor Color = RHI.RenderModel.Diffuse(uv);
+                RHI.SetPixel(P.X, P.Y,  FColor(Color[0] * Intensity, Color[1] * Intensity, Color[2] * Intensity, Color[3] * Intensity));
             }
         }
     }

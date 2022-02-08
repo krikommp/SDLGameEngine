@@ -64,7 +64,7 @@ namespace Chapter02 {
                     uvs[k] = model.GetUV(i, k);
                 }
                 // DrawTriangleTwo(RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], FColor(Intensity * 255, Intensity * 255, Intensity * 255, 255));
-                DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], FColor(uint8(Intensity * 255), uint8(Intensity * 255), uint8(Intensity * 255), 255));
+                DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], Intensity);
             }
         }
     }
@@ -227,7 +227,7 @@ namespace Chapter03 {
                 for (int k = 0; k < 3; ++k) {
                     uvs[k] = HeadModel.GetUV(i, k);
                 }
-                DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], FColor(uint8(Intensity * 255), uint8(Intensity * 255), uint8(Intensity * 255), 255));
+                DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], Intensity);
             }
         }
     }
