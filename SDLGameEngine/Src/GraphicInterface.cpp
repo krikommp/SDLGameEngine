@@ -181,6 +181,39 @@ void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const 
     }
 }
 
+void
+DrawTriangle(SoftWareRHI &RHI, FVector3i t0, FVector3i t1, FVector3i t2, FVector2i uv0, FVector2i uv1, FVector2i uv2,
+             float Intensity) {
+    if (t0.Y==t1.Y && t0.Y==t2.Y) return;
+    if (t0.Y>t1.Y) { Swap(t0, t1); Swap(uv0, uv1); }
+    if (t0.Y>t2.Y) { Swap(t0, t2); Swap(uv0, uv2); }
+    if (t1.Y>t2.Y) { Swap(t1, t2); Swap(uv1, uv2); }
+
+    int TotalHeight = t2.Y - t0.Y;
+    for (int i = 0; i < TotalHeight; ++i) {
+        bool SecondHalf = i > t1.Y - t0.Y || t1.Y == t0.Y;
+        int SegmentHeight = SecondHalf ? t2.Y - t1.Y : t1.Y - t0.Y;
+        float alpha = (float)i / TotalHeight;
+        float beta = (float)(i - (SecondHalf ? t1.Y - t0.Y : 0)) / SegmentHeight;
+        FVector3i A = t0 + VectorCast(VectorCast(t2 - t0) * alpha);
+        FVector3i B = SecondHalf ? t1 + VectorCast(VectorCast(t2 - t1) * beta) : t0 + VectorCast(VectorCast(t1 - t0) * beta);
+        FVector2i uvA = uv0 + (uv2 - uv0) * alpha;
+        FVector2i uvB = SecondHalf ? uv1 + (uv2 - uv1) * beta : uv0 + (uv1 - uv0) * beta;
+        if (A.X > B.X) { Swap(A, B); Swap(uvA, uvB);  }
+        for (int j = A.X; j <= B.X; ++j) {
+            float phi = B.X == A.X ? 1. : (float)(j - A.X) / (float)(B.X - A.X);
+            FVector3i P = VectorCast(VectorCast(A) + VectorCast(B - A) * phi);
+            FVector2i uvP = uvA + (uvB - uvA) * phi;
+            int idx = P.X + P.Y * RHI.GetPixelWidth();
+            if (RHI.ZBuffer[idx] < P.Z) {
+                RHI.ZBuffer[idx] = P.Z;
+                FColor Color = RHI.RenderModel.Diffuse(uvP);
+                RHI.SetPixel(P.X, P.Y,  FColor(Color[0] * Intensity, Color[1] * Intensity, Color[2] * Intensity, Color[3] * Intensity));
+            }
+        }
+    }
+}
+
 bool SoftWareRHI::BeginRHI() {
     return SDL_LockTexture(Buffer, nullptr, &Pixels, &Pitch) >= 0;
 }

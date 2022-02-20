@@ -101,6 +101,7 @@ void DrawLine(SoftWareRHI& RHI, const FVector2i& A, const FVector2i& B, const FC
 void DrawLine(SoftWareRHI& RHI, int AX, int AY, int BX, int BY, const FColor& Color);
 void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2, const FColor& Color);
 void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const FVector2i& uv1, const FVector2i& uv2, float Intensity);
+void DrawTriangle(SoftWareRHI& RHI, FVector3i t0, FVector3i t1, FVector3i t2, FVector2i uv0, FVector2i uv1, FVector2i uv2, float Intensity);
 void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& Color);
 
 #endif //SDLGAMEENGINE_GRAPHICINTERFACE_H
