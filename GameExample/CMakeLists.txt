@@ -1,5 +1,8 @@
 project(GameExample)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${build_bin_debug})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${build_bin_release})
+
 include_directories(Include)
 
 FILE (GLOB ALL_SOURCES "Src/*.cpp" "Src/*.c")

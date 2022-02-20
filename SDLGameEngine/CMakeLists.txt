@@ -1,6 +1,7 @@
 project(SoftWareRenderer)
 
-# enable_testing()
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${build_lib_debug})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${build_lib_release})
 
 include_directories(Include)
 
@@ -12,8 +13,3 @@ target_link_libraries(${PROJECT_NAME} SDL2main SDL2-static)
 target_link_libraries(${PROJECT_NAME} fmt)
 
 target_include_directories(${PROJECT_NAME} INTERFACE Include)
-# target_link_libraries(${PROJECT_NAME} gtest_main)
-# target_link_libraries(${PROJECT_NAME} Ubpa::UDRefl_core)
-
-# include(GoogleTest)
-# gtest_discover_tests(${PROJECT_NAME})
