@@ -158,7 +158,7 @@ template <size_t N>
 FORCEINLINE FPoint<float, N> VectorCast(const FPoint<int, N>& InVec) {
     FPoint<float, N> Res;
     for (uint32 i = 0; i < N; ++i) {
-        Res[i] = float(InVec[i] + 0.5f);
+        Res[i] = float(InVec[i]);
     }
     return Res;
 }
@@ -167,7 +167,17 @@ template <size_t N>
 FORCEINLINE FPoint<int, N> VectorCast(const FPoint<float, N>& InVec) {
     FPoint<int, N> Res;
     for (uint32 i = 0; i < N; ++i) {
-        Res[i] = int(InVec[i]);
+        Res[i] = int(InVec[i] + 0.5f);
+    }
+    return Res;
+}
+
+
+template <size_t N, typename T>
+FORCEINLINE FPoint<T, N> VectorCast(const FPoint<float, N>& InVec) {
+    FPoint<int, N> Res;
+    for (uint32 i = 0; i < N; ++i) {
+        Res[i] = T(InVec[i]);
     }
     return Res;
 }
@@ -203,6 +213,15 @@ FORCEINLINE static uint32 ConvertColorToHEX(const FColor& Color) {
     // R G B A
     uint32 FormatColor = (Color[0] << 24) | (Color[1] << 16) | (Color[2] << 8) | (Color[3]);
     return FormatColor;
+}
+
+FORCEINLINE static FColor ConvertToColor(const FVector3f& InColor) {
+    FColor Color;
+    Color[0] = static_cast<uint8>(std::clamp(InColor[0], 0.0f, 1.0f) * 255);
+    Color[1] = static_cast<uint8>(std::clamp(InColor[1], 0.0f, 1.0f) * 255);
+    Color[2] = static_cast<uint8>(std::clamp(InColor[2], 0.0f, 1.0f) * 255);
+    Color[3] = 255;
+    return Color;
 }
 
 namespace Color{

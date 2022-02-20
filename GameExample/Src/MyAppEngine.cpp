@@ -218,14 +218,16 @@ namespace Chapter03 {
         SetWidthAndHeight(FVector2i(gWidth, gHeight));
         SetPixelSize(1);
         SetClearColor(Color::Sky);
-        SetTitle("Chapter03 - Perspective_Projection_Model");
+        SetTitle("Chapter03");
         RHI.SetModel(HeadModel);
     }
 
+    float t = 0.0f;
     void PerspectiveModelApp::OnUpdate() {
         Matrix ModelView = Lookup(EyeDir, CenterDir, FVector3f(0, 1, 0));
         Matrix Projection = Matrix::Identity(4);
         Matrix Viewport = viewport(gWidth / 8, gHeight / 8, gWidth * 3 / 4, gHeight * 3 / 4);
+        Matrix T = translation(FVector3f (0, 0, 0))*rotation_y(cos(t * 10.*M_PI/180.), sin(t * 10.*M_PI/180.));
         Projection[3][2] = -1.f / Camera.Z;
         for (int i = 0; i < HeadModel.GetFaces(); ++i) {
             std::vector<int> Faces = HeadModel.GetFace(i);
@@ -233,10 +235,10 @@ namespace Chapter03 {
             FVector3f WorldCoords[3];
             for (int j = 0; j < 3; ++j) {
                 FVector3f Vert = HeadModel.GetVert(Faces[j]);
-                ScreenCoords[j] = VectorCast(m2v(Viewport * Projection * ModelView * v2m(Vert)));
+                ScreenCoords[j] = VectorCast<3, int>(m2v(Viewport * Projection * ModelView * T * v2m(Vert)));
                 WorldCoords[j] = Vert;
             }
-            FVector3f Normal = (WorldCoords[2] - WorldCoords[0]) ^ (WorldCoords[1] - WorldCoords[0]);
+            FVector3f Normal = VectorCast((ScreenCoords[2] - ScreenCoords[0]) ^ (ScreenCoords[1] - ScreenCoords[0]));
             Normal.Normalize();
             float Intensity = Normal * LightDir;
             if (Intensity > 0) {
@@ -244,9 +246,11 @@ namespace Chapter03 {
                 for (int k = 0; k < 3; ++k) {
                     uvs[k] = HeadModel.GetUV(i, k);
                 }
-                DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], Intensity);
+                // DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], Intensity);
+                DrawTriangle(RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], uvs[0], uvs[1], uvs[2], Intensity);
             }
         }
+        t += Timer.fElapsedTime;
     }
 
     void PerspectiveModelApp::OnExit() {
