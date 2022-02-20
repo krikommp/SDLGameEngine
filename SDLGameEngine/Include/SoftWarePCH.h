@@ -12,10 +12,13 @@
 #include <iostream>
 #include <cassert>
 #include <chrono>
+#include <type_traits>
 #include <functional>
 #include <vector>
+#include <queue>
 #include <exception>
 #include <random>
+#include <future>
 #include <thread>
 
 #include <SDL.h>

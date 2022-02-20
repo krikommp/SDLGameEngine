@@ -1,46 +1,93 @@
 //
 // Created by kriko on 2022/1/16.
 //
-
+#pragma once
 #ifndef SDLGAMEENGINE_THREADPOOL_H
 #define SDLGAMEENGINE_THREADPOOL_H
 
 #include "SoftWarePCH.h"
 
-template <typename T>
 class ThreadPool {
 public:
-    void Init(uint32 InThreadNum = 8, uint32 InRequiresNum = 10000);
-
+    ThreadPool(size_t);
+    template<class F, class... Args>
+    auto enqueue(F&& f, Args&&... args)
+    -> std::future<typename std::invoke_result_t<F, Args...>>;
+    ~ThreadPool();
 private:
-    static void* Work(void* Args);
-private:
-    uint32 ThreadNum;
-    uint32 MaxRequiresNum;
+    // need to keep track of threads so we can join them
+    std::vector< std::thread > workers;
+    // the task queue
+    std::queue< std::function<void()> > tasks;
 
-    std::vector<std::thread> Threads;
+    // synchronization
+    std::mutex queue_mutex;
+    std::condition_variable condition;
+    bool stop;
 };
 
-template<typename T>
-void ThreadPool<T>::Init(uint32 InThreadNum, uint32 InRequiresNum) {
-    if (InThreadNum <= 0 || InRequiresNum <= 0)
-        throw std::exception();
-    ThreadNum = InThreadNum;
-    MaxRequiresNum = InRequiresNum;
-    Threads.resize(InThreadNum);
-    for (uint32 I = 0; I < ThreadNum; ++I) {
-        Threads[I] = std::thread(Work, this);
-        Threads[I].detach();
+// the constructor just launches some amount of workers
+inline ThreadPool::ThreadPool(size_t threads)
+        :   stop(false)
+{
+    for(size_t i = 0;i<threads;++i)
+        workers.emplace_back(
+                [this]
+                {
+                    for(;;)
+                    {
+                        std::function<void()> task;
+
+                        {
+                            std::unique_lock<std::mutex> lock(this->queue_mutex);
+                            this->condition.wait(lock,
+                                                 [this]{ return this->stop || !this->tasks.empty(); });
+                            if(this->stop && this->tasks.empty())
+                                return;
+                            task = std::move(this->tasks.front());
+                            this->tasks.pop();
+                        }
+
+                        task();
+                    }
+                }
+        );
+}
+
+// add new work item to the pool
+template<class F, class... Args>
+auto ThreadPool::enqueue(F&& f, Args&&... args)
+-> std::future<typename std::invoke_result_t<F, Args...>>
+{
+    using return_type = typename std::invoke_result_t<F, Args...>;
+
+    auto task = std::make_shared< std::packaged_task<return_type()> >(
+            std::bind(std::forward<F>(f), std::forward<Args>(args)...)
+    );
+
+    std::future<return_type> res = task->get_future();
+    {
+        std::unique_lock<std::mutex> lock(queue_mutex);
+
+        // don't allow enqueueing after stopping the pool
+        if(stop)
+            throw std::runtime_error("enqueue on stopped ThreadPool");
+
+        tasks.emplace([task](){ (*task)(); });
     }
+    condition.notify_one();
+    return res;
 }
 
-template<typename T>
-void *ThreadPool<T>::Work(void *Args) {
-    ThreadPool* Pool = (ThreadPool*)Args;
-    if (Pool != nullptr)
-        std::cout << "not null" << std::endl;
-    std::cout << "In Work Func" << std::endl;
-    return nullptr;
+// the destructor joins all threads
+inline ThreadPool::~ThreadPool()
+{
+    {
+        std::unique_lock<std::mutex> lock(queue_mutex);
+        stop = true;
+    }
+    condition.notify_all();
+    for(std::thread &worker: workers)
+        worker.join();
 }
-
 #endif //SDLGAMEENGINE_THREADPOOL_H
