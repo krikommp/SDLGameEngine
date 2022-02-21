@@ -76,8 +76,9 @@ namespace Chapter02 {
 }
 
 namespace Chapter03 {
-	Model model(RootPath + "/Asserts/cube.obj");
+	Model model(RootPath + "/Asserts/LineCube.obj");
     Model HeadModel(RootPath + "/Asserts/african_head.obj");
+    Model CubeModel(RootPath + "/Asserts/Cube.obj");
 
     constexpr int gWidth = 400;
     constexpr int gHeight = 400;
@@ -221,7 +222,7 @@ namespace Chapter03 {
         SetPixelSize(1);
         SetClearColor(Color::Sky);
         SetTitle("Chapter03");
-        RHI.SetModel(HeadModel);
+        RHI.SetModel(CubeModel);
     }
 
 
@@ -234,11 +235,11 @@ namespace Chapter03 {
         Projection[3][2] = -1.f / Camera.Z;
         auto F = [=](int Start, int End) {
             for (int i = Start; i < End; ++i) {
-                std::vector<int> Faces = HeadModel.GetFace(i);
+                std::vector<int> Faces = CubeModel.GetFace(i);
                 FVector3i ScreenCoords[3];
                 FVector3f WorldCoords[3];
                 for (int j = 0; j < 3; ++j) {
-                    FVector3f Vert = HeadModel.GetVert(Faces[j]);
+                    FVector3f Vert = CubeModel.GetVert(Faces[j]);
                     ScreenCoords[j] = VectorCast<3, int>(
                             m2v(Viewport * Projection * ModelView * T * v2m(Vert)));
                     WorldCoords[j] = Vert;
@@ -250,7 +251,7 @@ namespace Chapter03 {
                 if (Intensity > 0) {
                     FVector2i uvs[3];
                     for (int k = 0; k < 3; ++k) {
-                        uvs[k] = HeadModel.GetUV(i, k);
+                        uvs[k] = CubeModel.GetUV(i, k);
                     }
                     // DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], Intensity);
                     DrawTriangle(this->RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], uvs[0], uvs[1], uvs[2],
@@ -260,7 +261,7 @@ namespace Chapter03 {
             return 0;
         };
         
-        int TotalFace = HeadModel.GetFaces();
+        int TotalFace = CubeModel.GetFaces();
         int Count = TotalFace / THREAD_NUM;
         int Leave = TotalFace % THREAD_NUM;
         int Start = 0;
