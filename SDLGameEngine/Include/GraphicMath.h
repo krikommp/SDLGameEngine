@@ -11,63 +11,17 @@
 template<typename T>
 concept VectorType = std::is_integral<T>::value || std::is_floating_point<T>::value;
 
-template <VectorType T, size_t N>
-class FPoint{
-    template<VectorType ...Args, typename Function> void UnPack(Function Lambda, T Value, Args... Values)
-    {
-        Lambda(Value);
-        if constexpr(sizeof...(Values) > 0) {
-            UnPack(Lambda, Values...);
-        }
-    };
-private:
-public:
-    FPoint() {
-        for(unsigned int Index = 0; Index < N; ++Index) {
-            Coords[Index] = 0;
-        }
-    }
-    explicit FPoint(T InCoords[N]) {
-        for(unsigned int Index = 0; Index < N; ++Index) {
-            Coords[Index] = InCoords[Index];
-        }
-    }
-
-    template<VectorType ...Args>
-    explicit FPoint(Args... InArgs) {
-        static_assert(sizeof...(InArgs) == N);
-        unsigned int Index = 0;
-        UnPack([&](auto Value){
-            Coords[Index] = Value;
-            ++Index;
-        }, InArgs...);
-    }
-
-public:
-    T& operator[] (size_t Index) {
-        assert(Index < N && "Invalid Index");
-        return Coords[Index];
-    }
-
-    T operator[] (size_t Index) const {
-        assert(Index < N && "Invalid Index");
-        return Coords[Index];
-    }
-
-private:
-    T Coords[N];
-};
-
 template <VectorType T>
-class FPoint<T, 2>{
+struct FVector2{
+    template<VectorType> friend std::ostream& operator<<(std::ostream& Out, const FVector2<T>& InVec);
 public:
-    FPoint() { Coords[0] = Coords[1] = 0; }
-    FPoint(T InX, T InY) { Coords[0] = InX; Coords[1] = InY; }
-
+    FVector2<T>() { Coords[0] = Coords[1] = 0; }
+    FVector2<T>(T InX, T InY) { Coords[0] = InX; Coords[1] = InY; }
+    FVector2<T>(const FVector2<T>& InVec) : X(InVec.X), Y(InVec.Y) { *this = InVec; }
 public:
-    FORCEINLINE FPoint<T, 2> operator +(const FPoint<T, 2>& InV) const { return FPoint<T, 2>(U + InV.U, V + InV.V); }
-    FORCEINLINE FPoint<T, 2> operator -(const FPoint<T, 2>& InV) const { return FPoint<T, 2>(U - InV.U, V - InV.V); }
-    FORCEINLINE FPoint<T, 2> operator *(float InF) const { return FPoint<T, 2>(static_cast<T>(U * InF), static_cast<T>(V * InF)); }
+    FORCEINLINE FVector2<T> operator +(const FVector2<T>& InV) const { return FVector2<T>(U + InV.U, V + InV.V); }
+    FORCEINLINE FVector2<T> operator -(const FVector2<T>& InV) const { return FVector2<T>(U - InV.U, V - InV.V); }
+    FORCEINLINE FVector2<T> operator *(float InF) const { return FVector2<T>(static_cast<T>(U * InF), static_cast<T>(V * InF)); }
     FORCEINLINE T& operator[] (size_t Index) { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
     FORCEINLINE T operator[] (size_t Index) const { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
 public:
@@ -78,23 +32,41 @@ public:
     };
 };
 
+template<VectorType T> std::ostream& operator<<(std::ostream& Out, const FVector2<T>& InVec)
+{
+    Out << "(" << InVec.X << ", " << InVec.Y << ")\n";
+    return Out;
+}
+
 template <VectorType T>
-class FPoint<T, 3> {
+struct FVector3{
+    template<VectorType> friend std::ostream& operator<<(std::ostream& Out, const FVector3<T>& InVec);
 public:
-    FPoint() { Coords[0] = Coords[1] = Coords[2] = 0; }
-    FPoint(T InX, T InY, T InZ) { Coords[0] = InX; Coords[1] = InY; Coords[2] = InZ; }
-
+    FVector3<T>() { Coords[0] = Coords[1] = Coords[2] = 0; }
+    FVector3<T>(T InX, T InY, T InZ) { Coords[0] = InX; Coords[1] = InY; Coords[2] = InZ; }
+    FVector3<T>(const FVector3<T>& InVec) : X(InVec.X), Y(InVec.Y), Z(InVec.Z) { *this = InVec; }
+    template <VectorType U, std::enable_if_t<std::is_same_v<float, U>, int> = 0>
+    FVector3<T>(const FVector3<U>& InVec) : X(int(InVec.X + 0.5f)), Y(int(InVec.Y + 0.5f)), Z(int(InVec.Z + 0.5f)) {}
+    FVector3<T>& operator=(const FVector3<T>& InVec)
+    {
+	    if (this != &InVec)
+	    {
+            X = InVec.X;
+            Y = InVec.Y;
+            Z = InVec.Z;
+	    }
+        return *this;
+    }
 public:
-
-    FORCEINLINE FPoint<T, 3> operator ^(const FPoint<T, 3>& V) const { return FPoint<T, 3>(Y * V.Z - Z * V.Y, Z * V.X - X * V.Z, X * V.Y - Y * V.X); }
-    FORCEINLINE FPoint<T, 3> operator +(const FPoint<T, 3>& V) const { return FPoint<T, 3>(X + V.X, Y + V.Y, Z + V.Z); }
-    FORCEINLINE FPoint<T, 3> operator -(const FPoint<T, 3>& V) const { return FPoint<T, 3>(X - V.X, Y - V.Y, Z - V.Z); }
-    FORCEINLINE FPoint<T, 3> operator *(float V) const { return FPoint<T, 3>(X * V, Y * V, Z * V); }
-    FORCEINLINE FPoint<T, 3> operator +(float V) const { return FPoint<T, 3>(X + V, Y + V, Z + V); }
-    FORCEINLINE FPoint<T, 3> operator -(float V) const { return FPoint<T, 3>(X - V, Y - V, Z - V); }
-    FORCEINLINE T operator *(const FPoint<T, 3>& V) const { return X * V.X + Y * V.Y + Z * V.Z; }
+    FORCEINLINE FVector3<T> operator ^(const FVector3<T>& V) const { return FVector3<T>(Y * V.Z - Z * V.Y, Z * V.X - X * V.Z, X * V.Y - Y * V.X); }
+    FORCEINLINE FVector3<T> operator +(const FVector3<T>& V) const { return FVector3<T>(X + V.X, Y + V.Y, Z + V.Z); }
+    FORCEINLINE FVector3<T> operator -(const FVector3<T>& V) const { return FVector3<T>(X - V.X, Y - V.Y, Z - V.Z); }
+    FORCEINLINE FVector3<T> operator *(float V) const { return FVector3<T>(X * V, Y * V, Z * V); }
+    FORCEINLINE FVector3<T> operator +(float V) const { return FVector3<T>(X + V, Y + V, Z + V); }
+    FORCEINLINE FVector3<T> operator -(float V) const { return FVector3<T>(X - V, Y - V, Z - V); }
+    FORCEINLINE T operator *(const FVector3<T>& V) const { return X * V.X + Y * V.Y + Z * V.Z; }
     FORCEINLINE float Norm() const { return std::sqrt(X * X + Y * Y + Z * Z); }
-    FORCEINLINE FPoint<T, 3>& Normalize(T L = 1) { *this = (*this) * (L / Norm()); return *this; }
+    FORCEINLINE FVector3<T>& Normalize(T L = 1) { *this = (*this) * (L / Norm()); return *this; }
 
     FORCEINLINE T& operator[] (size_t Index) { assert(Index < 3 && "Invalid Index"); return Coords[Index]; }
 
@@ -108,87 +80,139 @@ public:
     };
 };
 
-template <VectorType T, size_t N>
-FPoint<T, N> operator/(const FPoint<T, N>& InPoint, T Value) {
-    FPoint<T, N> Res;
-    for (uint32 Index = 0; Index < N; ++Index) {
-        Res[Index] = InPoint[Index] / Value;
-    }
-    return Res;
-}
-
-template <VectorType T, size_t N>
-std::ostream& operator<<(std::ostream& Out, const FPoint<T, N>& Value)
+template<VectorType T>
+std::ostream& operator<<(std::ostream& Out, const FVector3<T>& InVec)
 {
-    Out << "(";
-    for (uint32 i = 0;i < N - 1; ++i)
-    {
-        Out << Value[i] << ", ";
-    }
-    Out << Value[N - 1];
-    Out << ")";
+    Out << "(" << InVec.X << ", " << InVec.Y << ", " << InVec.Z << ")\n";
     return Out;
 }
 
-using FVector3i = FPoint<int, 3>;
-using FVector3f = FPoint<float, 3>;
-using FColor = FPoint<uint8, 4>;
-using FVector2f = FPoint<float, 2>;
-using FVector2i = FPoint<int, 2>;
-using FVector2ui = FPoint<uint32, 2>;
+struct FColor
+{
+public:
+    FORCEINLINE explicit  FColor() { R = G = B = A = 0; };
+    constexpr FORCEINLINE FColor(uint8 InR, uint8 InG, uint8 InB, uint8 InA) : R(InR), G(InG), B(InB), A(InA) {}
+    FORCEINLINE FColor(const FColor& InColor) : R(InColor.R), G(InColor.G), B(InColor.B), A(InColor.A)  {}
+    FORCEINLINE explicit  FColor(uint32 InColor) {
+        A = uint8(InColor);
+        InColor = InColor >> 8;
+        B = uint8(InColor);
+        InColor = InColor >> 8;
+        G = uint8(InColor);
+        InColor = InColor >> 8;
+        R = InColor;
+    }
+
+    bool operator==(const FColor& C) { return DWColor() == C.DWColor(); }
+    FORCEINLINE bool operator!=(const FColor& C) { return DWColor() != C.DWColor(); }
+    FORCEINLINE FColor operator+(const FColor& InColor)
+    {
+        return FColor(
+            (uint8)std::min((uint32)this->R + (uint32)InColor.R, (uint32)255),
+            (uint8)std::min((uint32)this->G + (uint32)InColor.G, (uint32)255),
+            (uint8)std::min((uint32)this->B + (uint32)InColor.B, (uint32)255),
+            (uint8)std::min((uint32)this->A + (uint32)InColor.A, (uint32)255));
+    }
+    FORCEINLINE FColor& operator+=(const FColor& InColor)
+    {
+        R = (uint8)std::min((uint32)R + (uint32)InColor.R, (uint32)255);
+        G = (uint8)std::min((uint32)G + (uint32)InColor.G, (uint32)255);
+        B = (uint8)std::min((uint32)B + (uint32)InColor.B, (uint32)255);
+        A = (uint8)std::min((uint32)A + (uint32)InColor.A, (uint32)255);
+        return *this;
+    }
+    FORCEINLINE FColor operator-(const FColor& InColor)
+    {
+        return FColor(
+            (uint8)std::min((uint32)this->R - (uint32)InColor.R, (uint32)255),
+            (uint8)std::min((uint32)this->G - (uint32)InColor.G, (uint32)255),
+            (uint8)std::min((uint32)this->B - (uint32)InColor.B, (uint32)255),
+            (uint8)std::min((uint32)this->A - (uint32)InColor.A, (uint32)255));
+    }
+    FORCEINLINE FColor& operator-=(const FColor& InColor)
+    {
+        R = (uint8)std::min((uint32)R - (uint32)InColor.R, (uint32)255);
+        G = (uint8)std::min((uint32)G - (uint32)InColor.G, (uint32)255);
+        B = (uint8)std::min((uint32)B - (uint32)InColor.B, (uint32)255);
+        A = (uint8)std::min((uint32)A - (uint32)InColor.A, (uint32)255);
+        return *this;
+    }
+    FORCEINLINE FColor operator* (const FColor& InColor)
+    {
+        return FColor(
+            (uint8)std::min((uint32)this->R * (uint32)InColor.R, (uint32)255),
+            (uint8)std::min((uint32)this->G * (uint32)InColor.G, (uint32)255),
+            (uint8)std::min((uint32)this->B * (uint32)InColor.B, (uint32)255),
+            (uint8)std::min((uint32)this->A * (uint32)InColor.A, (uint32)255));
+    }
+    FORCEINLINE FColor& operator*= (const FColor& InColor)
+    {
+        R = (uint8)std::min((uint32)R * (uint32)InColor.R, (uint32)255);
+        G = (uint8)std::min((uint32)G * (uint32)InColor.G, (uint32)255);
+        B = (uint8)std::min((uint32)B * (uint32)InColor.B, (uint32)255);
+        A = (uint8)std::min((uint32)A * (uint32)InColor.A, (uint32)255);
+        return *this;
+    }
+    FORCEINLINE FColor operator*(float Scalar)
+    {
+        return FColor(
+            (uint8)std::min((uint32)(this->R * Scalar), (uint32)255),
+            (uint8)std::min((uint32)(this->G * Scalar), (uint32)255),
+            (uint8)std::min((uint32)(this->B * Scalar), (uint32)255),
+            (uint8)std::min((uint32)(this->A * Scalar), (uint32)255));
+    }
+    FORCEINLINE FColor& operator*=(float Scalar)
+    {
+        R = (uint8)std::min((uint32)(this->R * Scalar), (uint32)255);
+        G = (uint8)std::min((uint32)(this->R * Scalar), (uint32)255);
+        B = (uint8)std::min((uint32)(this->R * Scalar), (uint32)255);
+        A = (uint8)std::min((uint32)(this->R * Scalar), (uint32)255);
+        return *this;
+    }
+
+    FORCEINLINE FColor operator/ (const FColor& InColor)
+    {
+        return FColor(
+            (uint8)std::min((uint32)this->R / (uint32)InColor.R, (uint32)255),
+            (uint8)std::min((uint32)this->G / (uint32)InColor.G, (uint32)255),
+            (uint8)std::min((uint32)this->B / (uint32)InColor.B, (uint32)255),
+            (uint8)std::min((uint32)this->A / (uint32)InColor.A, (uint32)255));
+    }
+    FORCEINLINE FColor& operator/= (const FColor& InColor)
+    {
+        R = (uint8)std::min((uint32)R / (uint32)InColor.R, (uint32)255);
+        G = (uint8)std::min((uint32)G / (uint32)InColor.G, (uint32)255);
+        B = (uint8)std::min((uint32)B / (uint32)InColor.B, (uint32)255);
+        A = (uint8)std::min((uint32)A / (uint32)InColor.A, (uint32)255);
+        return *this;
+    }
+    FORCEINLINE FColor operator/(float Scalar)
+    {
+        return FColor(
+            (uint8)std::min((uint32)(this->R / Scalar), (uint32)255),
+            (uint8)std::min((uint32)(this->G / Scalar), (uint32)255),
+            (uint8)std::min((uint32)(this->B / Scalar), (uint32)255),
+            (uint8)std::min((uint32)(this->A / Scalar), (uint32)255));
+    }
+    FORCEINLINE FColor operator/=(float Scalar)
+    {
+        R = (uint8)std::min((uint32)(this->R / Scalar), (uint32)255);
+        G = (uint8)std::min((uint32)(this->R / Scalar), (uint32)255);
+        B = (uint8)std::min((uint32)(this->R / Scalar), (uint32)255);
+        A = (uint8)std::min((uint32)(this->R / Scalar), (uint32)255);
+        return *this;
+    }
+public:
+    struct { uint8 R, G, B, A; };
+    FORCEINLINE const uint32 DWColor() const { return uint32(R << 24 | G << 16 | B << 8 | A); }
+};
+
+using FVector3i = FVector3<int>;
+using FVector3f = FVector3<float>;
+using FVector2f = FVector2<float>;
+using FVector2i = FVector2<int>;
+using FVector2ui = FVector2<uint32>;
 using FPoint3f = FVector3f;
-using FVector3 = FPoint<double, 3>;
-
-template <VectorType T>
-FORCEINLINE FPoint<T, 3>  Cross(FPoint<T, 3> V1, const FPoint<T, 3>& V2) {
-    return FPoint<T, 3>{V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X};
-}
-
-template <VectorType T, size_t N>
-FORCEINLINE void Swap(FPoint<T, N>& Left, FPoint<T, N>& Right) {
-    FPoint<T, N> Tmp;
-    for (uint32 Index = 0; Index < N; ++Index) {
-        Tmp[Index] = Left[Index];
-        Left[Index] = Right[Index];
-        Right[Index] = Tmp[Index];
-    }
-}
-
-template <size_t N>
-FORCEINLINE FPoint<float, N> VectorCast(const FPoint<int, N>& InVec) {
-    FPoint<float, N> Res;
-    for (uint32 i = 0; i < N; ++i) {
-        Res[i] = float(InVec[i]);
-    }
-    return Res;
-}
-
-template <size_t N>
-FORCEINLINE FPoint<int, N> VectorCast(const FPoint<float, N>& InVec) {
-    FPoint<int, N> Res;
-    for (uint32 i = 0; i < N; ++i) {
-        Res[i] = int(InVec[i] + 0.5f);
-    }
-    return Res;
-}
-
-
-template <size_t N, typename T>
-FORCEINLINE FPoint<T, N> VectorCast(const FPoint<float, N>& InVec) {
-    FPoint<int, N> Res;
-    for (uint32 i = 0; i < N; ++i) {
-        Res[i] = T(InVec[i]);
-    }
-    return Res;
-}
-
-FORCEINLINE FColor ColorMul(const FColor& LVal, const FColor& RVal) {
-    FColor Res;
-    for (int i = 0; i < 4; ++i) {
-        Res[i] = LVal[i] * RVal[i];
-    }
-    return Res;
-}
 
 constexpr int DEFAULT_ALLOC = 4;
 
@@ -208,21 +232,6 @@ private:
     std::vector<std::vector<float>> M;
     int Rows, Cols;
 };
-
-FORCEINLINE static uint32 ConvertColorToHEX(const FColor& Color) {
-    // R G B A
-    uint32 FormatColor = (Color[0] << 24) | (Color[1] << 16) | (Color[2] << 8) | (Color[3]);
-    return FormatColor;
-}
-
-FORCEINLINE static FColor ConvertToColor(const FVector3f& InColor) {
-    FColor Color;
-    Color[0] = static_cast<uint8>(std::clamp(InColor[0], 0.0f, 1.0f) * 255);
-    Color[1] = static_cast<uint8>(std::clamp(InColor[1], 0.0f, 1.0f) * 255);
-    Color[2] = static_cast<uint8>(std::clamp(InColor[2], 0.0f, 1.0f) * 255);
-    Color[3] = 255;
-    return Color;
-}
 
 namespace Color{
     static FColor White(255, 255, 255, 255);

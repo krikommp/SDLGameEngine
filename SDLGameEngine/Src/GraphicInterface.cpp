@@ -36,7 +36,7 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
     for (Row = 0; Row < WindowInfo.PixelHeight; ++Row) {
         Dst = (uint32*)((uint8 *)Pixels + Row * Pitch);
         for (Col = 0; Col < WindowInfo.PixelWidth; ++Col) {
-            *Dst++ = ConvertColorToHEX(Color);
+            *Dst++ = Color.DWColor();
         }
     }
     for (uint32 i = 0; i < WindowInfo.PixelHeight * WindowInfo.PixelWidth; ++i) ZBuffer[i] = - std::numeric_limits<int>::max();
@@ -46,7 +46,7 @@ bool SoftWareRHI::ClearColor(const FColor &Color) {
 void SoftWareRHI::SetPixel(uint32 X, uint32 Y, const FColor &Color) {
     if (!CheckPixelInScope(*this, X, Y)) return;
     uint32* Dst = (uint32*)((uint8*)Pixels + (WindowInfo.PixelHeight - Y) * Pitch);
-    *(Dst + X) = ConvertColorToHEX(Color);
+    *(Dst + X) = Color.DWColor();
 }
 
 bool SoftWareRHI::Render() {
@@ -113,9 +113,9 @@ void DrawEllipse(SoftWareRHI& RHI, int MX, int MY, int A, int B, const FColor& C
 void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i &T2, const FColor& Color) {
     // 首先从上到下，从左到右绘制三角形
     // 从上到下依次是： T0 < T1 < T2
-    if (T0.Y > T1.Y) Swap(T0, T1);
-    if (T0.Y > T2.Y) Swap(T0, T2);
-    if (T1.Y > T2.Y) Swap(T1, T2);
+    if (T0.Y > T1.Y) std::swap(T0, T1);
+    if (T0.Y > T2.Y) std::swap(T0, T2);
+    if (T1.Y > T2.Y) std::swap(T1, T2);
 
     int TotalHeight = T2.Y - T0.Y;
     if (TotalHeight == 0) return;
@@ -126,7 +126,7 @@ void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i 
         float Beta = float(Y - T0.Y) / float(SegmentHeight);
         FVector2i A = T0 + (T2 - T0) * Alpha;
         FVector2i B = T0 + (T1 - T0) * Beta;
-        if (A.X > B.X) Swap(A, B);
+        if (A.X > B.X) std::swap(A, B);
         for (int J = A.X; J <= B.X; ++J) {
             RHI.SetPixel(J, Y, Color);
         }
@@ -138,14 +138,14 @@ void DrawTriangleTwo(SoftWareRHI &RHI, FVector2i &T0, FVector2i &T1,  FVector2i 
         float Beta = float(Y - T1.Y) / float(SegmentHeight);
         FVector2i A = T0 + (T2 - T0) * Alpha;
         FVector2i B = T1 + (T2 - T1) * Beta;
-        if (A.X > B.X) Swap(A, B);
+        if (A.X > B.X) std::swap(A, B);
         for (int J = A.X; J <= B.X; ++J) {
             RHI.SetPixel(J, Y, Color);
         }
     }
 }
 FVector3f Barycentric(FVector3i* Pts, FVector3i P) {
-    FVector3f u = Cross(FVector3f(float(Pts[2][0])-float(Pts[0][0]), float(Pts[1][0])-float(Pts[0][0]), float(Pts[0][0])-float(P[0])), FVector3f(float(Pts[2][1])-float(Pts[0][1]), float(Pts[1][1])-float(Pts[0][1]), float(Pts[0][1])-float(P[1])));
+    FVector3f u = FVector3f(float(Pts[2][0])-float(Pts[0][0]), float(Pts[1][0])-float(Pts[0][0]), float(Pts[0][0])-float(P[0])) ^ FVector3f(float(Pts[2][1])-float(Pts[0][1]), float(Pts[1][1])-float(Pts[0][1]), float(Pts[0][1])-float(P[1]));
     /* `pts` and `P` has integer value as coordinates
        so `abs(u[2])` < 1 means `u[2]` is 0, that means
        triangle is degenerate, in this case return something with negative coordinates */
@@ -175,7 +175,7 @@ void DrawTriangle(SoftWareRHI& RHI, FVector3i* Pts, const FVector2i& uv0, const 
             if (RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] < P.Z) {
                 RHI.ZBuffer[int(P.X + P.Y * RHI.GetPixelWidth())] = P.Z;
                 FColor Color = RHI.RenderModel.Diffuse(uv);
-                RHI.SetPixel(P.X, P.Y,  FColor(Color[0] * Intensity, Color[1] * Intensity, Color[2] * Intensity, Color[3] * Intensity));
+                RHI.SetPixel(P.X, P.Y, Color * Intensity);
             }
         }
     }
@@ -185,9 +185,9 @@ void
 DrawTriangle(SoftWareRHI &RHI, FVector3i t0, FVector3i t1, FVector3i t2, FVector2i uv0, FVector2i uv1, FVector2i uv2,
              float Intensity) {
     if (t0.Y==t1.Y && t0.Y==t2.Y) return;
-    if (t0.Y>t1.Y) { Swap(t0, t1); Swap(uv0, uv1); }
-    if (t0.Y>t2.Y) { Swap(t0, t2); Swap(uv0, uv2); }
-    if (t1.Y>t2.Y) { Swap(t1, t2); Swap(uv1, uv2); }
+    if (t0.Y>t1.Y) { std::swap(t0, t1); std::swap(uv0, uv1); }
+    if (t0.Y>t2.Y) { std::swap(t0, t2); std::swap(uv0, uv2); }
+    if (t1.Y>t2.Y) { std::swap(t1, t2); std::swap(uv1, uv2); }
 
     int TotalHeight = t2.Y - t0.Y;
     for (int i = 0; i < TotalHeight; ++i) {
@@ -195,20 +195,20 @@ DrawTriangle(SoftWareRHI &RHI, FVector3i t0, FVector3i t1, FVector3i t2, FVector
         int SegmentHeight = SecondHalf ? t2.Y - t1.Y : t1.Y - t0.Y;
         float alpha = (float)i / TotalHeight;
         float beta = (float)(i - (SecondHalf ? t1.Y - t0.Y : 0)) / SegmentHeight;
-        FVector3i A = t0 + VectorCast(VectorCast(t2 - t0) * alpha);
-        FVector3i B = SecondHalf ? t1 + VectorCast(VectorCast(t2 - t1) * beta) : t0 + VectorCast(VectorCast(t1 - t0) * beta);
+        FVector3i A = t0 + (t2 - t0) * alpha;
+        FVector3i B = SecondHalf ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
         FVector2i uvA = uv0 + (uv2 - uv0) * alpha;
         FVector2i uvB = SecondHalf ? uv1 + (uv2 - uv1) * beta : uv0 + (uv1 - uv0) * beta;
-        if (A.X > B.X) { Swap(A, B); Swap(uvA, uvB);  }
+        if (A.X > B.X) { std::swap(A, B); std::swap(uvA, uvB);  }
         for (int j = A.X; j <= B.X; ++j) {
             float phi = B.X == A.X ? 1. : (float)(j - A.X) / (float)(B.X - A.X);
-            FVector3i P = VectorCast(VectorCast(A) + VectorCast(B - A) * phi);
+            FVector3i P = A + (B - A) * phi;
             FVector2i uvP = uvA + (uvB - uvA) * phi;
             int idx = P.X + P.Y * RHI.GetPixelWidth();
             if (RHI.ZBuffer[idx] < P.Z) {
                 RHI.ZBuffer[idx] = P.Z;
                 FColor Color = RHI.RenderModel.Diffuse(uvP);
-                RHI.SetPixel(P.X, P.Y,  FColor(Color[0] * Intensity, Color[1] * Intensity, Color[2] * Intensity, Color[3] * Intensity));
+                RHI.SetPixel(P.X, P.Y,  Color * Intensity);
             }
         }
     }

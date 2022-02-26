@@ -149,8 +149,8 @@ namespace Chapter03 {
 
     Matrix Lookup(const FVector3f&  Eye, const FVector3f& Center, const FVector3f& Up) {
         FVector3f Z = (Eye - Center).Normalize();
-        FVector3f X = Cross(Up, Z).Normalize();
-        FVector3f Y = Cross(Z, X).Normalize();
+        FVector3f X = (Up ^ Z).Normalize();
+        FVector3f Y = (Z ^ X).Normalize();
         Matrix Res = Matrix::Identity(4);
         for (int i = 0; i < 3; ++i) {
             Res[0][i] = X[i];
@@ -223,6 +223,9 @@ namespace Chapter03 {
         SetClearColor(Color::Sky);
         SetTitle("Chapter03");
         RHI.SetModel(CubeModel);
+
+        FColor InColor(0xff0000ff);
+        std::cout << std::hex << "(" << InColor.R << ", " << InColor.G << ", " << InColor.B << ", " << InColor.A << ")\n";
     }
 
 
@@ -231,53 +234,51 @@ namespace Chapter03 {
     Matrix Projection = Matrix::Identity(4);
     Matrix Viewport = viewport(gWidth / 8, gHeight / 8, gWidth * 3 / 4, gHeight * 3 / 4);
     void PerspectiveModelApp::OnUpdate() {
-        Matrix T = translation(FVector3f (0, 0, 0))*rotation_y(cos(t * 10.*M_PI/180.), sin(t * 10.*M_PI/180.));
-        Projection[3][2] = -1.f / Camera.Z;
-        auto F = [=](int Start, int End) {
-            for (int i = Start; i < End; ++i) {
-                std::vector<int> Faces = CubeModel.GetFace(i);
-                FVector3i ScreenCoords[3];
-                FVector3f WorldCoords[3];
-                for (int j = 0; j < 3; ++j) {
-                    FVector3f Vert = CubeModel.GetVert(Faces[j]);
-                    ScreenCoords[j] = VectorCast<3, int>(
-                            m2v(Viewport * Projection * ModelView * T * v2m(Vert)));
-                    WorldCoords[j] = Vert;
-                }
-                FVector3f Normal = VectorCast(
-                        (ScreenCoords[2] - ScreenCoords[0]) ^ (ScreenCoords[1] - ScreenCoords[0]));
-                Normal.Normalize();
-                float Intensity = Normal * LightDir;
-                if (Intensity > 0) {
-                    FVector2i uvs[3];
-                    for (int k = 0; k < 3; ++k) {
-                        uvs[k] = CubeModel.GetUV(i, k);
-                    }
-                    // DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], Intensity);
-                    DrawTriangle(this->RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], uvs[0], uvs[1], uvs[2],
-                                 Intensity);
-                }
-            }
-            return 0;
-        };
-        
-        int TotalFace = CubeModel.GetFaces();
-        int Count = TotalFace / THREAD_NUM;
-        int Leave = TotalFace % THREAD_NUM;
-        int Start = 0;
-        std::vector<std::future<int>> Threads;
-        for (int Group = 0; Group < THREAD_NUM; ++Group) {
-            int End = Start + Count;
-            Threads.push_back(Pool.enqueue(F, Start, End));
-            Start = End;
-        }
-        if (Leave > 0) {
-            Threads.push_back(Pool.enqueue(F, Start, Start + Leave));
-        }
-        for (auto& iter : Threads) {
-            iter.get();
-        }
-        t += Timer.fElapsedTime;
+        //Matrix T = translation(FVector3f (0, 0, 0))*rotation_y(cos(t * 10.*M_PI/180.), sin(t * 10.*M_PI/180.));
+        //Projection[3][2] = -1.f / Camera.Z;
+        //auto F = [=](int Start, int End) {
+        //    for (int i = Start; i < End; ++i) {
+        //        std::vector<int> Faces = CubeModel.GetFace(i);
+        //        FVector3i ScreenCoords[3];
+        //        FVector3f WorldCoords[3];
+        //        for (int j = 0; j < 3; ++j) {
+        //            FVector3f Vert = CubeModel.GetVert(Faces[j]);
+        //            // ScreenCoords[j] = m2v(Viewport * Projection * ModelView * T * v2m(Vert));
+        //            WorldCoords[j] = Vert;
+        //        }
+        //        FVector3f Normal; //= (ScreenCoords[2] - ScreenCoords[0]) ^ (ScreenCoords[1] - ScreenCoords[0]);
+        //        Normal.Normalize();
+        //        float Intensity = Normal * LightDir;
+        //        if (Intensity > 0) {
+        //            FVector2i uvs[3];
+        //            for (int k = 0; k < 3; ++k) {
+        //                uvs[k] = CubeModel.GetUV(i, k);
+        //            }
+        //            // DrawTriangle(RHI, ScreenCoords, uvs[0], uvs[1], uvs[2], Intensity);
+        //            DrawTriangle(this->RHI, ScreenCoords[0], ScreenCoords[1], ScreenCoords[2], uvs[0], uvs[1], uvs[2],
+        //                         Intensity);
+        //        }
+        //    }
+        //    return 0;
+        //};
+        //
+        //int TotalFace = CubeModel.GetFaces();
+        //int Count = TotalFace / THREAD_NUM;
+        //int Leave = TotalFace % THREAD_NUM;
+        //int Start = 0;
+        //std::vector<std::future<int>> Threads;
+        //for (int Group = 0; Group < THREAD_NUM; ++Group) {
+        //    int End = Start + Count;
+        //    Threads.push_back(Pool.enqueue(F, Start, End));
+        //    Start = End;
+        //}
+        //if (Leave > 0) {
+        //    Threads.push_back(Pool.enqueue(F, Start, Start + Leave));
+        //}
+        //for (auto& iter : Threads) {
+        //    iter.get();
+        //}
+        //t += Timer.fElapsedTime;
     }
 
     void PerspectiveModelApp::OnExit() {

@@ -24,7 +24,7 @@
 #include <SDL.h>
 #include <fmt/format.h>
 
-using uint32 = unsigned int;
+using uint32 = uint32_t;
 using uint8 = uint8_t;
 
 class NonCopyable {
