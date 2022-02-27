@@ -242,4 +242,15 @@ namespace Color{
     static FColor Blue(0, 0, 255, 255);
 }
 
+
+FORCEINLINE FVector3i VectorCast(const FVector3f& InVec)
+{
+    return FVector3i(int(InVec.X + 0.5f), int(InVec.Y + 0.5f), int(InVec.Z + 0.5f));
+}
+
+FORCEINLINE FVector3f VectorCast(const FVector3i& InVec)
+{
+    return FVector3f(float(InVec.X), float(InVec.Y), float(InVec.Z));
+}
+ 
 #endif //SDLGAMEENGINE_GRAPHICMATH_H

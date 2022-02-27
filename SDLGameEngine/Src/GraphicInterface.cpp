@@ -195,14 +195,14 @@ DrawTriangle(SoftWareRHI &RHI, FVector3i t0, FVector3i t1, FVector3i t2, FVector
         int SegmentHeight = SecondHalf ? t2.Y - t1.Y : t1.Y - t0.Y;
         float alpha = (float)i / TotalHeight;
         float beta = (float)(i - (SecondHalf ? t1.Y - t0.Y : 0)) / SegmentHeight;
-        FVector3i A = t0 + (t2 - t0) * alpha;
-        FVector3i B = SecondHalf ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
+        FVector3i A = t0 + VectorCast(VectorCast(t2 - t0) * alpha);
+        FVector3i B = SecondHalf ? t1 + VectorCast(VectorCast(t2 - t1) * beta) : t0 + VectorCast(VectorCast(t1 - t0) * beta);
         FVector2i uvA = uv0 + (uv2 - uv0) * alpha;
         FVector2i uvB = SecondHalf ? uv1 + (uv2 - uv1) * beta : uv0 + (uv1 - uv0) * beta;
         if (A.X > B.X) { std::swap(A, B); std::swap(uvA, uvB);  }
         for (int j = A.X; j <= B.X; ++j) {
-            float phi = B.X == A.X ? 1. : (float)(j - A.X) / (float)(B.X - A.X);
-            FVector3i P = A + (B - A) * phi;
+            float phi = B.X == A.X ? 1. : float(j - A.X) / (float)(B.X - A.X);
+            FVector3i P = VectorCast(VectorCast(A) + VectorCast(B - A) * phi);
             FVector2i uvP = uvA + (uvB - uvA) * phi;
             int idx = P.X + P.Y * RHI.GetPixelWidth();
             if (RHI.ZBuffer[idx] < P.Z) {
