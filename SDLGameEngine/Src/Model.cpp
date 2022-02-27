@@ -52,7 +52,7 @@ std::vector<int> Model::GetFace(int Index) {
 
 FVector2i Model::GetUV(int InFace, int  InVert) {
     int idx = Faces[InFace][InVert][1];
-    return FVector2i(Uvs[idx].X * DiffuseMap.get_width(), Uvs[idx].Y * DiffuseMap.get_height());
+    return FVector2i(int(Uvs[idx].X * int(DiffuseMap.get_width())), int(Uvs[idx].Y * int(DiffuseMap.get_height())));
 }
 
 void Model::LoadTexture(const char *FileName, const char *Suffix, TGAImage &Img) {
