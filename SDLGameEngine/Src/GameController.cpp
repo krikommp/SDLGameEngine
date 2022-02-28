@@ -29,8 +29,10 @@ void GameController::Tick() {
                         GInputObserver.NotifyAll(&Event);
                     }
                     uint32 key = Event.key.keysym.sym;
-                    if (KeyBroad[key].bHold) SetButtonState(2, KeyBroad[key]);
-                    else SetButtonState(1, KeyBroad[key]);
+                    if (KeyBroad[key].bHold)
+                        SetButtonState(2, KeyBroad[key]);
+                    else
+                        SetButtonState(1, KeyBroad[key]);
 	            }
                 break;
             case SDL_KEYUP:
