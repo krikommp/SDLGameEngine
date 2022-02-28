@@ -30,7 +30,8 @@ IRenderTexture* FTextureFactory::LoadTexture(const char *Filename, ETextureResou
         Texture = new FTextureTGA();
         bool bLoad = Texture->Load(Filename);
         if (!bLoad) {
-            free(Texture);
+            std::cerr << "Load TGA Texture Fail = " << Filename << std::endl;
+            delete Texture;
             Texture = nullptr;
         }
     }

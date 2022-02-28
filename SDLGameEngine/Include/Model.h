@@ -13,7 +13,7 @@
 
 class Model {
 public:
-    Model() {}
+    Model();
     Model(const char* FileName);
     Model(const std::string_view& FileName);
     ~Model();

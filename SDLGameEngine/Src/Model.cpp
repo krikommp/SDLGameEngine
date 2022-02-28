@@ -9,7 +9,12 @@
 
 #include "Model.h"
 
+Model::Model() {
+    MainTex = nullptr;
+}
+
 Model::Model(const char *FileName) {
+    MainTex = nullptr;
     std::ifstream In;
     In.open(FileName, std::ifstream::in);
     if (In.fail()) return;
@@ -19,6 +24,7 @@ Model::Model(const char *FileName) {
 
 Model::Model(const std::string_view& FileName)
 {
+    MainTex = nullptr;
     std::ifstream In;
     In.open(FileName.data(), std::ifstream::in);
     if (In.fail()) return;
@@ -27,8 +33,14 @@ Model::Model(const std::string_view& FileName)
 }
 
 Model::~Model() {
-    if(MainTex)  {
-        std::cout << "as" << std::endl;
+    if (MainTex == nullptr) {
+        std::cerr << "null texture, skip" << std::endl;
+    }else if (MainTex->GetHeight() < 0 || MainTex->GetHeight() < 0) {
+        std::cerr << "error texture" << std::endl;
+    }else if (MainTex != nullptr) {
+        std::cerr << "delete not null texture" << std::endl;
+        delete MainTex;
+        MainTex = nullptr;
     }
 }
 
