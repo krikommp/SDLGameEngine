@@ -6,7 +6,7 @@
 #define SDLGAMEENGINE_MODEL_H
 
 #include <GraphicMath.h>
-#include "tgaimage.h"
+#include <Texture.h>
 
 #include <vector>
 #include <string>
@@ -31,7 +31,7 @@ public:
 
     FColor Diffuse(const FVector2i& InUV);
 private:
-    void LoadTexture(const char* FileName, const char* Suffix, TGAImage& Img);
+    void LoadTexture(const char* FileName, const char* Suffix);
 
 private:
     void Init(std::ifstream& In);
@@ -42,6 +42,6 @@ private:
     std::vector<FVector2f> Uvs;
     std::vector<FVector3f> Normals;
 
-    TGAImage DiffuseMap;
+    IRenderTexture* MainTex;
 };
 #endif //SDLGAMEENGINE_MODEL_H

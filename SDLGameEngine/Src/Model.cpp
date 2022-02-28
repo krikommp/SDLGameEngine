@@ -14,7 +14,7 @@ Model::Model(const char *FileName) {
     In.open(FileName, std::ifstream::in);
     if (In.fail()) return;
     Init(In);
-    LoadTexture(FileName, "_diffuse.tga", DiffuseMap);
+    LoadTexture(FileName, "_diffuse.tga");
 }
 
 Model::Model(const std::string_view& FileName)
@@ -23,11 +23,13 @@ Model::Model(const std::string_view& FileName)
     In.open(FileName.data(), std::ifstream::in);
     if (In.fail()) return;
     Init(In);
-    LoadTexture(FileName.data(), "_diffuse.tga", DiffuseMap);
+    LoadTexture(FileName.data(), "_diffuse.tga");
 }
 
 Model::~Model() {
-
+    if(MainTex)  {
+        std::cout << "as" << std::endl;
+    }
 }
 
 int Model::GetVerts() {
@@ -52,15 +54,18 @@ std::vector<int> Model::GetFace(int Index) {
 
 FVector2i Model::GetUV(int InFace, int  InVert) {
     int idx = Faces[InFace][InVert][1];
-    return FVector2i(int(Uvs[idx].X * int(DiffuseMap.get_width())), int(Uvs[idx].Y * int(DiffuseMap.get_height())));
+    return FVector2i(int(Uvs[idx].X * int(MainTex->GetWidth())), int(Uvs[idx].Y * int(MainTex->GetHeight())));
 }
 
-void Model::LoadTexture(const char *FileName, const char *Suffix, TGAImage &Img) {
+void Model::LoadTexture(const char *FileName, const char *Suffix) {
     std::string TexFile(FileName);
     size_t Dot = TexFile.find_last_of(".");
     if (Dot != std::string::npos) {
         TexFile = TexFile.substr(0, Dot) + std::string(Suffix);
-        std::cerr << "texture file " << TexFile << " loading " << (Img.read_tga_file(TexFile.c_str()) ? "ok" : "failed") << std::endl;
+        MainTex = FTextureFactory::LoadTexture(TexFile.c_str(), ETextureResourceType::TGA);
+        if (MainTex == nullptr) {
+            std::cerr << "Load Texture Failed" << std::endl;
+        }
     }
 }
 
@@ -104,6 +109,5 @@ void Model::Init(std::ifstream& In)
 }
 
 FColor Model::Diffuse(const FVector2i &InUV) {
-    TGAColor c = DiffuseMap.get(InUV.U, InUV.V);
-    return FColor(c[2], c[1], c[0], c[3]);
+    return MainTex->Sampler(InUV.U, InUV.V);
 }
