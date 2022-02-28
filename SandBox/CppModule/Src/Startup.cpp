@@ -98,30 +98,54 @@ inline ThreadPool::~ThreadPool()
 #endif
 
 
-#include <iostream>
-#include <vector>
-#include <chrono>
+#include <AppEngine.h>
 
-int main()
-{
+class TestApp : public AppEngine {
+protected:
+    void OnStart() override;
 
-    ThreadPool pool(4);
-    std::vector< std::future<int> > results;
+    void OnUpdate() override;
 
-    for(int i = 0; i < 8; ++i) {
-        results.emplace_back(
-                pool.enqueue([i] {
-                    std::cout << "hello " << i << std::endl;
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
-                    std::cout << "world " << i << std::endl;
-                    return i*i;
-                })
-        );
+    void OnExit() override;
+};
+
+void TestApp::OnStart() {
+    SetWidthAndHeight(FVector2i(480, 240));
+    SetPixelSize(1);
+    SetClearColor(Color::Sky);
+    SetTitle("MyAppEngine");
+}
+
+void TestApp::OnUpdate() {
+    if (Controller.GetKeyButton(KeyCode::W).bPressed) {
+        std::cerr << "W Clicked" << std::endl;
     }
+}
 
-    for(auto && result: results)
-        std::cout << result.get() << ' ';
-    std::cout << std::endl;
+void TestApp::OnExit() {
+}
+int main(int argc, char *argv[])
+{
+    TestApp GApp;
+    GApp.Construct();
+    GApp.Start();
+//    ThreadPool pool(4);
+//    std::vector< std::future<int> > results;
+//
+//    for(int i = 0; i < 8; ++i) {
+//        results.emplace_back(
+//                pool.enqueue([i] {
+//                    std::cout << "hello " << i << std::endl;
+//                    std::this_thread::sleep_for(std::chrono::seconds(1));
+//                    std::cout << "world " << i << std::endl;
+//                    return i*i;
+//                })
+//        );
+//    }
+//
+//    for(auto && result: results)
+//        std::cout << result.get() << ' ';
+//    std::cout << std::endl;
 
     return 0;
 }

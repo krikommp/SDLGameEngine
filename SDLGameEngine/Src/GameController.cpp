@@ -3,6 +3,7 @@
 //
 
 #include "GameController.h"
+#include <iostream>
 
 Listener<void(IInputEvent*)> GInputObserver;
 
@@ -27,7 +28,16 @@ void GameController::Tick() {
                         AppExitEvent Event;
                         GInputObserver.NotifyAll(&Event);
                     }
+                    uint32 key = Event.key.keysym.sym;
+                    if (KeyBroad[key].bHold) SetButtonState(2, KeyBroad[key]);
+                    else SetButtonState(1, KeyBroad[key]);
 	            }
+                break;
+            case SDL_KEYUP:
+                {
+                    uint32 key = Event.key.keysym.sym;
+                    SetButtonState(0, KeyBroad[key]);
+                }
                 break;
 			case SDL_MOUSEBUTTONDOWN:
 				{
@@ -84,6 +94,11 @@ void GameController::SetButtonState(int State, ButtonState &Button) {
             break;
         case 1:
             Button.bPressed = true;
+            Button.bReleased = false;
+            Button.bHold = true;
+            break;
+        case 2:
+            Button.bPressed = false;
             Button.bReleased = false;
             Button.bHold = true;
             break;

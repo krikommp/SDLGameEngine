@@ -231,7 +231,7 @@ namespace Chapter03 {
     Matrix Projection = Matrix::Identity(4);
     Matrix Viewport = viewport(gWidth / 8, gHeight / 8, gWidth * 3 / 4, gHeight * 3 / 4);
     void PerspectiveModelApp::OnUpdate() {
-        Matrix T = translation(FVector3f (0, 0, 0))*rotation_y(cos(t * 10.*M_PI/180.), sin(t * 10.*M_PI/180.));
+        Matrix T = translation(FVector3f (0, 0, 0))*rotation_y(cos(10.*M_PI/180.), sin(10.*M_PI/180.));
         Projection[3][2] = -1.f / Camera.Z;
         auto F = [=](int Start, int End) {
             for (int i = Start; i < End; ++i) {

@@ -13,5 +13,6 @@ ADD_DEFINITIONS(-DROOTPATH=\"${ROOT_PATH}\")
 
 add_executable(${PROJECT_NAME} ${ALL_SOURCES} ${ALL_INCLUDES})
 
-target_link_libraries(${PROJECT_NAME} Engine)
-target_link_libraries(${PROJECT_NAME} Lua)
+# target_link_libraries(${PROJECT_NAME} Engine)
+# target_link_libraries(${PROJECT_NAME} Lua)
+target_link_libraries(${PROJECT_NAME} SoftWareRenderer)

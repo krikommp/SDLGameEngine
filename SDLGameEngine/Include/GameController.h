@@ -32,6 +32,79 @@ enum class MouseType
     MOUSE_RIGHT = 2
 };
 
+enum class KeyCode {
+    UNKNOWN = 0,
+    RETURN = '\r',
+    ESCAPE = '\x1B',
+    BACKSPACE = '\b',
+    TAB = '\t',
+    SPACE = ' ',
+    EXCLAIM = '!',
+    QUOTEDBL = '"',
+    HASH = '#',
+    PERCENT = '%',
+    DOLLAR = '$',
+    AMPERSAND = '&',
+    QUOTE = '\'',
+    LEFTPAREN = '(',
+    RIGHTPAREN = ')',
+    ASTERISK = '*',
+    PLUS = '+',
+    COMMA = ',',
+    MINUS = '-',
+    PERIOD = '.',
+    SLASH = '/',
+    Alpha0 = '0',
+    Alpha1 = '1',
+    Alpha2 = '2',
+    Alpha3 = '3',
+    Alpha4 = '4',
+    Alpha5 = '5',
+    Alpha6 = '6',
+    Alpha7 = '7',
+    Alpha8 = '8',
+    Alpha9 = '9',
+    COLON = ':',
+    SEMICOLON = ';',
+    LESS = '<',
+    EQUALS = '=',
+    GREATER = '>',
+    QUESTION = '?',
+    AT = '@',
+    LEFTBRACKET = '[',
+    BACKSLASH = '\\',
+    RIGHTBRACKET = ']',
+    CARET = '^',
+    UNDERSCORE = '_',
+    BACKQUOTE = '`',
+    A = 'a',
+    B = 'b',
+    C = 'c',
+    D = 'd',
+    E = 'e',
+    F = 'f',
+    G = 'g',
+    H = 'h',
+    I = 'i',
+    J = 'j',
+    K = 'k',
+    L = 'l',
+    M = 'm',
+    N = 'n',
+    O = 'o',
+    P = 'p',
+    Q = 'q',
+    R = 'r',
+    S = 's',
+    T = 't',
+    U = 'u',
+    V = 'v',
+    W = 'w',
+    X = 'x',
+    Y = 'y',
+    Z = 'z',
+};
+
 struct ButtonState {
     bool bPressed = false;
     bool bReleased = false;
@@ -47,6 +120,8 @@ public:
 
     FORCEINLINE const ButtonState& GetMouse(MouseType Type) const { return MouseButton[static_cast<int>(Type)]; }
 
+    FORCEINLINE const ButtonState& GetKeyButton(KeyCode Key) const { return KeyBroad[static_cast<int>(Key)]; }
+
 private:
     void ClearMouseState();
 
@@ -54,6 +129,7 @@ private:
 private:
     FVector2i MousePosition;
     ButtonState MouseButton[3];
+    ButtonState KeyBroad[127];
 
     uint32 OldButton = 0;
 };
